@@ -1,4 +1,8 @@
-# دلاربان | داشبورد شخصی پایش دارایی‌ها
+# دلاربان پلاس | DollarBaan Plus
+
+> **این پروژه یک فورک غیررسمی و توسعه‌یافته از [دلاربان (DollarBaan)](https://github.com/MahdiGraph/DollarBaan) ساختهٔ [MahdiGraph](https://github.com/MahdiGraph) است** و با مجوز MIT منتشر می‌شود. سپاس ویژه از ایشان بابت پروژهٔ اصلی. 🙏
+> این نسخه در حال توسعه است؛ توضیحات زیر هنوز مربوط به پروژهٔ اصلی است و به‌زودی بازنویسی می‌شود.
+
 
 <p align="center">
   <a href="https://github.com/MahdiGraph/DollarBaan/releases/latest"><img src="https://img.shields.io/github/v/release/MahdiGraph/DollarBaan?label=Download&color=brightgreen" alt="دانلود آخرین نسخه دلاربان"></a>

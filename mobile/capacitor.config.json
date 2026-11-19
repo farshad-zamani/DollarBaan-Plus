@@ -1,6 +1,6 @@
 {
-  "appId": "io.github.mahdigraph.dollarbaan",
-  "appName": "دلاربان",
+  "appId": "io.github.farshadzamani.dollarbaanplus",
+  "appName": "دلاربان پلاس",
   "webDir": "../public",
   "server": {
     "androidScheme": "https",
@@ -9,6 +9,9 @@
   "plugins": {
     "SystemBars": {
       "insetsHandling": "css"
+    },
+    "CapacitorHttp": {
+      "enabled": true
     }
   }
 }

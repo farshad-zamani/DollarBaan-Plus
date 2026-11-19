@@ -3,12 +3,9 @@
 
 // Renders every raster icon (web, desktop, Android) from public/assets/img/logo.svg.
 // Usage: npm install --no-save sharp && node scripts/build-app-icons.js
-// The macOS .icns is only rebuilt on macOS (needs iconutil); the result is committed.
 
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
-const { execFileSync } = require('child_process');
 const sharp = require('sharp');
 
 const ROOT = path.join(__dirname, '..');
@@ -95,18 +92,29 @@ async function desktop() {
     for (const size of [16, 32, 48, 64, 128, 256, 512]) {
         await write(path.join(DESKTOP_BUILD, 'icons', `${size}x${size}.png`), rounded(), size);
     }
-    if (process.platform !== 'darwin') {
-        console.warn('Skipping icon.icns: iconutil is only available on macOS');
-        return;
+    await icns(path.join(DESKTOP_BUILD, 'icon.icns'));
+}
+
+// macOS .icns made of PNG chunks (readable by macOS 10.7+). Written in plain Node so it
+// also works on Windows and Linux; no iconutil needed.
+async function icns(file) {
+    const chunks = [
+        ['ic11', 32], ['ic12', 64], ['ic07', 128], ['ic13', 256],
+        ['ic08', 256], ['ic14', 512], ['ic09', 512], ['ic10', 1024],
+    ];
+    const parts = [];
+    for (const [type, size] of chunks) {
+        const data = await png(mac(), size);
+        const header = Buffer.alloc(8);
+        header.write(type, 0, 4, 'ascii');
+        header.writeUInt32BE(data.length + 8, 4);
+        parts.push(header, data);
     }
-    const iconset = fs.mkdtempSync(path.join(os.tmpdir(), 'dollarbaan-')) + '/icon.iconset';
-    fs.mkdirSync(iconset);
-    for (const size of [16, 32, 128, 256, 512]) {
-        await write(path.join(iconset, `icon_${size}x${size}.png`), mac(), size);
-        await write(path.join(iconset, `icon_${size}x${size}@2x.png`), mac(), size * 2);
-    }
-    execFileSync('iconutil', ['-c', 'icns', iconset, '-o', path.join(DESKTOP_BUILD, 'icon.icns')]);
-    fs.rmSync(path.dirname(iconset), { recursive: true, force: true });
+    const total = parts.reduce((sum, part) => sum + part.length, 8);
+    const head = Buffer.alloc(8);
+    head.write('icns', 0, 4, 'ascii');
+    head.writeUInt32BE(total, 4);
+    fs.writeFileSync(file, Buffer.concat([head, ...parts]));
 }
 
 async function android() {

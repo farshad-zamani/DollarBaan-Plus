@@ -8,7 +8,7 @@ const { settings } = require('./settings');
 const { badRequest } = require('../lib/errors');
 const logger = require('../logger');
 
-const COOKIE_NAME = 'dollarbaan_session';
+const COOKIE_NAME = 'dollarbaanplus_session';
 const TOUCH_INTERVAL_MS = 10 * 60 * 1000;
 const SCRYPT = { N: 16384, r: 8, p: 1 };
 

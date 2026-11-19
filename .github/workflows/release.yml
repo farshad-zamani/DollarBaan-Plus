@@ -59,13 +59,13 @@ jobs:
         run: npx electron-builder --${{ runner.os == 'macOS' && 'mac' || runner.os == 'Windows' && 'win' || 'linux' }} --publish never
       - name: Smoke test (macOS)
         if: runner.os == 'macOS'
-        run: node ../scripts/smoke.mjs --launch "dist/mac-arm64/DollarBaan.app/Contents/MacOS/DollarBaan" --shot dist/smoke-macos.png
+        run: node ../scripts/smoke.mjs --launch "dist/mac-arm64/DollarBaanPlus.app/Contents/MacOS/DollarBaanPlus" --shot dist/smoke-macos.png
       - name: Smoke test (Windows)
         if: runner.os == 'Windows'
-        run: node ../scripts/smoke.mjs --launch "dist/win-unpacked/DollarBaan.exe" --shot dist/smoke-windows.png
+        run: node ../scripts/smoke.mjs --launch "dist/win-unpacked/DollarBaanPlus.exe" --shot dist/smoke-windows.png
       - name: Smoke test (Linux)
         if: runner.os == 'Linux'
-        run: xvfb-run -a node ../scripts/smoke.mjs --launch "dist/linux-unpacked/dollarbaan" --shot dist/smoke-linux.png -- --no-sandbox
+        run: xvfb-run -a node ../scripts/smoke.mjs --launch "dist/linux-unpacked/dollarbaan-plus" --shot dist/smoke-linux.png -- --no-sandbox
       - uses: actions/upload-artifact@v7
         with:
           name: app-${{ matrix.name }}
@@ -115,24 +115,24 @@ jobs:
           else
             echo "::warning::Android signing secrets are not set (run scripts/android-signing.sh once). This APK uses a throwaway key: it is tested but not published."
             keytool -genkeypair -keystore "$RUNNER_TEMP/release.keystore" -storetype PKCS12 -storepass throwaway \
-              -alias dollarbaan -keyalg RSA -keysize 2048 -validity 30 -dname "CN=DollarBaan test build" -noprompt
+              -alias dollarbaanplus -keyalg RSA -keysize 2048 -validity 30 -dname "CN=DollarBaan Plus test build" -noprompt
             echo "publish=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Build APKs
         working-directory: mobile/android
         env:
-          DOLLARBAAN_KEYSTORE: ${{ runner.temp }}/release.keystore
-          DOLLARBAAN_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || 'throwaway' }}
-          DOLLARBAAN_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || 'dollarbaan' }}
+          DOLLARBAANPLUS_KEYSTORE: ${{ runner.temp }}/release.keystore
+          DOLLARBAANPLUS_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || 'throwaway' }}
+          DOLLARBAANPLUS_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || 'dollarbaanplus' }}
         run: ./gradlew --no-daemon assembleRelease assembleDebug
       - name: Collect APKs
         run: |
           version=$(node -p "require('../package.json').version")
           apksigner=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -n 1)/apksigner
           mkdir -p dist test-apk
-          cp android/app/build/outputs/apk/release/app-release.apk "dist/DollarBaan-$version-android.apk"
+          cp android/app/build/outputs/apk/release/app-release.apk "dist/DollarBaanPlus-$version-android.apk"
           cp android/app/build/outputs/apk/debug/app-debug.apk test-apk/app-debug.apk
-          "$apksigner" verify --print-certs "dist/DollarBaan-$version-android.apk"
+          "$apksigner" verify --print-certs "dist/DollarBaanPlus-$version-android.apk"
       - uses: actions/upload-artifact@v7
         if: steps.signing.outputs.publish == 'true'
         with:
@@ -173,7 +173,7 @@ jobs:
           target: google_apis
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot
-          script: bash scripts/android-smoke.sh apk/test-apk/app-debug.apk "$(ls apk/dist/DollarBaan-*-android.apk)" smoke
+          script: bash scripts/android-smoke.sh apk/test-apk/app-debug.apk "$(ls apk/dist/DollarBaanPlus-*-android.apk)" smoke
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -228,5 +228,5 @@ jobs:
           if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
             gh release upload "$GITHUB_REF_NAME" dist/* --clobber
           else
-            gh release create "$GITHUB_REF_NAME" dist/* --title "DollarBaan ${GITHUB_REF_NAME#v}" --notes-file notes.md
+            gh release create "$GITHUB_REF_NAME" dist/* --title "DollarBaan Plus ${GITHUB_REF_NAME#v}" --notes-file notes.md
           fi

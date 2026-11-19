@@ -23,7 +23,7 @@ async function main() {
             : app.listen(config.port, onListening);
         instance.once('error', reject);
     });
-    logger.info(`DollarBaan ${config.version} is up and running on port ${config.port}`);
+    logger.info(`DollarBaan Plus ${config.version} is up and running on port ${config.port}`);
     if (auth.usesDefaultPassword()) {
         logger.warn('You are using the default password "changeit". Change it from Settings or set AUTH_PASSWORD in .env.');
     }

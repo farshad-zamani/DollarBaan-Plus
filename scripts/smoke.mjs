@@ -22,7 +22,7 @@ const appArgs = separator === -1 ? [] : args.slice(separator + 1);
 const executable = option('--launch') && path.resolve(option('--launch'));
 const port = Number(option('--port') || 9333);
 const shot = option('--shot');
-const APP_URL = /^(app:\/\/dollarbaan|https:\/\/localhost)\//;
+const APP_URL = /^(app:\/\/dollarbaanplus|https:\/\/localhost)\//;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 

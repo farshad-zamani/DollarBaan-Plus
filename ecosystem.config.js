@@ -1,6 +1,6 @@
 module.exports = {
   apps: [{
-    name: 'DollarBaan',
+    name: 'DollarBaanPlus',
     script: './server/index.js',
     cwd: __dirname,
     instances: 1,

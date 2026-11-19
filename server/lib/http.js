@@ -3,7 +3,7 @@
 const config = require('../config');
 const { HttpError } = require('../shared').errors;
 
-const USER_AGENT = `DollarBaan/${config.version} (+https://github.com/MahdiGraph/DollarBaan)`;
+const USER_AGENT = `DollarBaanPlus/${config.version} (+https://github.com/farshad-zamani/DollarBaan-Plus)`;
 
 /**
  * GET a JSON document. With `etag`, a 304 answer resolves to { notModified: true }.

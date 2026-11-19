@@ -8,7 +8,7 @@ set -euo pipefail
 DEBUG_APK=$1
 RELEASE_APK=$2
 OUT=$3
-PKG=io.github.mahdigraph.dollarbaan
+PKG=io.github.farshadzamani.dollarbaanplus
 mkdir -p "$OUT"
 
 app_pid() {

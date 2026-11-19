@@ -29,7 +29,7 @@ let update = null;
 function setTitle(title, subtitle = '') {
     $('#pageTitle').textContent = title;
     $('#pageSubtitle').textContent = subtitle;
-    document.title = title === 'داشبورد' ? 'دلاربان' : `${title} · دلاربان`;
+    document.title = title === 'داشبورد' ? 'دلاربان پلاس' : `${title} · دلاربان پلاس`;
 }
 
 function setActiveNav(name) {

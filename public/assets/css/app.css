@@ -1,4 +1,4 @@
-/* DollarBaan — design system & layout */
+/* DollarBaan Plus — design system & layout (blue brand theme) */
 
 @font-face {
     font-family: 'Vazirmatn';
@@ -25,12 +25,12 @@
     --text-2: #475467;
     --muted: #667085;
 
-    --accent: #047857;
-    --accent-hover: #065f46;
+    --accent: #1d5fd6;
+    --accent-hover: #1749a8;
     --accent-contrast: #ffffff;
-    --accent-soft: #e7f5ef;
-    --accent-text: #047857;
-    --focus-ring: rgba(16, 185, 129, 0.35);
+    --accent-soft: #e8effc;
+    --accent-text: #1d5fd6;
+    --focus-ring: rgba(59, 130, 246, 0.35);
 
     --pos: #067647;
     --pos-soft: #e8f6ee;
@@ -39,16 +39,16 @@
     --warn: #b54708;
     --warn-soft: #fef4e6;
 
-    --hero-from: #064e3b;
-    --hero-to: #0b7a59;
+    --hero-from: #0b2d6e;
+    --hero-to: #1d6fe0;
 
     /* chart marks — validated palette (see README › design notes) */
-    --chart-line: #1baf7a;
-    --chart-fill: rgba(27, 175, 122, 0.1);
+    --chart-line: #2b7de9;
+    --chart-fill: rgba(43, 125, 233, 0.1);
     --chart-context: #98a2b3;
     --chart-grid: #eef0f3;
     --chart-axis: #667085;
-    --chart-buy: #2a78d6;
+    --chart-buy: #12a37f;
     --chart-sell: #eb6834;
 
     --cat-currency: #2a78d6;
@@ -89,26 +89,26 @@
         --text: #e8edf3;
         --text-2: #b3bfcc;
         --muted: #8592a3;
-        --accent: #34d399;
-        --accent-hover: #6ee7b7;
-        --accent-contrast: #052e1f;
-        --accent-soft: rgba(52, 211, 153, 0.12);
-        --accent-text: #34d399;
-        --focus-ring: rgba(52, 211, 153, 0.35);
+        --accent: #5ea1ff;
+        --accent-hover: #8fc0ff;
+        --accent-contrast: #04162f;
+        --accent-soft: rgba(94, 161, 255, 0.12);
+        --accent-text: #5ea1ff;
+        --focus-ring: rgba(94, 161, 255, 0.35);
         --pos: #3fd07f;
         --pos-soft: rgba(63, 208, 127, 0.12);
         --neg: #ff7b7b;
         --neg-soft: rgba(255, 123, 123, 0.12);
         --warn: #fbbf24;
         --warn-soft: rgba(251, 191, 36, 0.12);
-        --hero-from: #053b2d;
-        --hero-to: #0a6448;
-        --chart-line: #199e70;
-        --chart-fill: rgba(25, 158, 112, 0.14);
+        --hero-from: #0a2a63;
+        --hero-to: #1456b8;
+        --chart-line: #4a94f0;
+        --chart-fill: rgba(74, 148, 240, 0.14);
         --chart-context: #667085;
         --chart-grid: #1e2833;
         --chart-axis: #8592a3;
-        --chart-buy: #3987e5;
+        --chart-buy: #2dbf96;
         --chart-sell: #d95926;
         --cat-currency: #3987e5;
         --cat-coin: #d95926;
@@ -135,26 +135,26 @@
     --text: #e8edf3;
     --text-2: #b3bfcc;
     --muted: #8592a3;
-    --accent: #34d399;
-    --accent-hover: #6ee7b7;
-    --accent-contrast: #052e1f;
-    --accent-soft: rgba(52, 211, 153, 0.12);
-    --accent-text: #34d399;
-    --focus-ring: rgba(52, 211, 153, 0.35);
+    --accent: #5ea1ff;
+    --accent-hover: #8fc0ff;
+    --accent-contrast: #04162f;
+    --accent-soft: rgba(94, 161, 255, 0.12);
+    --accent-text: #5ea1ff;
+    --focus-ring: rgba(94, 161, 255, 0.35);
     --pos: #3fd07f;
     --pos-soft: rgba(63, 208, 127, 0.12);
     --neg: #ff7b7b;
     --neg-soft: rgba(255, 123, 123, 0.12);
     --warn: #fbbf24;
     --warn-soft: rgba(251, 191, 36, 0.12);
-    --hero-from: #053b2d;
-    --hero-to: #0a6448;
-    --chart-line: #199e70;
-    --chart-fill: rgba(25, 158, 112, 0.14);
+    --hero-from: #0a2a63;
+    --hero-to: #1456b8;
+    --chart-line: #4a94f0;
+    --chart-fill: rgba(74, 148, 240, 0.14);
     --chart-context: #667085;
     --chart-grid: #1e2833;
     --chart-axis: #8592a3;
-    --chart-buy: #3987e5;
+    --chart-buy: #2dbf96;
     --chart-sell: #d95926;
     --cat-currency: #3987e5;
     --cat-coin: #d95926;
@@ -1539,7 +1539,7 @@ button.list-row:hover {
     border: 0;
     color: #fff;
     background:
-        radial-gradient(120% 140% at 0% 0%, rgba(52, 211, 153, 0.28) 0%, transparent 55%),
+        radial-gradient(120% 140% at 0% 0%, rgba(94, 161, 255, 0.28) 0%, transparent 55%),
         linear-gradient(135deg, var(--hero-from), var(--hero-to));
     overflow: hidden;
 }

@@ -1,0 +1,124 @@
+name: Upstream sync
+
+# هر هفته بررسی می‌کند پروژه اصلی (MahdiGraph/DollarBaan) تغییر تازه‌ای داشته یا نه.
+# اگر ادغام بدون تعارض ممکن باشد، یک Pull Request آماده می‌کند؛ در غیر این صورت یک Issue با فهرست
+# فایل‌های متعارض باز می‌کند. هیچ‌چیز خودکار در main ادغام نمی‌شود: ابتدا تست‌ها اجرا و نتیجه بازبینی شود.
+# راهنمای کامل: UPSTREAM.md
+
+on:
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: upstream-sync
+
+env:
+  UPSTREAM_REPO: https://github.com/MahdiGraph/DollarBaan.git
+  UPSTREAM_BRANCH: main
+
+jobs:
+  sync:
+    name: Merge upstream
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Forks of this fork do not need the job.
+    if: github.repository == 'farshad-zamani/DollarBaan-Plus'
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Fetch upstream
+        id: upstream
+        run: |
+          git remote add upstream "$UPSTREAM_REPO"
+          git fetch upstream "$UPSTREAM_BRANCH" --tags --no-recurse-submodules
+          behind=$(git rev-list --count "HEAD..upstream/$UPSTREAM_BRANCH")
+          echo "behind=$behind" >> "$GITHUB_OUTPUT"
+          echo "head=$(git rev-parse --short "upstream/$UPSTREAM_BRANCH")" >> "$GITHUB_OUTPUT"
+          echo "Upstream is $behind commit(s) ahead"
+
+      - name: Skip when a sync PR is already open
+        id: open
+        if: steps.upstream.outputs.behind != '0'
+        run: |
+          count=$(gh pr list --state open --search 'head:upstream-sync/' --json number --jq 'length')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+      - name: Try the merge
+        id: merge
+        if: steps.upstream.outputs.behind != '0' && steps.open.outputs.count == '0'
+        run: |
+          git config user.name "dollarbaan-plus-sync[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          branch="upstream-sync/$(date +%Y%m%d)-${{ steps.upstream.outputs.head }}"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          git checkout -b "$branch"
+          if git merge --no-ff -m "Merge upstream DollarBaan (${{ steps.upstream.outputs.head }})" "upstream/$UPSTREAM_BRANCH"; then
+            echo "result=clean" >> "$GITHUB_OUTPUT"
+          else
+            git diff --name-only --diff-filter=U > "$RUNNER_TEMP/conflicts.txt"
+            git merge --abort
+            echo "result=conflict" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run the tests on the merged result
+        id: tests
+        if: steps.merge.outputs.result == 'clean'
+        continue-on-error: true
+        run: |
+          npm install --no-audit --no-fund
+          npm test
+
+      - name: Open a pull request
+        id: pr
+        if: steps.merge.outputs.result == 'clean'
+        continue-on-error: true
+        run: |
+          branch="${{ steps.merge.outputs.branch }}"
+          git push origin "$branch"
+          if [ "${{ steps.tests.outcome }}" = "success" ]; then status="✅ تست‌ها بعد از ادغام موفق بود."; else status="⚠️ تست‌ها بعد از ادغام ناموفق بود؛ قبل از ادغام بررسی شود."; fi
+          cat > "$RUNNER_TEMP/body.md" <<EOF
+          ادغام خودکار آخرین تغییرات پروژه اصلی [DollarBaan](https://github.com/MahdiGraph/DollarBaan) (${{ steps.upstream.outputs.head }}).
+
+          $status
+
+          قبل از ادغام:
+          - [ ] تغییرات پروژه اصلی را در CHANGELOG آن بخوانید.
+          - [ ] بررسی کنید قابلیت‌های پلاس (پروفایل‌ها، پول نقد، سهام، سود و زیان) هنوز کار می‌کنند.
+          - [ ] در صورت نیاز نسخه و CHANGELOG پلاس را به‌روز کنید (راهنما: UPSTREAM.md).
+          EOF
+          gh pr create --base main --head "$branch" \
+            --title "Merge upstream DollarBaan (${{ steps.upstream.outputs.head }})" \
+            --body-file "$RUNNER_TEMP/body.md"
+
+      - name: Report a conflict
+        if: steps.merge.outputs.result == 'conflict' || steps.pr.outcome == 'failure'
+        run: |
+          title="Upstream sync needs attention (${{ steps.upstream.outputs.head }})"
+          existing=$(gh issue list --state open --search 'Upstream sync needs attention in:title' --json number --jq 'length')
+          if [ "$existing" != "0" ]; then echo "An issue is already open"; exit 0; fi
+          {
+            echo "پروژه اصلی تغییراتی دارد که خودکار ادغام نشد (یا ساخت PR ممکن نبود)."
+            echo
+            if [ -s "$RUNNER_TEMP/conflicts.txt" ]; then
+              echo "فایل‌های متعارض:"
+              sed 's/^/- `/; s/$/`/' "$RUNNER_TEMP/conflicts.txt"
+              echo
+            fi
+            echo "ادغام دستی (راهنما: UPSTREAM.md):"
+            echo
+            echo '```bash'
+            echo 'git fetch upstream && git checkout -b upstream-sync/manual && git merge upstream/main'
+            echo '# تعارض‌ها را حل کنید، npm test را اجرا کنید و PR باز کنید'
+            echo '```'
+          } > "$RUNNER_TEMP/issue.md"
+          gh issue create --title "$title" --body-file "$RUNNER_TEMP/issue.md"

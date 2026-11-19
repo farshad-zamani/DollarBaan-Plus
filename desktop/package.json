@@ -1,12 +1,12 @@
 {
-  "name": "dollarbaan-desktop",
-  "productName": "DollarBaan",
-  "version": "2.1.0",
-  "description": "DollarBaan desktop app: personal finance dashboard for currency, gold, coin and crypto holdings in Toman",
-  "homepage": "https://github.com/MahdiGraph/DollarBaan",
+  "name": "dollarbaan-plus-desktop",
+  "productName": "DollarBaanPlus",
+  "version": "1.0.0",
+  "description": "DollarBaan Plus desktop app: personal finance dashboard for currency, gold, coin, crypto, stocks and cash in Toman",
+  "homepage": "https://github.com/farshad-zamani/DollarBaan-Plus",
   "author": {
-    "name": "MahdiGraph",
-    "email": "34353346+MahdiGraph@users.noreply.github.com"
+    "name": "DollarBaan Plus contributors",
+    "email": "noreply@users.noreply.github.com"
   },
   "license": "MIT",
   "private": true,
@@ -23,9 +23,9 @@
     "electron-builder": "^26.15.3"
   },
   "build": {
-    "appId": "io.github.mahdigraph.dollarbaan",
-    "productName": "DollarBaan",
-    "copyright": "Copyright © MahdiGraph",
+    "appId": "io.github.farshadzamani.dollarbaanplus",
+    "productName": "DollarBaanPlus",
+    "copyright": "Copyright © MahdiGraph (DollarBaan) and DollarBaan Plus contributors",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -65,7 +65,7 @@
       "category": "public.app-category.finance",
       "identity": "-",
       "hardenedRuntime": false,
-      "artifactName": "DollarBaan-${version}-mac-${arch}.${ext}"
+      "artifactName": "DollarBaanPlus-${version}-mac-${arch}.${ext}"
     },
     "dmg": {
       "writeUpdateInfo": false
@@ -91,10 +91,11 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "differentialPackage": false,
-      "artifactName": "DollarBaan-${version}-windows-setup.${ext}"
+      "artifactName": "DollarBaanPlus-${version}-windows-setup.${ext}",
+      "shortcutName": "DollarBaan Plus"
     },
     "portable": {
-      "artifactName": "DollarBaan-${version}-windows-portable.${ext}"
+      "artifactName": "DollarBaanPlus-${version}-windows-portable.${ext}"
     },
     "linux": {
       "target": [
@@ -113,23 +114,23 @@
       ],
       "icon": "build/icons",
       "category": "Office",
-      "executableName": "dollarbaan",
-      "synopsis": "Personal finance dashboard for currency, gold, coin and crypto in Toman",
+      "executableName": "dollarbaan-plus",
+      "synopsis": "Personal finance dashboard for currency, gold, coin, crypto, stocks and cash in Toman",
       "desktop": {
         "entry": {
-          "Name": "DollarBaan",
-          "Name[fa]": "دلاربان",
+          "Name": "DollarBaan Plus",
+          "Name[fa]": "دلاربان پلاس",
           "Categories": "Office;Finance;",
-          "Keywords": "finance;portfolio;gold;currency;crypto;toman;"
+          "Keywords": "finance;portfolio;gold;currency;crypto;stocks;toman;"
         }
       }
     },
     "appImage": {
-      "artifactName": "DollarBaan-${version}-linux-x86_64.${ext}"
+      "artifactName": "DollarBaanPlus-${version}-linux-x86_64.${ext}"
     },
     "deb": {
-      "packageName": "dollarbaan",
-      "artifactName": "DollarBaan-${version}-linux-amd64.${ext}"
+      "packageName": "dollarbaan-plus",
+      "artifactName": "DollarBaanPlus-${version}-linux-amd64.${ext}"
     }
   }
 }

@@ -2,10 +2,10 @@
 // update themselves, so this is how people find out about new versions.
 import { VERSION } from './version.js';
 
-const LATEST_RELEASE_API = 'https://api.github.com/repos/MahdiGraph/DollarBaan/releases/latest';
-const RELEASES_URL = 'https://github.com/MahdiGraph/DollarBaan/releases/latest';
-const CACHE_KEY = 'dollarbaan.latestRelease';
-const DISMISSED_KEY = 'dollarbaan.dismissedUpdate';
+const LATEST_RELEASE_API = 'https://api.github.com/repos/farshad-zamani/DollarBaan-Plus/releases/latest';
+const RELEASES_URL = 'https://github.com/farshad-zamani/DollarBaan-Plus/releases/latest';
+const CACHE_KEY = 'dollarbaanplus.latestRelease';
+const DISMISSED_KEY = 'dollarbaanplus.dismissedUpdate';
 const CHECK_EVERY_MS = 12 * 60 * 60 * 1000;
 
 /** True inside the desktop (Electron) or Android (Capacitor) app. */

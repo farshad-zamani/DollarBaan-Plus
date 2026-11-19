@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One-time setup of the Android release signing key.
 #
-# Creates a keystore OUTSIDE the repository (default: ~/DollarBaan-signing) and stores it as
+# Creates a keystore OUTSIDE the repository (default: ~/DollarBaanPlus-signing) and stores it as
 # GitHub Actions secrets so the release workflow can sign APKs. Every release must be signed
 # with this same key, otherwise Android refuses to update an installed copy: back up the folder.
 #
@@ -9,10 +9,10 @@
 # Needs: keytool (any JDK), openssl, and the GitHub CLI logged in to this repository.
 set -euo pipefail
 
-DIR=${1:-"$HOME/DollarBaan-signing"}
-KEYSTORE="$DIR/dollarbaan-release.p12"
+DIR=${1:-"$HOME/DollarBaanPlus-signing"}
+KEYSTORE="$DIR/dollarbaanplus-release.p12"
 INFO="$DIR/README.txt"
-ALIAS=dollarbaan
+ALIAS=dollarbaanplus
 
 for tool in keytool openssl gh base64; do
     command -v "$tool" >/dev/null || { echo "Missing $tool"; exit 1; }
@@ -30,9 +30,9 @@ else
     PASSWORD=$(openssl rand -hex 24)
     keytool -genkeypair -keystore "$KEYSTORE" -storetype PKCS12 -storepass "$PASSWORD" \
         -alias "$ALIAS" -keyalg RSA -keysize 4096 -validity 10000 \
-        -dname "CN=DollarBaan, O=MahdiGraph" -noprompt
+        -dname "CN=DollarBaan Plus" -noprompt
     cat > "$INFO" <<EOF
-DollarBaan Android release signing key - keep a backup of this folder in a safe place.
+DollarBaan Plus Android release signing key - keep a backup of this folder in a safe place.
 Losing it means existing installs can no longer be updated (users must uninstall first).
 
 keystore: $(basename "$KEYSTORE")

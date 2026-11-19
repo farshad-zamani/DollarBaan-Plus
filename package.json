@@ -1,7 +1,7 @@
 {
-  "name": "dollarbaan",
-  "version": "2.1.0",
-  "description": "Self-hosted personal finance dashboard for tracking currency, gold, coin and crypto holdings in Toman, powered by Iran Market data",
+  "name": "dollarbaan-plus",
+  "version": "1.0.0",
+  "description": "DollarBaan Plus: self-hosted and offline personal finance dashboard for Iranian assets (currency, gold, coin, crypto, Tehran stocks, cash) in Toman. An enhanced fork of DollarBaan by MahdiGraph",
   "keywords": [
     "personal-finance",
     "portfolio-tracker",
@@ -17,11 +17,19 @@
     "self-hosted",
     "electron",
     "android",
-    "dashboard"
+    "dashboard",
+    "stocks",
+    "tehran-stock-exchange",
+    "tse",
+    "bourse",
+    "profit-and-loss",
+    "multi-profile",
+    "dollarbaan",
+    "fork"
   ],
-  "homepage": "https://github.com/MahdiGraph/DollarBaan#readme",
+  "homepage": "https://github.com/farshad-zamani/DollarBaan-Plus#readme",
   "bugs": {
-    "url": "https://github.com/MahdiGraph/DollarBaan/issues"
+    "url": "https://github.com/farshad-zamani/DollarBaan-Plus/issues"
   },
   "main": "server/index.js",
   "private": true,
@@ -39,9 +47,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MahdiGraph/DollarBaan.git"
+    "url": "git+https://github.com/farshad-zamani/DollarBaan-Plus.git"
   },
-  "author": "MahdiGraph",
+  "author": "DollarBaan Plus contributors (fork of DollarBaan by MahdiGraph)",
   "license": "MIT",
   "dependencies": {
     "cookie-parser": "^1.4.7",

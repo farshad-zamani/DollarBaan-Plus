@@ -1,4 +1,4 @@
-package io.github.mahdigraph.dollarbaan;
+package io.github.farshadzamani.dollarbaanplus;
 
 import com.getcapacitor.BridgeActivity;
 

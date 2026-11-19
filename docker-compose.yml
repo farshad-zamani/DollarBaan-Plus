@@ -1,8 +1,8 @@
 services:
-  dollarbaan:
+  dollarbaan-plus:
     build: .
-    image: dollarbaan:latest
-    container_name: dollarbaan
+    image: dollarbaan-plus:latest
+    container_name: dollarbaan-plus
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -13,7 +13,7 @@ services:
       SQLITE_PATH: /app/data/database.sqlite
       LOG_DIR: "off"
     volumes:
-      - dollarbaan-data:/app/data
+      - dollarbaan-plus-data:/app/data
 
 volumes:
-  dollarbaan-data:
+  dollarbaan-plus-data:

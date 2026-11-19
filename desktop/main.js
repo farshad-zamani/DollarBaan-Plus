@@ -1,6 +1,6 @@
 'use strict';
 
-// DollarBaan desktop: an Electron shell around the static web app in public/.
+// DollarBaan Plus desktop (a fork of DollarBaan by MahdiGraph): an Electron shell around the static web app in public/.
 // The page runs in local mode (public/assets/js/runtime-config.js): data stays in
 // IndexedDB inside this app's profile and prices come straight from Iran Market.
 
@@ -9,9 +9,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const SCHEME = 'app';
-const HOST = 'dollarbaan';
+const HOST = 'dollarbaanplus';
 const ORIGIN = `${SCHEME}://${HOST}`;
-const REPO_URL = 'https://github.com/MahdiGraph/DollarBaan';
+const REPO_URL = 'https://github.com/farshad-zamani/DollarBaan-Plus';
+const UPSTREAM_URL = 'https://github.com/MahdiGraph/DollarBaan';
 
 // Packaged builds ship public/ as resources/web (see "extraResources" in package.json).
 const WEB_ROOT = app.isPackaged ? path.join(process.resourcesPath, 'web') : path.join(__dirname, '..', 'public');
@@ -46,8 +47,20 @@ protocol.registerSchemesAsPrivileged([
     { scheme: SCHEME, privileges: { standard: true, secure: true, supportFetchAPI: true, codeCache: true } },
 ]);
 
+// The Tehran Stock Exchange public API (cdn.tsetmc.com) does not send CORS headers, so the page
+// could not read it. Only responses from that one host are given a permissive header.
+const CORS_HOSTS = ['https://cdn.tsetmc.com/*'];
+function allowStockApiCors() {
+    session.defaultSession.webRequest.onHeadersReceived({ urls: CORS_HOSTS }, (details, callback) => {
+        const headers = { ...details.responseHeaders };
+        for (const key of Object.keys(headers)) if (key.toLowerCase() === 'access-control-allow-origin') delete headers[key];
+        headers['Access-Control-Allow-Origin'] = [ORIGIN];
+        callback({ responseHeaders: headers });
+    });
+}
+
 // Development runs get their own profile so they never touch the installed app's data.
-if (!app.isPackaged) app.setPath('userData', path.join(app.getPath('appData'), 'DollarBaan (dev)'));
+if (!app.isPackaged) app.setPath('userData', path.join(app.getPath('appData'), 'DollarBaanPlus (dev)'));
 
 async function serve(request) {
     const url = new URL(request.url);
@@ -133,6 +146,7 @@ function createWindow() {
         show: false,
         autoHideMenuBar: true,
         backgroundColor: nativeTheme.shouldUseDarkColors ? '#0b0f14' : '#f4f5f7',
+        title: 'DollarBaan Plus',
         icon: process.platform === 'linux' ? path.join(WEB_ROOT, 'assets', 'img', 'android-chrome-512x512.png') : undefined,
         webPreferences: {
             sandbox: true,
@@ -176,7 +190,8 @@ function buildMenu() {
         {
             role: 'help',
             submenu: [
-                { label: 'DollarBaan on GitHub', click: () => openExternal(REPO_URL) },
+                { label: 'DollarBaan Plus on GitHub', click: () => openExternal(REPO_URL) },
+                { label: 'Original DollarBaan by MahdiGraph', click: () => openExternal(UPSTREAM_URL) },
                 { label: 'Report a problem', click: () => openExternal(`${REPO_URL}/issues`) },
                 { label: 'Iran Market data', click: () => openExternal('https://github.com/iran-market/iran-market.github.io') },
             ],
@@ -199,6 +214,7 @@ if (!app.requestSingleInstanceLock()) {
 
     app.whenReady().then(() => {
         protocol.handle(SCHEME, serve);
+        allowStockApiCors();
         session.defaultSession.setPermissionRequestHandler((contents, permission, callback) => {
             callback(permission === 'clipboard-sanitized-write' || permission === 'fullscreen');
         });
