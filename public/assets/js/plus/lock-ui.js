@@ -19,8 +19,8 @@ export function mountLockScreen() {
             <form class="lock-form" novalidate>
                 <div class="field">
                     <label for="lock-password" class="sr-only">رمز برنامه</label>
-                    <div class="input-group">
-                        <input id="lock-password" class="input" type="password" autocomplete="off" placeholder="رمز برنامه">
+                    <div class="input-group eye-start">
+                        <input id="lock-password" class="input ltr" type="password" autocomplete="off" dir="ltr" placeholder="رمز برنامه">
                         <button type="button" class="icon-btn plain icon-btn-sm addon-btn" data-reveal aria-label="نمایش رمز">${icon('eye', 'icon-sm')}</button>
                     </div>
                 </div>
@@ -46,6 +46,7 @@ export function mountLockScreen() {
         const locked = lock.isLocked();
         screen.hidden = !locked;
         document.body.classList.toggle('is-locked', locked);
+        document.documentElement.classList.toggle('is-locked', locked);
         if (locked) {
             input.value = '';
             error.textContent = '';

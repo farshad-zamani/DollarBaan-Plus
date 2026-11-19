@@ -103,6 +103,9 @@ export async function importProfile(core, payload, { mode = 'merge' } = {}) {
     const { market, settings, plus, store } = core;
     if (payload.transactions.length > MAX_TRANSACTIONS) throw badRequest('تعداد تراکنش‌های فایل بیش از حد مجاز است');
 
+    // A brand new profile has no prices yet; fetch them once so the file's assets can be recognized.
+    if (![...market.assets.values()].some((asset) => asset.source === 'market')) await market.sync({ reason: 'import' });
+
     const customAssets = [];
     for (const item of Array.isArray(payload.customAssets) ? payload.customAssets : []) {
         if (!item || !CUSTOM_SYMBOL.test(item.symbol)) throw badRequest('یکی از دارایی‌های دستی فایل پشتیبان معتبر نیست');

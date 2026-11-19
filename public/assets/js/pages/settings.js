@@ -2,7 +2,7 @@ import { api, IS_LOCAL } from '../api.js';
 import { downloadExport } from '../download.js';
 import { store } from '../state.js';
 import { html, icon, setHtml } from '../lib/dom.js';
-import { relativeTime, number, faDigits } from '../format.js';
+import { relativeTime, number, faDigits, providerLabel } from '../format.js';
 import { themeMode, setThemeMode } from '../ui/theme.js';
 import { confirmDialog, withBusy } from '../ui/dialog.js';
 import { notify } from '../ui/toast.js';
@@ -148,7 +148,7 @@ export function mount({ view, setTitle }) {
                             <label class="radio-card">
                                 <input type="radio" name="provider" value="${provider.id}" ${draft.provider === provider.id ? html`checked` : ''}>
                                 <span class="radio-mark"></span>
-                                <span><strong>${provider.name}</strong><p>${PROVIDER_NOTES[provider.id] || ''}</p></span>
+                                <span><strong>${providerLabel(provider)}</strong><p>${PROVIDER_NOTES[provider.id] || ''}</p></span>
                             </label>`)}
                         </div>` : ''}
                         <div data-source-fields>${sourceFields()}</div>
@@ -298,8 +298,8 @@ export function mount({ view, setTitle }) {
                             <dt>نسخه</dt><dd><span class="ltr">${store.version}</span> · ${runtimeLabel()}</dd>
                             <dt>کد منبع</dt><dd><a href="https://github.com/farshad-zamani/DollarBaan-Plus" target="_blank" rel="noopener">github.com/farshad-zamani/DollarBaan-Plus</a></dd>
                             <dt>بر پایهٔ</dt><dd><a href="https://github.com/MahdiGraph/DollarBaan" target="_blank" rel="noopener">دلاربان</a> <span class="muted">اثر MahdiGraph، با مجوز MIT</span></dd>
-                            <dt>ارتقا و توسعه</dt><dd><a href="https://cloudtart.com" target="_blank" rel="noopener"><strong>CloudTart</strong> (<span class="ltr">cloudtart.com</span>)</a></dd>
-                            <dt>داده بازار</dt><dd><a href="https://github.com/iran-market/iran-market.github.io" target="_blank" rel="noopener">Iran Market Data</a> <span class="muted">(ارز، طلا، سکه و رمزارز)</span> · بورس تهران (TSETMC) برای سهام</dd>
+                            <dt>ارتقا و توسعه</dt><dd><a href="https://cloudtart.com" target="_blank" rel="noopener"><strong>کلادتارت - <bdi dir="ltr">www.CloudTart.com</bdi></strong></a></dd>
+                            <dt>داده بازار</dt><dd><a href="https://github.com/iran-market/iran-market.github.io" target="_blank" rel="noopener">ایران مارکت</a> <span class="muted">(ارز، طلا، سکه و رمزارز)</span> · بورس تهران برای سهام</dd>
                         </dl>
                         <p class="small muted">قیمت‌ها صرفاً برای اطلاع‌رسانی هستند و توصیه خرید یا فروش محسوب نمی‌شوند.</p>
                     </div>

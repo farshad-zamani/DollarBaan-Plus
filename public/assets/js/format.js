@@ -40,6 +40,16 @@ export const KIND_LABELS = {
     other: 'سایر',
 };
 
+// Price sources are shown in Persian everywhere in the app.
+const PROVIDER_LABELS = { 'iran-market': 'ایران مارکت', navasan: 'نوسان' };
+
+/** Persian display name of a price source (an id, or a { id, name } object). */
+export function providerLabel(provider) {
+    if (!provider) return '—';
+    const id = typeof provider === 'string' ? provider : provider.id;
+    return PROVIDER_LABELS[id] || (typeof provider === 'object' && provider.name) || String(id);
+}
+
 export function setDisplayUnit(unit) {
     settings.unit = unit === 'rial' ? 'rial' : 'toman';
 }

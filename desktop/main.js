@@ -192,7 +192,7 @@ function buildMenu() {
             submenu: [
                 { label: 'DollarBaan Plus on GitHub', click: () => openExternal(REPO_URL) },
                 { label: 'Original DollarBaan by MahdiGraph', click: () => openExternal(UPSTREAM_URL) },
-                { label: 'Enhanced by CloudTart (cloudtart.com)', click: () => openExternal('https://cloudtart.com') },
+                { label: 'کلادتارت - www.CloudTart.com', click: () => openExternal('https://cloudtart.com') },
                 { label: 'Report a problem', click: () => openExternal(`${REPO_URL}/issues`) },
                 { label: 'Iran Market data', click: () => openExternal('https://github.com/iran-market/iran-market.github.io') },
             ],

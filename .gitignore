@@ -54,3 +54,5 @@ build/
 # ...except the desktop app's icons and packaging resources
 !desktop/build/
 coverage/
+.playwright-mcp/
+shot-*.png

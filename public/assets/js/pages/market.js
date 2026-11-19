@@ -1,6 +1,6 @@
 import { store } from '../state.js';
 import { html, icon, setHtml } from '../lib/dom.js';
-import { money, compactMoney, relativeTime, searchKey, CATEGORY_LABELS, number, currencyLabel } from '../format.js';
+import { money, compactMoney, relativeTime, searchKey, CATEGORY_LABELS, number, currencyLabel, providerLabel } from '../format.js';
 import { assetCell, assetSub, deltaText } from '../ui/asset-visuals.js';
 import { notify } from '../ui/toast.js';
 import { mountStockSearch } from '../plus/stock-search.js';
@@ -19,7 +19,7 @@ function range(asset) {
 }
 
 export function mount({ view, setTitle }) {
-    const providerName = store.status && store.status.providerName;
+    const providerName = store.status && store.status.provider ? providerLabel(store.status.provider) : '';
     setTitle('بازار', providerName ? `قیمت‌ها از ${providerName}، به ${currencyLabel()}` : '');
     let alive = true;
     const filters = { query: '', category: 'all', watched: false, limit: PAGE_SIZE };

@@ -1,7 +1,7 @@
 import { store } from './state.js';
 import { api, IS_LOCAL } from './api.js';
 import { html, icon, setHtml, $, $$ } from './lib/dom.js';
-import { relativeTime } from './format.js';
+import { relativeTime, providerLabel } from './format.js';
 import { notify } from './ui/toast.js';
 import { openTransactionForm } from './ui/transaction-form.js';
 import { effectiveTheme, toggleTheme } from './ui/theme.js';
@@ -124,7 +124,7 @@ function renderStatus(status) {
     const pill = $('#statusPill');
     const { state, text } = statusInfo(status);
     pill.dataset.state = state;
-    const source = status && status.providerName ? `منبع: ${status.providerName}` : '';
+    const source = status && status.provider ? `منبع: ${providerLabel(status.provider)}` : '';
     pill.title = status && status.ok === false && status.error
         ? `${status.error} — برای تلاش دوباره کلیک کنید`
         : `${source} — برای به‌روزرسانی کلیک کنید`;
@@ -133,9 +133,11 @@ function renderStatus(status) {
 
     const card = $('#sourceCard');
     if (status) {
+        const stocks = status.stocks && status.stocks.count ? html`<span class="small">و بورس تهران برای سهام</span>` : '';
         setHtml(card, html`
             <span class="muted small">منبع قیمت‌ها</span>
-            <strong>${status.providerName || '—'}</strong>
+            <strong>${providerLabel(status.provider)}</strong>
+            ${stocks}
             <span class="small">${status.publishedAt ? `انتشار ${relativeTime(status.publishedAt)}` : ''}</span>`);
     }
 

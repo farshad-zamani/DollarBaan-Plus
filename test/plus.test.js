@@ -364,3 +364,23 @@ test('the Plus API routes are registered once each and expose the new features',
     assert.match(file.filename, /^dollarbaanplus-backup-.*\.json$/);
     assert.equal(JSON.parse(file.body).profile.name, 'پروفایل من');
 });
+
+test('money or units taken out without a location come out of the named places', async () => {
+    const p = await profile();
+    await p.portfolio.createTransaction(buy('USD_IRR_FREE', 10, 80000, day(-40), { location: 'صرافی' }));
+    await p.portfolio.createTransaction(buy('USD_IRR_FREE', 4, 85000, day(-35), { location: 'گاوصندوق' }));
+    await p.portfolio.createTransaction({ symbol: 'USD_IRR_FREE', side: 'sell', quantity: 6, unitPrice: 99000, date: day(-10) });   // no place named
+
+    const detail = await p.portfolio.getAssetDetail('USD_IRR_FREE');
+    const places = Object.fromEntries(detail.locations.map((row) => [row.location, row.quantity]));
+    assert.deepEqual(places, { صرافی: 4, گاوصندوق: 4 });                      // 6 units left the largest place first
+    assert.equal(detail.locations.reduce((sum, row) => sum + row.quantity, 0), detail.holding.quantity);
+
+    await p.portfolio.createTransaction(deposit(1000000, day(-30), 'src_salary', { location: 'بانک ملت' }));
+    await p.portfolio.createTransaction(deposit(500000, day(-29), 'src_salary', { location: 'کیف پول' }));
+    await p.portfolio.createTransaction({ symbol: CASH_SYMBOL, side: 'sell', quantity: 1200000, date: day(-5) });          // no place named
+    const overview = await p.plus.cash.overview();
+    assert.equal(overview.balance, 300000);
+    assert.ok(overview.locations.every((item) => item.amount >= 0));
+    assert.equal(overview.locations.reduce((sum, item) => sum + item.amount, 0), 300000);
+});
