@@ -6,3 +6,4 @@
 *.icns binary
 *.woff2 binary
 *.jar binary
+*.bat -text
