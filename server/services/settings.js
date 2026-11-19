@@ -32,4 +32,5 @@ function defaults() {
 module.exports = {
     settings: new SettingsCore({ store, defaults }),
     RANGES,
+    defaults,
 };

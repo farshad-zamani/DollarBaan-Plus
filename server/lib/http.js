@@ -49,4 +49,10 @@ function hostOf(url) {
     }
 }
 
-module.exports = { getJson, HttpError };
+/** Content-Disposition for a download; file names may contain Persian (RFC 6266 / 5987). */
+function contentDisposition(filename) {
+    const fallback = filename.replace(/[^ -~]+/g, '_').replace(/["\\]/g, '_');
+    return `attachment; filename="${fallback}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
+}
+
+module.exports = { getJson, HttpError, contentDisposition };

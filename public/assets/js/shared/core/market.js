@@ -70,6 +70,8 @@ export class MarketCore extends Emitter {
         this.history = new Map();
         this.inflight = new Map();
         this.provider = null;
+        // DollarBaan Plus plug-ins (e.g. { stocks }) that handle assets this class does not price itself.
+        this.extensions = {};
         this.timer = null;
         this.syncing = null;
         this.status = {
@@ -209,6 +211,7 @@ export class MarketCore extends Emitter {
         const tracked = this.withDependencies(symbols);
         await this.recordSnapshots(tracked);
         for (const symbol of tracked) await this.ensureHistory(symbol);
+        if (this.extensions.stocks) await this.extensions.stocks.trackNow(symbols);
     }
 
     /* ---------- assets ---------- */
@@ -275,7 +278,7 @@ export class MarketCore extends Emitter {
         const include = new Set(referenced);
         const list = [];
         for (const asset of this.assets.values()) {
-            const listed = asset.source === 'custom'
+            const listed = asset.source !== 'market'
                 || (asset.provider === activeId && asset.listed
                     && !(asset.quoteTime && now - asset.quoteTime.getTime() > MAX_LISTED_AGE_MS));
             if (listed || include.has(asset.symbol)) list.push(asset);
@@ -437,6 +440,10 @@ export class MarketCore extends Emitter {
     async ensureHistory(symbol) {
         const provider = this.provider;
         const asset = this.assets.get(symbol);
+        if (asset && asset.source === 'stock') {
+            if (this.extensions.stocks) await this.extensions.stocks.ensureHistory(symbol);
+            return;
+        }
         if (!provider || !asset || asset.source !== 'market') return;
         try {
             if (typeof provider.prepare === 'function') await provider.prepare();
@@ -493,7 +500,7 @@ export class MarketCore extends Emitter {
         if (!point && series.length && diffDays(date, series[0].date) <= 14) {
             return { price: series[0].close, date: series[0].date, exact: false };
         }
-        if (asset.source === 'custom') return { price: current, date: null, exact: false };
+        if (asset.source === 'custom' || asset.source === 'system') return { price: current, date: null, exact: false };
         return { price: null, date: null, exact: false };
     }
 

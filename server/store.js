@@ -3,11 +3,11 @@
 // Storage adapter for the shared cores, backed by Sequelize (SQLite or MySQL).
 // The in-app backend implements the same interface on IndexedDB.
 const { Op, fn, col } = require('sequelize');
-const { sequelize, Setting, Asset, Transaction, PricePoint } = require('./db');
+const defaultDb = require('./db');
 
 const ASSET_FIELDS = ['source', 'provider', 'nameFa', 'nameEn', 'category', 'currency', 'unit', 'price', 'prevClose',
     'high', 'low', 'quoteTime', 'stale', 'listed', 'rateSymbol', 'meta', 'updatedAt'];
-const TRANSACTION_FIELDS = ['symbol', 'side', 'quantity', 'unitPrice', 'fee', 'date', 'note', 'updatedAt'];
+const TRANSACTION_FIELDS = ['symbol', 'side', 'quantity', 'unitPrice', 'fee', 'date', 'note', 'location', 'sourceId', 'kind', 'linkId', 'withdrawalId', 'updatedAt'];
 const PRICE_FIELDS = ['open', 'high', 'low', 'close', 'origin'];
 
 const plain = (row) => (row && typeof row.get === 'function' ? row.get({ plain: true }) : row);
@@ -37,7 +37,9 @@ async function inChunks(rows, size, write) {
     for (let i = 0; i < rows.length; i += size) await write(rows.slice(i, i + size));
 }
 
-module.exports = {
+/** Storage adapter for one database (the default profile, or another profile's own database). */
+function createStore({ sequelize, Setting, Asset, Transaction, PricePoint, Doc }) {
+return {
     async listSettings() {
         return (await Setting.findAll()).map((row) => ({ key: row.key, value: parseJson(row.value) }));
     },
@@ -136,13 +138,54 @@ module.exports = {
         await PricePoint.destroy({ where: { symbol } });
     },
 
-    /** Writes a restored backup atomically. */
-    async importBackup({ assets, prices, transactions, replace }) {
+    /** Writes a restored backup atomically. `docs` (Plus) are replaced as a whole when `replace` is set. */
+    async importBackup({ assets, prices, transactions, replace, docs = null }) {
         await sequelize.transaction(async (transaction) => {
             for (const asset of assets) await Asset.upsert(assetToRow(asset), { transaction });
             await inChunks(prices, 500, (chunk) => PricePoint.bulkCreate(chunk, { transaction, updateOnDuplicate: PRICE_FIELDS }));
             if (replace) await Transaction.destroy({ where: {}, transaction });
             await inChunks(transactions, 500, (chunk) => Transaction.bulkCreate(chunk, { transaction, updateOnDuplicate: TRANSACTION_FIELDS }));
+            if (docs) {
+                if (replace) await Doc.destroy({ where: {}, transaction });
+                await inChunks(docs.map(docToRow), 200, (chunk) => Doc.bulkCreate(chunk, { transaction, updateOnDuplicate: ['type', 'body'] }));
+            }
+        });
+    },
+
+    /* ---------- Plus: generic documents and atomic batches ---------- */
+
+    /** Documents of one type ({ id, type, ...fields }). */
+    async listDocs(type) {
+        return (await Doc.findAll({ where: { type }, raw: true })).map((row) => parseJson(row.body)).filter(Boolean);
+    },
+
+    async putDoc(doc) {
+        await Doc.upsert(docToRow(doc));
+    },
+
+    async deleteDoc(id) {
+        await Doc.destroy({ where: { id } });
+    },
+
+    /**
+     * Applies several transaction and document changes atomically:
+     * { insert: [rows], update: [{ id, patch }], remove: [ids], putDocs: [docs], removeDocs: [ids] }
+     */
+    async writeBatch({ insert = [], update = [], remove = [], putDocs = [], removeDocs = [] }) {
+        await sequelize.transaction(async (transaction) => {
+            for (const row of insert) await Transaction.create(row, { transaction });
+            for (const { id, patch } of update) await Transaction.update(patch, { where: { id }, transaction });
+            if (remove.length) await Transaction.destroy({ where: { id: { [Op.in]: remove } }, transaction });
+            for (const doc of putDocs) await Doc.upsert(docToRow(doc), { transaction });
+            if (removeDocs.length) await Doc.destroy({ where: { id: { [Op.in]: removeDocs } }, transaction });
         });
     },
 };
+}
+
+function docToRow(doc) {
+    return { id: doc.id, type: doc.type, body: JSON.stringify(doc) };
+}
+
+module.exports = createStore(defaultDb);
+module.exports.createStore = createStore;

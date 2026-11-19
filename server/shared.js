@@ -14,4 +14,11 @@ module.exports = {
     marketCore: require('../public/assets/js/shared/core/market.js'),
     portfolioCore: require('../public/assets/js/shared/core/portfolio.js'),
     routes: require('../public/assets/js/shared/core/routes.js'),
+    // DollarBaan Plus
+    plus: {
+        portfolio: require('../public/assets/js/shared/plus/portfolio.js'),
+        runtime: require('../public/assets/js/shared/plus/runtime.js'),
+        routes: require('../public/assets/js/shared/plus/routes.js'),
+        backup: require('../public/assets/js/shared/plus/backup.js'),
+    },
 };

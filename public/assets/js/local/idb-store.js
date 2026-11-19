@@ -1,8 +1,9 @@
 // IndexedDB storage adapter for the in-app backend (desktop, mobile and static web builds).
 // Implements the same interface as server/store.js.
 
-const DB_NAME = 'dollarbaan';
-const DB_VERSION = 1;
+export const DB_NAME = 'dollarbaan';
+// Version 2 (DollarBaan Plus) adds the generic `docs` store (cash sources, profit withdrawals, ...).
+const DB_VERSION = 2;
 const HIGH = '\uffff';
 
 function promisify(request) {
@@ -12,9 +13,9 @@ function promisify(request) {
     });
 }
 
-function open() {
+function open(name) {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        const request = indexedDB.open(name, DB_VERSION);
         request.onupgradeneeded = () => {
             const db = request.result;
             if (!db.objectStoreNames.contains('settings')) db.createObjectStore('settings', { keyPath: 'key' });
@@ -23,6 +24,7 @@ function open() {
                 db.createObjectStore('transactions', { keyPath: 'id' }).createIndex('symbol', 'symbol');
             }
             if (!db.objectStoreNames.contains('prices')) db.createObjectStore('prices', { keyPath: ['symbol', 'date'] });
+            if (!db.objectStoreNames.contains('docs')) db.createObjectStore('docs', { keyPath: 'id' }).createIndex('type', 'type');
         };
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
@@ -32,9 +34,9 @@ function open() {
 
 const priceRange = (symbol) => IDBKeyRange.bound([symbol, ''], [symbol, HIGH]);
 
-/** Opens the database and returns the storage adapter. */
-export async function openStore() {
-    const db = await open();
+/** Opens the database and returns the storage adapter. Each profile uses its own database name. */
+export async function openStore(name = DB_NAME) {
+    const db = await open(name);
 
     /**
      * Runs `work(stores)` in one transaction. `work` may only await requests of this
@@ -185,21 +187,62 @@ export async function openStore() {
             await write('prices', (store) => promisify(store.delete(priceRange(symbol))));
         },
 
-        /** Writes a restored backup atomically. */
-        async importBackup({ assets, prices, transactions, replace }) {
-            await run(['assets', 'prices', 'transactions'], 'readwrite', async (stores) => {
+        /** Writes a restored backup atomically. `docs` (Plus) are replaced as a whole when `replace` is set. */
+        async importBackup({ assets, prices, transactions, replace, docs = null }) {
+            await run(['assets', 'prices', 'transactions', 'docs'], 'readwrite', async (stores) => {
                 for (const asset of assets) stores.assets.put(asset);
                 for (const price of prices) stores.prices.put(price);
                 if (replace) await promisify(stores.transactions.clear());
                 for (const transaction of transactions) stores.transactions.put(transaction);
+                if (docs) {
+                    if (replace) await promisify(stores.docs.clear());
+                    for (const doc of docs) stores.docs.put(doc);
+                }
+            });
+        },
+
+        /* ---------- Plus: generic documents and atomic batches ---------- */
+
+        /** Documents of one type ({ id, type, ...fields }). */
+        async listDocs(type) {
+            return read('docs', (store) => promisify(store.index('type').getAll(type)));
+        },
+
+        async putDoc(doc) {
+            await write('docs', (store) => promisify(store.put(doc)));
+        },
+
+        async deleteDoc(id) {
+            await write('docs', (store) => promisify(store.delete(id)));
+        },
+
+        /**
+         * Applies several transaction and document changes atomically:
+         * { insert: [rows], update: [{ id, patch }], remove: [ids], putDocs: [docs], removeDocs: [ids] }
+         */
+        async writeBatch({ insert = [], update = [], remove = [], putDocs = [], removeDocs = [] }) {
+            await run(['transactions', 'docs'], 'readwrite', async (stores) => {
+                for (const row of insert) await promisify(stores.transactions.add(row));
+                for (const { id, patch } of update) {
+                    const row = await promisify(stores.transactions.get(id));
+                    if (row) stores.transactions.put({ ...row, ...patch });
+                }
+                for (const id of remove) stores.transactions.delete(id);
+                for (const doc of putDocs) stores.docs.put(doc);
+                for (const id of removeDocs) stores.docs.delete(id);
             });
         },
 
         /** Deletes every record on this device. */
         async clearAll() {
-            await run(['settings', 'assets', 'prices', 'transactions'], 'readwrite', async (stores) => {
+            await run(['settings', 'assets', 'prices', 'transactions', 'docs'], 'readwrite', async (stores) => {
                 for (const store of Object.values(stores)) store.clear();
             });
+        },
+
+        /** Closes the connection (used when a profile is deleted). */
+        close() {
+            db.close();
         },
     };
 }

@@ -2,7 +2,12 @@
 
 // Fixed display order of asset categories. Chart colors follow this order, so
 // a category keeps its color no matter which other categories are present.
-export const CATEGORIES = ['currency', 'coin', 'metal', 'gold', 'fund', 'crypto', 'custom'];
+export const CATEGORIES = ['currency', 'coin', 'metal', 'gold', 'fund', 'crypto', 'stock', 'cash', 'custom'];
+
+// DollarBaan Plus: cash (Toman) is a built-in asset priced at 1; Tehran stocks use "STK_<insCode>" symbols.
+export const CASH_SYMBOL = 'CASH_IRT';
+export const STOCK_PREFIX = 'STK_';
+export const isStockSymbol = (symbol) => typeof symbol === 'string' && symbol.startsWith(STOCK_PREFIX);
 
 // Most-used symbols first in pickers and market lists.
 export const POPULAR = [

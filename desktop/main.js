@@ -47,9 +47,9 @@ protocol.registerSchemesAsPrivileged([
     { scheme: SCHEME, privileges: { standard: true, secure: true, supportFetchAPI: true, codeCache: true } },
 ]);
 
-// The Tehran Stock Exchange public API (cdn.tsetmc.com) does not send CORS headers, so the page
-// could not read it. Only responses from that one host are given a permissive header.
-const CORS_HOSTS = ['https://cdn.tsetmc.com/*'];
+// Public market-data APIs that do not send CORS headers for this app: the Tehran Stock Exchange,
+// Wallex (crypto history) and Frankfurter (ECB rates). Only responses from these hosts get the header.
+const CORS_HOSTS = ['https://cdn.tsetmc.com/*', 'https://api.wallex.ir/*', 'https://api.frankfurter.dev/*'];
 function allowStockApiCors() {
     session.defaultSession.webRequest.onHeadersReceived({ urls: CORS_HOSTS }, (details, callback) => {
         const headers = { ...details.responseHeaders };
@@ -192,6 +192,7 @@ function buildMenu() {
             submenu: [
                 { label: 'DollarBaan Plus on GitHub', click: () => openExternal(REPO_URL) },
                 { label: 'Original DollarBaan by MahdiGraph', click: () => openExternal(UPSTREAM_URL) },
+                { label: 'Enhanced by CloudTart (cloudtart.com)', click: () => openExternal('https://cloudtart.com') },
                 { label: 'Report a problem', click: () => openExternal(`${REPO_URL}/issues`) },
                 { label: 'Iran Market data', click: () => openExternal('https://github.com/iran-market/iran-market.github.io') },
             ],

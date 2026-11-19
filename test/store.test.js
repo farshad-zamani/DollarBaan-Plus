@@ -123,6 +123,55 @@ async function contract(store) {
     }));
     assert.deepEqual(ids(await store.allTransactions()), [uuid(5)]);
     assert.ok(!(await store.listAssets()).some((row) => row.symbol === 'CUSTOM_C3'));
+
+    // DollarBaan Plus: transactions carry location, source and links; rows written without them read back with defaults.
+    const linked = {
+        ...tx(6, 'USD_IRR_FREE', '2026-03-02'), location: 'صرافی', sourceId: 'src_salary', kind: 'withdrawal', linkId: uuid(5), withdrawalId: uuid(40),
+    };
+    await store.insertTransaction(linked);
+    const back = await store.getTransaction(uuid(6));
+    assert.deepEqual(pick(back, ['location', 'sourceId', 'kind', 'linkId', 'withdrawalId']), {
+        location: 'صرافی', sourceId: 'src_salary', kind: 'withdrawal', linkId: uuid(5), withdrawalId: uuid(40),
+    });
+    const plain = await store.getTransaction(uuid(5));
+    assert.ok(!plain.location && !plain.sourceId && !plain.linkId && !plain.withdrawalId);
+    assert.ok(!plain.kind || plain.kind === 'trade');
+
+    // Documents: replaced by id, listed by type, deleted by id.
+    await store.putDoc({ id: 'w1', type: 'withdrawal', amount: 10, allocations: [{ symbol: 'A' }] });
+    await store.putDoc({ id: 'w2', type: 'withdrawal', amount: 20 });
+    await store.putDoc({ id: 'x1', type: 'other', note: 'خارج' });
+    await store.putDoc({ id: 'w1', type: 'withdrawal', amount: 11, allocations: [{ symbol: 'A' }] });
+    const docs = (await store.listDocs('withdrawal')).sort((a, b) => a.id.localeCompare(b.id));
+    assert.deepEqual(docs.map((doc) => [doc.id, doc.amount]), [['w1', 11], ['w2', 20]]);
+    assert.deepEqual(docs[0].allocations, [{ symbol: 'A' }]);
+    assert.equal((await store.listDocs('other'))[0].note, 'خارج');
+    await store.deleteDoc('w2');
+    assert.deepEqual((await store.listDocs('withdrawal')).map((doc) => doc.id), ['w1']);
+
+    // Batches are atomic: everything is applied, or nothing.
+    await store.writeBatch({
+        insert: [tx(7, 'USD_IRR_FREE', '2026-03-03')],
+        update: [{ id: uuid(6), patch: { note: 'patched', location: 'گاوصندوق' } }],
+        remove: [uuid(5)],
+        putDocs: [{ id: 'w3', type: 'withdrawal', amount: 3 }],
+        removeDocs: ['w1'],
+    });
+    assert.deepEqual(ids(await store.allTransactions()), [uuid(6), uuid(7)]);
+    assert.deepEqual(pick(await store.getTransaction(uuid(6)), ['note', 'location', 'kind']), { note: 'patched', location: 'گاوصندوق', kind: 'withdrawal' });
+    assert.deepEqual((await store.listDocs('withdrawal')).map((doc) => doc.id), ['w3']);
+    await assert.rejects(store.writeBatch({
+        insert: [tx(8, 'USD_IRR_FREE', '2026-03-04'), tx(7, 'USD_IRR_FREE', '2026-03-04')],
+        putDocs: [{ id: 'w9', type: 'withdrawal', amount: 9 }],
+    }));
+    assert.deepEqual(ids(await store.allTransactions()), [uuid(6), uuid(7)]);
+    assert.deepEqual((await store.listDocs('withdrawal')).map((doc) => doc.id), ['w3']);
+
+    // A restored backup can carry documents; replace swaps them, merge adds.
+    await store.importBackup({ assets: [], prices: [], transactions: [], replace: false, docs: [{ id: 'w4', type: 'withdrawal', amount: 4 }] });
+    assert.deepEqual((await store.listDocs('withdrawal')).map((doc) => doc.id).sort(), ['w3', 'w4']);
+    await store.importBackup({ assets: [], prices: [], transactions: [], replace: true, docs: [{ id: 'w5', type: 'withdrawal', amount: 5 }] });
+    assert.deepEqual((await store.listDocs('withdrawal')).map((doc) => doc.id), ['w5']);
 }
 
 test.after(async () => {

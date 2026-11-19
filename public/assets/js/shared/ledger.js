@@ -3,6 +3,7 @@
 // average price and the difference to the sale proceeds is realized profit.
 
 import { addDays, diffDays } from './dates.js';
+import { CASH_SYMBOL } from './catalog.js';
 
 export const EPSILON = 1e-9;
 
@@ -18,7 +19,7 @@ export function sortTransactions(transactions) {
         || timeOf(a) - timeOf(b));
 }
 
-function emptyState() {
+export function emptyState() {
     return {
         quantity: 0,
         cost: 0,
@@ -28,6 +29,8 @@ function emptyState() {
         proceeds: 0,
         soldQuantity: 0,
         fees: 0,
+        withdrawn: 0,
+        withdrawnQuantity: 0,
         count: 0,
         firstDate: null,
         lastDate: null,
@@ -40,7 +43,7 @@ function isOversell(quantity, available) {
 }
 
 /** Applies one transaction to a holding state (mutates and returns it). */
-function apply(state, tx) {
+export function apply(state, tx) {
     const quantity = Number(tx.quantity);
     const price = Number(tx.unitPrice);
     const fee = Number(tx.fee) || 0;
@@ -50,7 +53,19 @@ function apply(state, tx) {
     if (!state.firstDate) state.firstDate = tx.date;
     state.lastDate = tx.date;
 
-    if (tx.side === 'sell') {
+    if (tx.side === 'sell' && tx.kind === 'withdrawal') {
+        // DollarBaan Plus: profit taken out of a holding. The units leave but the cost basis stays,
+        // so what remains is the principal plus the profit that was not withdrawn.
+        const taken = Math.min(quantity, state.quantity);
+        state.quantity -= taken;
+        state.withdrawn += taken * price;
+        state.withdrawnQuantity += taken;
+        if (state.quantity <= EPSILON) {
+            state.quantity = 0;
+            state.realized -= state.cost;
+            state.cost = 0;
+        }
+    } else if (tx.side === 'sell') {
         const sold = Math.min(quantity, state.quantity);
         const average = state.quantity > 0 ? state.cost / state.quantity : 0;
         const removedCost = average * sold;
@@ -119,6 +134,8 @@ export function summarize(transactions, quotes = new Map()) {
         invested: 0,
         dayChange: 0,
         fees: 0,
+        withdrawn: 0,
+        cash: 0,
     };
 
     for (const [symbol, state] of replay(transactions)) {
@@ -141,8 +158,9 @@ export function summarize(transactions, quotes = new Map()) {
             realized: state.realized,
             invested: state.bought,
             proceeds: state.proceeds,
-            pnl: unrealized + state.realized,
-            pnlPct: pct(unrealized + state.realized, state.bought),
+            withdrawn: state.withdrawn,
+            pnl: unrealized + state.realized + state.withdrawn,
+            pnlPct: pct(unrealized + state.realized + state.withdrawn, state.bought),
             dayChange,
             dayChangePct: prevClose ? ((price - prevClose) / prevClose) * 100 : null,
             fees: state.fees,
@@ -152,22 +170,28 @@ export function summarize(transactions, quotes = new Map()) {
             hasQuote,
         };
 
+        // Cash is part of the portfolio value but is not an investment: it never counts as invested capital.
+        const isCash = symbol === CASH_SYMBOL;
         totals.realized += state.realized;
-        totals.invested += state.bought;
-        totals.fees += state.fees;
+        totals.withdrawn += state.withdrawn;
+        if (!isCash) {
+            totals.invested += state.bought;
+            totals.fees += state.fees;
+        }
         if (state.quantity > 0) {
             totals.value += value;
             totals.cost += state.cost;
             totals.dayChange += dayChange;
+            if (isCash) totals.cash += value;
             holdings.push(row);
-        } else {
+        } else if (!isCash) {
             closed.push(row);
         }
     }
 
     totals.unrealized = totals.value - totals.cost;
     totals.unrealizedPct = pct(totals.unrealized, totals.cost);
-    totals.pnl = totals.unrealized + totals.realized;
+    totals.pnl = totals.unrealized + totals.realized + totals.withdrawn;
     totals.pnlPct = pct(totals.pnl, totals.invested);
     totals.dayChangePct = pct(totals.dayChange, totals.value - totals.dayChange);
     totals.holdings = holdings.length;
@@ -224,8 +248,11 @@ export function buildTimeline({ transactions, seriesBySymbol = new Map(), curren
         let value = 0;
         let invested = 0;
         let realized = 0;
+        let withdrawn = 0;
+        let cash = 0;
         for (const [symbol, state] of states) {
             realized += state.realized;
+            withdrawn += state.withdrawn;
             if (state.quantity <= 0) continue;
             invested += state.cost;
             let price = null;
@@ -239,8 +266,9 @@ export function buildTimeline({ transactions, seriesBySymbol = new Map(), curren
                 price = market && (!trade || market.date >= trade.date) ? market.close : trade.close;
             }
             value += state.quantity * price;
+            if (symbol === CASH_SYMBOL) cash += state.quantity * price;
         }
-        points.push({ date, value, invested, realized });
+        points.push({ date, value, invested, realized, withdrawn, cash });
     }
     return points;
 }
@@ -253,15 +281,16 @@ export function windowPerformance(points, transactions) {
     if (points.length < 2) return null;
     const first = points[0];
     const last = points[points.length - 1];
-    const totalAt = (point) => point.value - point.invested + point.realized;
+    const totalAt = (point) => point.value - point.invested + point.realized + (point.withdrawn || 0);
     const pnl = totalAt(last) - totalAt(first);
     let inflow = 0;
     for (const tx of transactions) {
-        if (tx.side === 'buy' && tx.date > first.date && tx.date <= last.date) {
+        if (tx.side === 'buy' && tx.symbol !== CASH_SYMBOL && tx.date > first.date && tx.date <= last.date) {
             inflow += Number(tx.quantity) * Number(tx.unitPrice) + (Number(tx.fee) || 0);
         }
     }
-    const base = first.value + inflow;
+    // Cash is not capital at work: the base is the starting value of the investments plus what was invested later.
+    const base = first.value - (first.cash || 0) + inflow;
     return { pnl, pct: base > 0 ? (pnl / base) * 100 : null, from: first.date, to: last.date };
 }
 

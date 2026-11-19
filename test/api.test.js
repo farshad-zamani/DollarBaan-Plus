@@ -247,7 +247,7 @@ test('custom assets', async () => {
 
 test('backup export and import round trip', async () => {
     const exported = await call('GET', '/api/export');
-    assert.equal(exported.data.app, 'DollarBaan');
+    assert.equal(exported.data.app, 'DollarBaanPlus');
     const count = exported.data.transactions.length;
     assert.ok(count >= 3);
 

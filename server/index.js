@@ -5,6 +5,8 @@ const logger = require('./logger');
 const { sequelize, initDatabase } = require('./db');
 const { settings } = require('./services/settings');
 const { market } = require('./services/market');
+const plus = require('./services/plus');
+const runtimes = require('./services/runtimes');
 const auth = require('./services/auth');
 const { migrateLegacyData, detectPendingMigration } = require('./services/legacy');
 const { createApp } = require('./app');
@@ -13,6 +15,7 @@ async function main() {
     await initDatabase();
     await settings.load();
     await market.init();
+    await plus.init();
     if (await detectPendingMigration()) logger.info('DollarBaan 1.x data found; it will be imported after the first price sync');
 
     const app = createApp();
@@ -30,7 +33,8 @@ async function main() {
 
     market.on('synced', () => migrateLegacyData());
     if (market.assets.size > 0) migrateLegacyData();
-    market.start();
+    // Price updates of every profile (the main one first).
+    await runtimes.startAll();
     auth.startSessionCleanup();
 
     let closing = false;
@@ -38,9 +42,11 @@ async function main() {
         if (closing) return;
         closing = true;
         logger.info(`${signal} received, shutting down`);
+        runtimes.stopAll();
         market.stop();
+        plus.stop();
         server.close(() => {
-            sequelize.close().finally(() => process.exit(0));
+            Promise.all([runtimes.closeAll(), sequelize.close()]).finally(() => process.exit(0));
         });
         setTimeout(() => process.exit(0), 5000).unref();
     };

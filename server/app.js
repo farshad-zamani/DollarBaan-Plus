@@ -70,7 +70,8 @@ function createApp() {
 
     app.use(securityHeaders);
     app.use(cookieParser());
-    app.use(express.json({ limit: '10mb' }));
+    // Full backups of several profiles can be large.
+    app.use(express.json({ limit: '50mb' }));
 
     app.get('/healthz', (req, res) => res.json({ ok: true, version: config.version }));
     // The same frontend runs as a local (on-device) app; served from here it talks to this server.
