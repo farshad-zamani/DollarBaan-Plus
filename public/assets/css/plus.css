@@ -44,3 +44,667 @@
         padding-bottom: 12px;
     }
 }
+
+/* ---------- category colors for the new asset kinds ---------- */
+
+:root {
+    --cat-stock: #0f9d8a;
+    --cat-cash: #64748b;
+    --profilebar-height: calc(46px + var(--safe-top));
+}
+
+:root[data-theme="dark"] {
+    --cat-stock: #2dc4ae;
+    --cat-cash: #94a3b8;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --cat-stock: #2dc4ae;
+        --cat-cash: #94a3b8;
+    }
+}
+
+.cat-stock { --cat: var(--cat-stock); }
+.cat-cash { --cat: var(--cat-cash); }
+
+/* ---------- profile tabs ---------- */
+
+.profile-bar {
+    position: sticky;
+    top: 0;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: var(--profilebar-height);
+    padding: var(--safe-top) 32px 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-tabs {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    min-width: 0;
+    height: 46px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.profile-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.profile-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+    max-width: 220px;
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-bottom: 0;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: transparent;
+    color: var(--text-2);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.profile-tab span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-tab:hover {
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+.profile-tab[aria-selected="true"] {
+    background: var(--bg);
+    border-color: var(--border);
+    color: var(--accent-text);
+}
+
+/* the active tab opens into the page below it */
+.profile-tab[aria-selected="true"]::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--bg);
+}
+
+.profile-tab:focus-visible,
+.profile-action:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.profile-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    height: 32px;
+    margin-inline-start: 6px;
+    padding: 0 12px;
+    border: 1px dashed var(--border-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-2);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.profile-action:hover {
+    border-style: solid;
+    border-color: var(--accent);
+    color: var(--accent-text);
+}
+
+.profile-bar.is-switching {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.topbar {
+    top: var(--profilebar-height);
+    padding-top: 12px;
+}
+
+@media (max-width: 860px) {
+    .profile-bar {
+        padding-inline: 12px;
+        min-height: calc(42px + var(--safe-top));
+    }
+
+    .profile-tabs {
+        height: 42px;
+    }
+
+    .profile-tab {
+        height: 36px;
+        padding: 0 12px;
+        font-size: 13px;
+    }
+
+    .profile-action span {
+        display: none;
+    }
+
+    .profile-action {
+        width: 32px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .topbar {
+        padding-top: 10px;
+    }
+}
+
+.profile-manage,
+.source-list {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.profile-manage li,
+.source-list li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.profile-manage li strong,
+.source-list li strong {
+    font-weight: 650;
+}
+
+.profile-manage .badge,
+.source-list .badge {
+    margin-inline-start: 6px;
+}
+
+.avatar-dot {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-text);
+}
+
+.source-list li.is-archived strong {
+    color: var(--muted);
+    text-decoration: line-through;
+}
+
+.source-add {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 14px;
+}
+
+.source-add .input {
+    flex: 1;
+}
+
+/* ---------- more menu (phones) ---------- */
+
+.more-menu {
+    display: grid;
+    gap: 4px;
+}
+
+.more-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 8px;
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.more-link > span {
+    flex: 1;
+}
+
+.more-link:hover,
+.more-link:focus-visible {
+    background: var(--surface-2);
+}
+
+.tabbar button.tab {
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+}
+
+/* ---------- lock screen ---------- */
+
+body.is-locked .app,
+body.is-locked .toasts {
+    visibility: hidden;
+}
+
+.lock-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: var(--bg);
+    background-image: radial-gradient(60% 50% at 50% 0%, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 70%);
+}
+
+.lock-screen[hidden] {
+    display: none;
+}
+
+.lock-card {
+    display: grid;
+    gap: 14px;
+    width: min(380px, 100%);
+    padding: 32px 28px;
+    text-align: center;
+}
+
+.lock-card .brand-mark {
+    justify-self: center;
+}
+
+.lock-card h1 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.lock-card p {
+    margin: 0;
+}
+
+.lock-form {
+    display: grid;
+    gap: 10px;
+    text-align: start;
+}
+
+.lock-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-soft);
+    color: var(--accent-text);
+    font-size: 13.5px;
+}
+
+.lock-hint[hidden] {
+    display: none;
+}
+
+.lock-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+}
+
+/* ---------- cash page ---------- */
+
+.kpis.cash-kpis {
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+}
+
+.cash-hero .hero-meta {
+    flex-wrap: wrap;
+}
+
+.cash-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cash-link {
+    display: grid;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.cash-link[hidden] {
+    display: none;
+}
+
+/* ---------- filters (cash, profit and loss) ---------- */
+
+.filter-card {
+    display: grid;
+    gap: 14px;
+}
+
+.filter-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px 16px;
+}
+
+.filter-grid .wide {
+    grid-column: span 2;
+}
+
+.dash > * + * {
+    margin-top: 16px;
+}
+
+/* ---------- holdings accordion ---------- */
+
+.holding-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.expander {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 24px;
+    height: 24px;
+    color: var(--muted);
+    transition: transform 0.18s ease;
+}
+
+.holding-row[aria-expanded="true"] .expander,
+.holding-toggle[aria-expanded="true"] .expander {
+    transform: rotate(180deg);
+    color: var(--accent-text);
+}
+
+.holding-row[aria-expanded="true"] > td {
+    background: var(--surface-2);
+}
+
+.lots-row > td {
+    padding: 0 !important;
+    background: var(--surface-2);
+}
+
+.lots-row[hidden] {
+    display: none;
+}
+
+.lots-host {
+    padding: 14px 18px 18px;
+    background: var(--surface-2);
+}
+
+.lots-host[hidden] {
+    display: none;
+}
+
+.lots {
+    display: grid;
+    gap: 18px;
+}
+
+.lots-block h3 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-2);
+}
+
+.lots-table th,
+.lots-table td {
+    padding-block: 8px;
+    font-size: 13px;
+}
+
+.lots-table tr.is-spent td {
+    color: var(--muted);
+}
+
+.lots-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.holding-item + .holding-item {
+    border-top: 1px solid var(--border);
+}
+
+.holding-toggle {
+    width: 100%;
+    text-align: start;
+}
+
+.holding-item .lots-host {
+    padding: 8px 12px 14px;
+}
+
+/* ---------- multi-select ---------- */
+
+.multi-select {
+    position: relative;
+}
+
+.multi-trigger {
+    width: 100%;
+    text-align: start;
+    cursor: pointer;
+}
+
+.multi-trigger.has-value {
+    border-color: var(--accent);
+    color: var(--accent-text);
+    font-weight: 650;
+}
+
+.multi-panel {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 6px);
+    z-index: 30;
+    display: grid;
+    gap: 8px;
+    min-width: 240px;
+    padding: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+}
+
+.multi-panel[hidden] {
+    display: none;
+}
+
+.multi-list {
+    display: grid;
+    gap: 2px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.multi-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+}
+
+.multi-option:hover {
+    background: var(--surface-2);
+}
+
+.multi-option .name {
+    display: block;
+    font-weight: 600;
+}
+
+.multi-option .sub {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.multi-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+}
+
+/* ---------- profit and loss ---------- */
+
+.pnl-kpis {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.pnl-kpis .pnl-hero {
+    grid-column: 1 / -1;
+}
+
+.pnl-split {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.tabs {
+    flex-wrap: wrap;
+}
+
+.withdrawal-row .title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 1279px) {
+    .pnl-kpis {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1023px) {
+    .pnl-split {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 860px) {
+    .pnl-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pnl-kpis .stat:last-child {
+        grid-column: auto;
+    }
+
+    .kpis.cash-kpis {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .filter-grid .wide {
+        grid-column: auto;
+    }
+}
+
+/* ---------- withdrawal dialog ---------- */
+
+.withdraw-table td,
+.withdraw-table th {
+    padding-block: 8px;
+}
+
+.withdraw-table tr.is-spent td {
+    color: var(--muted);
+}
+
+.auto-split .input-group .addon-btn {
+    white-space: nowrap;
+}
+
+/* ---------- stocks ---------- */
+
+.stock-panel {
+    margin-bottom: 16px;
+}
+
+.picker-remote {
+    border-top: 1px solid var(--border);
+}
+
+/* ---------- settings ---------- */
+
+.settings-sub {
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text-2);
+}
+
+.settings-sub:first-child {
+    margin-top: 0;
+}
+
+.max-link {
+    margin-inline-start: 8px;
+    font-size: 12.5px;
+}
+
+.withdraw-table [data-amount] {
+    min-width: 130px;
+}
+
+body.is-locked {
+    overflow: hidden;
+}

@@ -10,6 +10,7 @@ import { openTransactionForm } from '../ui/transaction-form.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { notify } from '../ui/toast.js';
 import { downloadExport } from '../download.js';
+import { CASH_SYMBOL } from '../plus/cash-forms.js';
 
 function monthKey(iso) {
     const { jy, jm } = jalaliParts(iso);
@@ -30,7 +31,14 @@ function groupByMonth(rows) {
     return groups;
 }
 
-const sideBadge = (side) => html`<span class="badge ${side}">${icon(side === 'buy' ? 'arrow-down-left' : 'arrow-up-right', 'icon-sm')}${side === 'buy' ? 'خرید' : 'فروش'}</span>`;
+const isCash = (tx) => tx.symbol === CASH_SYMBOL;
+
+function sideBadge(tx) {
+    if (tx.kind === 'withdrawal') return html`<span class="badge">${icon('arrow-up-from-line', 'icon-sm')}برداشت سود</span>`;
+    const buy = tx.side === 'buy';
+    const label = isCash(tx) ? (buy ? 'افزودن' : 'کاهش') : (buy ? 'خرید' : 'فروش');
+    return html`<span class="badge ${tx.side}">${icon(buy ? 'arrow-down-left' : 'arrow-up-right', 'icon-sm')}${label}</span>`;
+}
 
 function table(groups) {
     return html`
@@ -40,20 +48,21 @@ function table(groups) {
                     <thead>
                         <tr>
                             <th>تاریخ</th><th>دارایی</th><th>نوع</th><th class="end">مقدار</th>
-                            <th class="end">قیمت هر واحد</th><th class="end">مبلغ کل</th><th>یادداشت</th><th class="end"><span class="sr-only">عملیات</span></th>
+                            <th class="end">قیمت هر واحد</th><th class="end">مبلغ کل</th><th>محل</th><th>یادداشت</th><th class="end"><span class="sr-only">عملیات</span></th>
                         </tr>
                     </thead>
                     <tbody>
                         ${groups.map((group) => html`
-                            <tr class="group-row"><td colspan="8">${group.label}</td></tr>
+                            <tr class="group-row"><td colspan="9">${group.label}</td></tr>
                             ${group.rows.map((tx) => html`
                                 <tr>
                                     <td>${jalaliDate(tx.date)}</td>
                                     <td><a href="#/asset/${tx.symbol}" style="color:inherit">${assetCell(tx)}</a></td>
-                                    <td>${sideBadge(tx.side)}</td>
-                                    <td class="end">${quantity(tx.quantity)}<span class="cell-sub">${unitLabel(tx.unit)}</span></td>
-                                    <td class="end">${money(tx.unitPrice, { unit: false })}</td>
+                                    <td>${sideBadge(tx)}</td>
+                                    <td class="end">${isCash(tx) ? money(tx.quantity, { unit: false }) : html`${quantity(tx.quantity)}<span class="cell-sub">${unitLabel(tx.unit)}</span>`}</td>
+                                    <td class="end">${isCash(tx) ? '—' : money(tx.unitPrice, { unit: false })}</td>
                                     <td class="end strong">${money(tx.total, { unit: false })}${tx.fee ? html`<span class="cell-sub">کارمزد ${money(tx.fee, { unit: false })}</span>` : ''}</td>
+                                    <td>${tx.location || '—'}</td>
                                     <td class="note" title="${tx.note}">${tx.note || '—'}</td>
                                     <td class="end">
                                         <span class="row-actions">
@@ -80,11 +89,11 @@ function cards(groups) {
                                 ${avatar(tx, 'sm')}
                                 <div class="grow">
                                     <span class="title">${tx.name}</span>
-                                    <span class="meta">${jalaliDate(tx.date)} · ${quantity(tx.quantity)} ${unitLabel(tx.unit)}${tx.note ? ` · ${tx.note}` : ''}</span>
+                                    <span class="meta">${jalaliDate(tx.date)} · ${isCash(tx) ? 'پول نقد' : `${quantity(tx.quantity)} ${unitLabel(tx.unit)}`}${tx.location ? ` · ${tx.location}` : ''}${tx.note ? ` · ${tx.note}` : ''}</span>
                                 </div>
                                 <div class="end">
                                     <span class="value">${compactMoney(tx.total)}</span>
-                                    <span class="sub">${sideBadge(tx.side)}</span>
+                                    <span class="sub">${sideBadge(tx)}</span>
                                 </div>
                             </button>`)}
                     </div>
@@ -106,7 +115,7 @@ export function mount({ view, setTitle }) {
             if (filters.side !== 'all' && tx.side !== filters.side) return false;
             if (filters.symbol !== 'all' && tx.symbol !== filters.symbol) return false;
             if (!tokens.length) return true;
-            const key = searchKey(`${tx.name} ${tx.note} ${tx.symbol.replace(/_/g, ' ')}`);
+            const key = searchKey(`${tx.name} ${tx.note} ${tx.location || ''} ${tx.symbol.replace(/_/g, ' ')}`);
             return tokens.every((token) => key.includes(token));
         });
     }
@@ -115,8 +124,9 @@ export function mount({ view, setTitle }) {
         const target = view.querySelector('[data-results]');
         if (!target) return;
         const rows = filtered();
-        const bought = rows.filter((tx) => tx.side === 'buy').reduce((sum, tx) => sum + tx.total + tx.fee, 0);
-        const sold = rows.filter((tx) => tx.side === 'sell').reduce((sum, tx) => sum + tx.total - tx.fee, 0);
+        // Cash movements are not purchases or sales of an investment.
+        const bought = rows.filter((tx) => tx.side === 'buy' && !isCash(tx)).reduce((sum, tx) => sum + tx.total + tx.fee, 0);
+        const sold = rows.filter((tx) => tx.side === 'sell' && !isCash(tx) && tx.kind !== 'withdrawal').reduce((sum, tx) => sum + tx.total - tx.fee, 0);
         setHtml(target, rows.length
             ? html`
                 <p class="small muted" style="margin:0 0 12px">${number(rows.length)} تراکنش · مجموع خرید ${money(bought)} · مجموع فروش ${money(sold)}</p>
@@ -141,7 +151,7 @@ export function mount({ view, setTitle }) {
         setHtml(view, html`
             <div class="toolbar">
                 <label class="search-input">${icon('search')}
-                    <input class="input" type="search" placeholder="جستجو در دارایی یا یادداشت…" aria-label="جستجو" value="${filters.query}" data-query>
+                    <input class="input" type="search" placeholder="جستجو در دارایی، محل یا یادداشت…" aria-label="جستجو" value="${filters.query}" data-query>
                 </label>
                 <div class="segmented" role="group" aria-label="نوع تراکنش" data-side>
                     ${[['all', 'همه'], ['buy', 'خرید'], ['sell', 'فروش']].map(([key, label]) => html`<button type="button" data-value="${key}" aria-pressed="${filters.side === key}">${label}</button>`)}

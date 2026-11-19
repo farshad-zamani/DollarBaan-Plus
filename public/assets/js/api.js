@@ -1,7 +1,27 @@
 import { MODE } from './runtime-config.js';
+import { waitUntilUnlocked } from './plus/lock.js';
 
 /** True when the app runs its backend on the device (desktop/mobile/static web builds). */
 export const IS_LOCAL = MODE === 'local';
+
+const PROFILE_KEY = 'dollarbaanplus.profile';
+
+/** The profile the server edition is showing (the in-app edition keeps this in its own backend). */
+export function serverProfile() {
+    try {
+        return localStorage.getItem(PROFILE_KEY) || '';
+    } catch {
+        return '';
+    }
+}
+
+export function setServerProfile(id) {
+    try {
+        localStorage.setItem(PROFILE_KEY, id);
+    } catch {
+        /* storage unavailable */
+    }
+}
 
 export class ApiError extends Error {
     constructor(message, status = 0, code = null) {
@@ -15,6 +35,8 @@ export class ApiError extends Error {
 let localBackend = null;
 
 async function localRequest(method, url, body) {
+    // DollarBaan Plus: while the app lock is on, nothing reaches the data.
+    await waitUntilUnlocked();
     if (!localBackend) localBackend = import('./local/backend.js');
     const backend = await localBackend;
     try {
@@ -30,6 +52,7 @@ async function request(method, url, body) {
     if (IS_LOCAL) return localRequest(method, url, body);
 
     const headers = { 'X-Requested-With': 'DollarBaan', Accept: 'application/json' };
+    if (serverProfile()) headers['X-Profile'] = serverProfile();
     if (body !== undefined) headers['Content-Type'] = 'application/json';
     let response;
     try {

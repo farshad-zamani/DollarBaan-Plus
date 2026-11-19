@@ -10,15 +10,46 @@ import { createDatePicker } from './datepicker.js';
 import { bindNumberInput } from './number-input.js';
 import { openCustomAssetForm } from './custom-asset-form.js';
 import { notify } from './toast.js';
+import { createLocationInput, forgetLocations } from '../plus/location-input.js';
+import { openCashForm, CASH_SYMBOL } from '../plus/cash-forms.js';
 
 const EPSILON = 1e-9;
+
+/** "Take it out of cash?" / "Add the proceeds to cash?" Resolves true, false, or null when dismissed. */
+function askAboutCash(side, total, fee) {
+    return new Promise((resolve) => {
+        const amount = side === 'buy' ? (total || 0) + fee : (total || 0) - fee;
+        const instance = openDialog({
+            title: side === 'buy' ? 'کسر از پول نقد؟' : 'افزودن به پول نقد؟',
+            size: 'sm',
+            body: html`<p class="dialog-message">${side === 'buy'
+                ? html`مبلغ این خرید (${money(amount)}) از موجودی پول نقد شما کم شود؟`
+                : html`مبلغ دریافتی این فروش (${money(amount)}) به موجودی پول نقد شما اضافه شود؟`}</p>`,
+            footer: html`<button type="button" class="btn btn-ghost" data-close>بازگشت</button>
+                <button type="button" class="btn btn-secondary" data-no>خیر، فقط ثبت شود</button>
+                <button type="button" class="btn btn-primary" data-yes>${side === 'buy' ? 'بله، از نقد کسر شود' : 'بله، به نقد اضافه شود'}</button>`,
+            onClose: (result) => resolve(result === 'yes' ? true : result === 'no' ? false : null),
+        });
+        instance.foot.querySelector('[data-yes]').addEventListener('click', () => instance.close('yes'));
+        instance.foot.querySelector('[data-no]').addEventListener('click', () => instance.close('no'));
+    });
+}
 
 /**
  * Add or edit a buy/sell transaction. Resolves true when something was saved or deleted.
  */
 export async function openTransactionForm({ transaction = null, symbol = null, side = 'buy' } = {}) {
+    // DollarBaan Plus: cash has its own form, and profit withdrawals are managed from the profit and loss page.
+    if (transaction && transaction.symbol === CASH_SYMBOL) return openCashForm({ transaction });
+    if (transaction && transaction.withdrawalId) {
+        notify.info('این تراکنش بخشی از یک برداشت سود است؛ آن را از «سود و زیان › برداشت سود» مدیریت کنید.');
+        window.location.hash = '#/pnl?tab=withdrawals';
+        return false;
+    }
+    let linkedCash = null;
     try {
         await Promise.all([store.loadAssets(), store.loadPortfolio()]);
+        if (transaction) linkedCash = (await api.get('/api/transactions')).find((item) => item.linkId === transaction.id) || null;
     } catch (error) {
         notify.error(error.message);
         return false;
@@ -31,6 +62,7 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
             symbol: editing ? transaction.symbol : symbol,
             mode: 'quantity',
             priceTouched: editing,
+            cashChoice: editing ? Boolean(linkedCash) : null,
             market: null,
             request: 0,
         };
@@ -92,6 +124,14 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
                         <label for="tx-note">یادداشت <span class="muted">(اختیاری)</span></label>
                         <input id="tx-note" class="input" maxlength="500" placeholder="مثلاً خرید از صرافی">
                     </div>
+                    <div class="field full"><label for="tx-location">محل نگهداری <span class="muted">(اختیاری)</span></label><div data-location></div></div>
+                    <div class="full cash-link" data-cash-link>
+                        <label class="check"><input type="checkbox" data-cash-check><span data-cash-label></span></label>
+                        <div class="field" data-cash-extra hidden>
+                            <label for="tx-cash-location">محل نگهداری آن پول نقد <span class="muted">(اختیاری)</span></label>
+                            <div data-cash-location></div>
+                        </div>
+                    </div>
                     <div class="full tx-summary" data-summary></div>
                     <div class="full field-error" data-error role="alert"></div>
                     <button type="submit" hidden></button>
@@ -122,6 +162,11 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
         });
         const fee = bindNumberInput($('#tx-fee'), { onChange: update });
         const note = $('#tx-note');
+        const location = createLocationInput($('[data-location]'), { value: editing ? transaction.location || '' : '', id: 'tx-location' });
+        const cashLocation = createLocationInput($('[data-cash-location]'), { value: linkedCash ? linkedCash.location || '' : '', id: 'tx-cash-location' });
+        const cashCheck = $('[data-cash-check]');
+        const cashBalance = () => (store.portfolio && store.portfolio.totals ? store.portfolio.totals.cash || 0 : 0);
+        const cashEverUsed = () => cashBalance() > 0 || Boolean(store.portfolio && store.portfolio.holdings.some((item) => item.symbol === CASH_SYMBOL));
 
         const picker = createAssetPicker($('[data-picker]'), {
             value: state.symbol,
@@ -134,6 +179,11 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
                 update();
             },
             onCreateCustom: (name) => openCustomAssetForm({ name }),
+            exclude: [CASH_SYMBOL],
+            onCreateCash: () => {
+                instance.close(false);
+                openCashForm({ side: state.side });
+            },
         });
 
         const date = createDatePicker($('[data-date]'), {
@@ -217,9 +267,10 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
                 return;
             }
             const when = market.date === todayIso() ? 'امروز' : market.exact ? 'در این روز' : `در ${jalaliDate(market.date)}`;
+            const estimate = market.estimated ? html` <span class="badge warn" title="این قیمت از قیمت جهانی یا نرخ ارز محاسبه شده و ممکن است با قیمت بازار ایران اندکی فرق داشته باشد">تخمینی</span>` : '';
             const differs = Math.abs((unitPrice() || 0) - market.price) > market.price * 1e-6;
             setHtml(priceHint, html`
-                <span>قیمت بازار ${when}: <strong>${money(market.price)}</strong></span>
+                <span>قیمت بازار ${when}: <strong>${money(market.price)}</strong>${estimate}</span>
                 ${differs ? html`<button type="button" data-apply-price>استفاده از این قیمت</button>` : ''}`);
         }
 
@@ -240,6 +291,25 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
             }
             renderPriceHint();
             update();
+        }
+
+        function renderCashLink(total, feeValue) {
+            const box = $('[data-cash-link]');
+            if (state.symbol === CASH_SYMBOL || (!cashEverUsed() && state.cashChoice === null)) {
+                box.hidden = true;
+                return;
+            }
+            box.hidden = false;
+            const amount = state.side === 'buy' ? (total || 0) + feeValue : (total || 0) - feeValue;
+            const label = state.side === 'buy'
+                ? `از موجودی پول نقد کسر شود${amount > 0 ? ` (${money(amount)})` : ''}`
+                : `مبلغ فروش به موجودی پول نقد اضافه شود${amount > 0 ? ` (${money(amount)})` : ''}`;
+            $('[data-cash-label]').textContent = label;
+            cashCheck.checked = state.cashChoice === true;
+            $('[data-cash-extra]').hidden = !cashCheck.checked;
+            if (state.side === 'buy' && cashCheck.checked && amount > cashBalance() + 1e-6 && !editing) {
+                $('[data-cash-label]').textContent = `${label} · موجودی نقد کافی نیست (${money(cashBalance())})`;
+            }
         }
 
         function update() {
@@ -272,7 +342,14 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
                 rows.push(html`<div class="row neg"><span class="with-icon">${icon('triangle-alert', 'icon-sm')}مقدار فروش از موجودی فعلی بیشتر است.</span></div>`);
             }
             setHtml(summary, rows);
+            renderCashLink(total, feeValue);
         }
+
+        cashCheck.addEventListener('change', () => {
+            state.cashChoice = cashCheck.checked;
+            $('[data-cash-extra]').hidden = !cashCheck.checked;
+            update();
+        });
 
         form.addEventListener('click', (event) => {
             if (event.target.closest('[data-apply-price]') && state.market && state.market.price > 0) {
@@ -337,10 +414,19 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
                 unitPrice: perUnit,
                 fee: fee.value === null ? 0 : fromDisplay(fee.value),
                 note: note.value.trim(),
+                location: location.value,
             };
+            // Cash: ask once when it was never decided and the profile already uses cash.
+            if (state.cashChoice === null && !editing && cashEverUsed()) {
+                const answer = await askAboutCash(state.side, currentTotal(), payload.fee);
+                if (answer === null) return;
+                state.cashChoice = answer;
+            }
+            if (state.cashChoice !== null) payload.cash = { link: state.cashChoice, location: cashLocation.value };
             try {
                 if (editing) await api.put(`/api/transactions/${transaction.id}`, payload);
                 else await api.post('/api/transactions', payload);
+                forgetLocations();
                 notify.success(editing ? 'تراکنش ویرایش شد' : 'تراکنش ثبت شد');
                 store.dataChanged();
                 instance.close(true);
@@ -354,13 +440,14 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
             deleteButton.addEventListener('click', async () => {
                 const confirmed = await confirmDialog({
                     title: 'حذف تراکنش',
-                    message: 'این تراکنش برای همیشه حذف می‌شود. ادامه می‌دهید؟',
+                    message: linkedCash ? 'این تراکنش و ردیف پول نقدِ همراه آن برای همیشه حذف می‌شوند. ادامه می‌دهید؟' : 'این تراکنش برای همیشه حذف می‌شود. ادامه می‌دهید؟',
                     confirmText: 'حذف شود',
                     danger: true,
                 });
                 if (!confirmed) return;
                 try {
                     await api.del(`/api/transactions/${transaction.id}`);
+                    forgetLocations();
                     notify.success('تراکنش حذف شد');
                     store.dataChanged();
                     instance.close(true);

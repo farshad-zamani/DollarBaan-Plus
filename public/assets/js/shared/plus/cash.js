@@ -182,7 +182,11 @@ export class CashCore {
 
     /* ---------- balance and reports ---------- */
 
-    /** Cash balance and per-location balances at the end of `date` (all history when omitted). */
+    /**
+     * Cash balance and per-location balances at the end of `date` (all history when omitted).
+     * Money spent without naming a location is taken from the named places, largest first, so no
+     * place shows a negative balance just because the where was left out.
+     */
     balanceAt(transactions, date = null) {
         const byLocation = new Map();
         let balance = 0;
@@ -192,6 +196,16 @@ export class CashCore {
             balance += signed;
             const key = tx.location || '';
             byLocation.set(key, (byLocation.get(key) || 0) + signed);
+        }
+        let deficit = -(byLocation.get('') || 0);
+        if (deficit > 0) {
+            byLocation.delete('');
+            for (const [key, amount] of [...byLocation.entries()].sort((a, b) => b[1] - a[1])) {
+                if (deficit <= 1e-9) break;
+                const taken = Math.min(Math.max(0, amount), deficit);
+                byLocation.set(key, amount - taken);
+                deficit -= taken;
+            }
         }
         return { balance, byLocation };
     }

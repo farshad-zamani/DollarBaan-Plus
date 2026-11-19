@@ -1,0 +1,287 @@
+- generic [ref=f4e1]:
+  - link "رفتن به محتوای اصلی" [ref=f4e2] [cursor=pointer]:
+    - /url: "#view"
+  - generic [ref=f4e3]:
+    - complementary "منوی اصلی" [ref=f4e4]:
+      - link "دلاربان پلاس، داشبورد" [ref=f4e5] [cursor=pointer]:
+        - /url: "#/"
+        - generic [ref=f4e6]:
+          - text: دلاربان پلاس
+          - generic [ref=f4e7]: پایش دارایی‌های شما
+      - navigation [ref=f4e8]:
+        - link "داشبورد" [ref=f4e9] [cursor=pointer]:
+          - /url: "#/"
+        - link "دارایی‌های من" [ref=f4e13] [cursor=pointer]:
+          - /url: "#/holdings"
+        - link "تراکنش‌ها" [ref=f4e17] [cursor=pointer]:
+          - /url: "#/transactions"
+        - link "پول نقد" [ref=f4e21] [cursor=pointer]:
+          - /url: "#/cash"
+        - link "سود و زیان" [ref=f4e25] [cursor=pointer]:
+          - /url: "#/pnl"
+        - link "بازار" [ref=f4e29] [cursor=pointer]:
+          - /url: "#/market"
+        - link "تنظیمات" [ref=f4e33] [cursor=pointer]:
+          - /url: "#/settings"
+      - generic [ref=f4e38]:
+        - text: منبع قیمت‌ها
+        - strong [ref=f4e644]: Iran Market
+        - text: انتشار ۳ دقیقه پیش
+    - generic [ref=f4e43]:
+      - generic "پروفایل‌ها" [ref=f4e44]:
+        - tablist "پروفایل‌ها" [ref=f4e67]:
+          - tab "پروفایل من" [selected] [ref=f4e68] [cursor=pointer]
+        - button "پروفایل جدید" [ref=f4e72] [cursor=pointer]
+        - button "مدیریت پروفایل‌ها" [ref=f4e76] [cursor=pointer]
+      - banner [ref=f4e45]:
+        - generic [ref=f4e46]:
+          - heading "سود و زیان" [level=1] [ref=f4e641]
+          - paragraph [ref=f4e79]: ۲۹ آبان ۱۴۰۵
+        - generic [ref=f4e48]:
+          - 'button "به‌روزرسانی ۱ دقیقه پیش. منبع: Iran Market — برای به‌روزرسانی کلیک کنید" [ref=f4e645] [cursor=pointer]':
+            - generic [ref=f4e647]: به‌روزرسانی ۱ دقیقه پیش
+          - button "پوسته تیره" [ref=f4e83] [cursor=pointer]
+          - button "ثبت تراکنش" [ref=f4e55] [cursor=pointer]
+      - main [ref=f4e59]:
+        - generic [ref=f4e648]:
+          - generic [ref=f4e649]:
+            - generic [ref=f4e650]:
+              - group "نوع محاسبه" [ref=f4e651]:
+                - button "از زمان خرید تا امروز" [ref=f4e652] [cursor=pointer]
+                - button "بازهٔ تاریخی مشخص" [pressed] [ref=f4e653] [cursor=pointer]
+              - generic [ref=f4e654]: رشد یا کاهش دارایی‌ها از تاریخ انتخابی؛ خرید و فروش‌های داخل بازه جابه‌جایی پول حساب می‌شود، نه سود.
+            - generic [ref=f4e655]:
+              - generic [ref=f4e656]:
+                - generic [ref=f4e657]: از تاریخ
+                - generic [ref=f4e658]:
+                  - textbox "از تاریخ (شمسی)" [ref=f4e659]:
+                    - /placeholder: ۱۴۰۴/۰۱/۰۱
+                    - text: ۱۴۰۵/۰۷/۲۹
+                  - button "باز کردن تقویم" [ref=f4e660] [cursor=pointer]
+              - generic [ref=f4e663]:
+                - generic [ref=f4e664]: تا تاریخ
+                - generic [ref=f4e665]:
+                  - textbox "تا تاریخ (شمسی)" [ref=f4e666]:
+                    - /placeholder: ۱۴۰۴/۰۱/۰۱
+                    - text: ۱۴۰۵/۰۸/۲۹
+                  - button "باز کردن تقویم" [ref=f4e667] [cursor=pointer]
+              - generic [ref=f4e670]:
+                - generic [ref=f4e671]: بازهٔ سریع
+                - generic [ref=f4e672]:
+                  - button "۱ هفته پیش" [ref=f4e673] [cursor=pointer]
+                  - button "۱ ماه پیش" [ref=f4e674] [cursor=pointer]
+                  - button "۳ ماه پیش" [ref=f4e675] [cursor=pointer]
+                  - button "۶ ماه پیش" [ref=f4e676] [cursor=pointer]
+                  - button "۱ سال پیش" [ref=f4e677] [cursor=pointer]
+            - generic [ref=f4e678]:
+              - generic [ref=f4e679]:
+                - generic [ref=f4e680]: دارایی
+                - button "همه دارایی‌ها" [ref=f4e683] [cursor=pointer]
+              - generic [ref=f4e684]:
+                - generic [ref=f4e685]: دسته
+                - button "همه دسته‌ها" [ref=f4e688] [cursor=pointer]
+              - generic [ref=f4e689]:
+                - generic [ref=f4e690]: محل نگهداری
+                - button "همه محل‌ها" [ref=f4e693] [cursor=pointer]
+          - region "خلاصه سود و زیان" [ref=f4e694]:
+            - article [ref=f4e695]:
+              - generic [ref=f4e696]:
+                - generic [ref=f4e697]: تغییر در بازه (۱۴۰۵/۰۷/۲۹ تا ۱۴۰۵/۰۸/۲۹)
+                - generic [ref=f4e700]:
+                  - generic [ref=f4e701]: −۲۱٫۲ میلیون
+                  - generic [ref=f4e702]: تومان
+              - generic [ref=f4e703]:
+                - generic [ref=f4e704]: −۳٫۱۸٪
+                - generic [ref=f4e705]: ارزش اول بازه ۵۴۰ میلیون · ارزش پایان ۵۹۴ میلیون
+            - article [ref=f4e706]:
+              - generic [ref=f4e707]: ارزش فعلی
+              - generic [ref=f4e710]: ۵۹۴ میلیون تومان
+              - generic [ref=f4e711]: بهای تمام‌شده ۵۳۹ میلیون
+            - article [ref=f4e712]:
+              - generic [ref=f4e713]: سود و زیان فعلی (باز)
+              - generic [ref=f4e716]: +۵۵٫۳ میلیون تومان
+              - generic [ref=f4e717]:
+                - generic [ref=f4e718]:
+                  - generic [ref=f4e721]: افزایش
+                  - text: ۱۰٫۲۷٪
+                - text: دارایی‌های نگه‌داری‌شده
+            - article [ref=f4e722]:
+              - generic [ref=f4e723]: سود محقق‌شده
+              - generic [ref=f4e726]: +۳٫۴ میلیون تومان
+              - generic [ref=f4e727]: از فروش‌ها
+            - article [ref=f4e728]:
+              - generic [ref=f4e729]: سود برداشت‌شده
+              - generic [ref=f4e732]: ۰ تومان
+              - generic [ref=f4e733]: از دارایی ۰ · از نقد ۰
+            - article [ref=f4e734]:
+              - generic [ref=f4e735]: سود باقی‌مانده
+              - generic [ref=f4e738]: +۵۸٫۷ میلیون تومان
+              - generic [ref=f4e739]: سود کل منهای برداشت‌ها
+          - generic [ref=f4e740]:
+            - tablist "بخش‌های گزارش" [ref=f4e741]:
+              - tab "نمای کلی" [selected] [ref=f4e742] [cursor=pointer]
+              - tab "دارایی‌ها" [ref=f4e743] [cursor=pointer]
+              - tab "تاریخچهٔ سود و زیان" [ref=f4e744] [cursor=pointer]
+              - tab "برداشت سود" [ref=f4e745] [cursor=pointer]
+              - tab "سود محقق‌شده" [ref=f4e746] [cursor=pointer]
+            - button "ثبت برداشت سود" [ref=f4e747] [cursor=pointer]
+          - generic [ref=f4e751]:
+            - article [ref=f4e752]:
+              - generic [ref=f4e754]:
+                - generic [ref=f4e755]: تغییر نسبت به ابتدای بازه
+                - generic [ref=f4e757]: سود و زیان کل
+              - img "نمودار سود و زیان در طول زمان" [ref=f4e760]
+            - generic [ref=f4e761]:
+              - article [ref=f4e762]:
+                - heading "به تفکیک دسته" [level=2] [ref=f4e764]
+                - table [ref=f4e766]:
+                  - rowgroup [ref=f4e767]:
+                    - row [ref=f4e768]:
+                      - columnheader "دسته" [ref=f4e769]
+                      - columnheader "ارزش" [ref=f4e770]
+                      - columnheader "سود و زیان کل" [ref=f4e771]
+                      - columnheader "تغییر در بازه" [ref=f4e772]
+                  - rowgroup [ref=f4e773]:
+                    - row [ref=f4e774]:
+                      - cell "ارز" [ref=f4e775]
+                      - cell "۳۵۰٬۹۶۱٬۰۰۰" [ref=f4e776]
+                      - cell "+۳۵٬۸۶۱٬۰۰۰ افزایش ۹٫۷۶٪" [ref=f4e777]:
+                        - text: +۳۵٬۸۶۱٬۰۰۰
+                        - generic [ref=f4e779]:
+                          - generic [ref=f4e782]: افزایش
+                          - text: ۹٫۷۶٪
+                      - cell "+۶٬۴۶۱٬۰۰۰ افزایش ۱٫۶۳٪" [ref=f4e783]:
+                        - text: +۶٬۴۶۱٬۰۰۰
+                        - generic [ref=f4e785]:
+                          - generic [ref=f4e788]: افزایش
+                          - text: ۱٫۶۳٪
+                    - row [ref=f4e789]:
+                      - cell "طلا" [ref=f4e790]
+                      - cell "۲۴۲٬۸۶۷٬۰۰۰" [ref=f4e791]
+                      - cell "+۲۲٬۸۶۷٬۰۰۰ افزایش ۱۰٫۳۹٪" [ref=f4e792]:
+                        - text: +۲۲٬۸۶۷٬۰۰۰
+                        - generic [ref=f4e794]:
+                          - generic [ref=f4e797]: افزایش
+                          - text: ۱۰٫۳۹٪
+                      - cell "−۲۷٬۶۸۳٬۰۰۰ کاهش ۱۰٫۲۳٪" [ref=f4e798]:
+                        - text: −۲۷٬۶۸۳٬۰۰۰
+                        - generic [ref=f4e800]:
+                          - generic [ref=f4e803]: کاهش
+                          - text: ۱۰٫۲۳٪
+              - article [ref=f4e804]:
+                - heading "به تفکیک محل نگهداری" [level=2] [ref=f4e806]
+                - table [ref=f4e808]:
+                  - rowgroup [ref=f4e809]:
+                    - row [ref=f4e810]:
+                      - columnheader "محل نگهداری" [ref=f4e811]
+                      - columnheader "ارزش" [ref=f4e812]
+                      - columnheader "سود و زیان کل" [ref=f4e813]
+                      - columnheader "تغییر در بازه" [ref=f4e814]
+                  - rowgroup [ref=f4e815]:
+                    - row [ref=f4e816]:
+                      - cell "گاوصندوق" [ref=f4e817]
+                      - cell "۳۷۷٬۸۵۲٬۰۰۰" [ref=f4e818]
+                      - cell "+۳۰٬۳۵۲٬۰۰۰ افزایش ۸٫۷۳٪" [ref=f4e819]:
+                        - text: +۳۰٬۳۵۲٬۰۰۰
+                        - generic [ref=f4e821]:
+                          - generic [ref=f4e824]: افزایش
+                          - text: ۸٫۷۳٪
+                      - cell "−۲۰٬۱۹۸٬۰۰۰ کاهش ۵٫۰۷٪" [ref=f4e825]:
+                        - text: −۲۰٬۱۹۸٬۰۰۰
+                        - generic [ref=f4e827]:
+                          - generic [ref=f4e830]: کاهش
+                          - text: ۵٫۰۷٪
+                    - row [ref=f4e831]:
+                      - cell "صرافی" [ref=f4e832]
+                      - cell "۲۱۵٬۹۷۶٬۰۰۰" [ref=f4e833]
+                      - cell "+۲۸٬۳۷۶٬۰۰۰ افزایش ۱۱٫۸۲٪" [ref=f4e834]:
+                        - text: +۲۸٬۳۷۶٬۰۰۰
+                        - generic [ref=f4e836]:
+                          - generic [ref=f4e839]: افزایش
+                          - text: ۱۱٫۸۲٪
+                      - cell "−۱٬۰۲۴٬۰۰۰ کاهش ۰٫۳۸٪" [ref=f4e840]:
+                        - text: −۱٬۰۲۴٬۰۰۰
+                        - generic [ref=f4e842]:
+                          - generic [ref=f4e845]: کاهش
+                          - text: ۰٫۳۸٪
+      - contentinfo [ref=f4e60]:
+        - generic [ref=f4e61]:
+          - text: دلاربان پلاس · بر پایهٔ
+          - link "دلاربان" [ref=f4e62] [cursor=pointer]:
+            - /url: https://github.com/MahdiGraph/DollarBaan
+          - text: اثر MahdiGraph
+        - generic [aria-hidden] [ref=f4e63]: ·
+        - link [ref=f4e64] [cursor=pointer]:
+          - /url: https://cloudtart.com
+          - text: ارتقا‌یافته توسط
+          - strong [ref=f4e65]: CloudTart
+          - text: · cloudtart.com
+  - dialog [ref=f4e846]:
+    - generic [ref=f4e847]:
+      - heading "ثبت برداشت سود" [level=2] [ref=f4e848]
+      - button "بستن" [active] [ref=f4e849] [cursor=pointer]
+    - generic [ref=f4e853]:
+      - paragraph [ref=f4e854]: فقط از «سود» می‌توان برداشت کرد؛ سرمایهٔ اصلی در دارایی می‌ماند. مقدار دارایی به قیمت همان روز کم می‌شود و در سود برداشت‌شده ثبت می‌گردد.
+      - generic [ref=f4e855]:
+        - generic [ref=f4e856]: تاریخ برداشت (شمسی)
+        - generic [ref=f4e857]:
+          - textbox "تاریخ (شمسی)" [ref=f4e858]:
+            - /placeholder: ۱۴۰۴/۰۱/۰۱
+            - text: ۱۴۰۵/۰۸/۲۹
+          - button "باز کردن تقویم" [ref=f4e859] [cursor=pointer]
+      - generic [ref=f4e862]:
+        - generic [ref=f4e863]: مبلغ برداشت‌شده چه می‌شود؟
+        - group "مقصد" [ref=f4e864]:
+          - button "به موجودی نقد اضافه شود" [pressed] [ref=f4e865] [cursor=pointer]
+          - button "از برنامه خارج می‌شود" [ref=f4e866] [cursor=pointer]
+      - generic [ref=f4e867]:
+        - generic [ref=f4e868]: محل نگهداری پول نقد (اختیاری)
+        - combobox "محل نگهداری پول نقد (اختیاری)" [ref=f4e870]
+      - table [ref=f4e873]:
+        - rowgroup [ref=f4e874]:
+          - row [ref=f4e875]:
+            - columnheader "انتخاب" [ref=f4e876]
+            - columnheader "از کدام دارایی" [ref=f4e878]
+            - columnheader "سود قابل برداشت" [ref=f4e879]
+            - columnheader "مبلغ برداشت (تومان)" [ref=f4e880]
+        - rowgroup [ref=f4e881]:
+          - row [ref=f4e882]:
+            - cell [ref=f4e883]:
+              - checkbox "دلار آمریکا" [ref=f4e884]
+            - cell "دلار آمریکا ۱٬۳۰۰ واحد · قیمت ۲۶۹٬۹۷۰ تومان" [ref=f4e885]:
+              - text: دلار آمریکا
+              - generic [ref=f4e886]: ۱٬۳۰۰ واحد · قیمت ۲۶۹٬۹۷۰ تومان
+            - cell [ref=f4e887]:
+              - text: ۳۲٬۴۶۱٬۰۰۰
+              - button "همه" [ref=f4e888] [cursor=pointer]
+            - cell [ref=f4e889]:
+              - textbox "۰" [disabled] [ref=f4e890]
+          - row [ref=f4e891]:
+            - cell [ref=f4e892]:
+              - checkbox "طلای ۱۸ عیار (هر گرم)" [ref=f4e893]
+            - cell "طلای ۱۸ عیار (هر گرم) ۱۰ گرم · قیمت ۲۴٬۲۸۶٬۷۰۰ تومان" [ref=f4e894]:
+              - text: طلای ۱۸ عیار (هر گرم)
+              - generic [ref=f4e895]: ۱۰ گرم · قیمت ۲۴٬۲۸۶٬۷۰۰ تومان
+            - cell [ref=f4e896]:
+              - text: ۲۲٬۸۶۷٬۰۰۰
+              - button "همه" [ref=f4e897] [cursor=pointer]
+            - cell [ref=f4e898]:
+              - textbox "۰" [disabled] [ref=f4e899]
+      - generic [ref=f4e901]:
+        - generic [ref=f4e902]: تقسیم خودکار یک مبلغ بین گزینه‌های انتخاب‌شده
+        - generic [ref=f4e903]:
+          - textbox "تقسیم خودکار یک مبلغ بین گزینه‌های انتخاب‌شده" [ref=f4e904]:
+            - /placeholder: مبلغ کل
+          - generic: تومان
+          - button "تقسیم متناسب با سود" [ref=f4e905] [cursor=pointer]
+      - generic [ref=f4e909]:
+        - generic [ref=f4e910]: یادداشت (اختیاری)
+        - textbox "یادداشت (اختیاری)" [ref=f4e911]:
+          - /placeholder: مثلاً هزینهٔ تعمیر خانه
+      - generic [ref=f4e913]:
+        - generic [ref=f4e914]: مجموع برداشت
+        - strong [ref=f4e915]: ۰ تومان
+      - alert
+    - generic [ref=f4e916]:
+      - button "انصراف" [ref=f4e917] [cursor=pointer]
+      - button "ثبت برداشت" [ref=f4e918] [cursor=pointer]

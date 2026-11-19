@@ -1,0 +1,20 @@
+- generic [ref=f4e1]:
+  - link "رفتن به محتوای اصلی" [ref=f4e2] [cursor=pointer]:
+    - /url: "#view"
+  - generic [ref=f4e3013]:
+    - heading "دلاربان پلاس قفل است" [level=1] [ref=f4e3014]
+    - paragraph [ref=f4e3015]: برای ادامه، رمز برنامه را وارد کنید.
+    - generic [ref=f4e3016]:
+      - generic [ref=f4e3017]:
+        - generic [ref=f4e3018]: رمز برنامه
+        - generic [ref=f4e3019]:
+          - textbox "رمز برنامه" [ref=f4e3020]: wrong
+          - button "نمایش رمز" [ref=f4e3021] [cursor=pointer]
+      - alert [ref=f4e3031]: رمز نادرست است.
+      - button "باز کردن" [ref=f4e3024] [cursor=pointer]
+    - generic [ref=f4e3035]:
+      - text: "یادآور شما:"
+      - strong [ref=f4e3036]: اسم اولین مدرسه
+    - generic [ref=f4e3028]:
+      - button "یادآوری رمز" [active] [ref=f4e3029] [cursor=pointer]
+      - button "رمز را فراموش کرده‌ام" [ref=f4e3030] [cursor=pointer]

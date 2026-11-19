@@ -11,6 +11,7 @@ import { openCustomAssetForm } from '../ui/custom-asset-form.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { notify } from '../ui/toast.js';
 import { RANGES } from './dashboard.js';
+import { lotsView } from '../plus/lots-view.js';
 
 function positionCard(holding, asset) {
     if (!holding) {
@@ -44,22 +45,11 @@ function positionCard(holding, asset) {
         </article>`;
 }
 
-function transactionsCard(transactions) {
+function lotsCard(detail) {
     return html`
         <article class="card">
-            <div class="card-head"><h2>تراکنش‌های این دارایی</h2><span class="sub">${number(transactions.length)} مورد</span></div>
-            ${transactions.length ? html`
-                <div class="list" style="margin-top:8px">
-                    ${transactions.map((tx) => html`
-                        <button type="button" class="list-row" data-edit="${tx.id}">
-                            <span class="badge ${tx.side}">${tx.side === 'buy' ? 'خرید' : 'فروش'}</span>
-                            <div class="grow">
-                                <span class="title">${quantity(tx.quantity)} ${unitLabel(tx.unit)} به قیمت ${money(tx.unitPrice)}</span>
-                                <span class="meta">${jalaliDate(tx.date)}${tx.note ? ` · ${tx.note}` : ''}</span>
-                            </div>
-                            <div class="end"><span class="value">${compactMoney(tx.total)}</span></div>
-                        </button>`)}
-                </div>` : html`<div class="empty"><p>تراکنشی برای این دارایی ثبت نشده است.</p></div>`}
+            <div class="card-head"><h2>دفعات ثبت و محل نگهداری</h2><span class="sub">${number(detail.transactions.length)} مورد</span></div>
+            <div class="card-body">${lotsView({ asset: detail.asset, lots: detail.lots || [], locations: detail.locations || [] })}</div>
         </article>`;
 }
 
@@ -140,10 +130,11 @@ export function mount({ view, params, setTitle }) {
     }
 
     function render() {
-        const { asset, holding, transactions } = detail;
+        const { asset, holding } = detail;
         setTitle(asset.name, categoryLabel(asset));
         const watched = store.isWatched(asset.symbol);
         const custom = asset.source === 'custom';
+        const stock = asset.source === 'stock';
         const changeText = asset.change !== null ? `${compactMoney(asset.change, { sign: true })} (${percent(asset.changePct || 0)})` : 'بدون تغییر';
         setHtml(view, html`
             <article class="card asset-hero">
@@ -152,7 +143,7 @@ export function mount({ view, params, setTitle }) {
                         ${avatar(asset)}
                         <div>
                             <h2>${asset.name}</h2>
-                            <div class="small muted">${categoryLabel(asset)} · قیمت هر ${unitLabel(asset.unit)}${custom ? '' : html` · <span class="ltr">${asset.symbol}</span>`}</div>
+                            <div class="small muted">${categoryLabel(asset)} · قیمت هر ${unitLabel(asset.unit)}${custom || stock ? '' : html` · <span class="ltr">${asset.symbol}</span>`}</div>
                         </div>
                     </div>
                     <div class="asset-price">
@@ -168,6 +159,7 @@ export function mount({ view, params, setTitle }) {
                     </div>
                 </div>
                 <div class="asset-actions">
+                    ${stock && !detail.transactions.length ? html`<button type="button" class="icon-btn" data-untrack aria-label="حذف از فهرست سهام" title="حذف از فهرست سهام">${icon('trash-2')}</button>` : ''}
                     ${custom ? html`
                         <button type="button" class="btn btn-secondary" data-edit-asset>${icon('pencil', 'icon-sm')}<span>ویرایش و قیمت جدید</span></button>
                         <button type="button" class="icon-btn" data-delete-asset aria-label="حذف دارایی" title="حذف دارایی">${icon('trash-2')}</button>`
@@ -187,7 +179,7 @@ export function mount({ view, params, setTitle }) {
                         <div class="chart-head"><div class="legend" data-legend></div></div>
                         <div class="chart-box" data-chart></div>
                     </article>
-                    ${transactionsCard(transactions)}
+                    ${lotsCard(detail)}
                 </div>
                 <div class="stack">${positionCard(holding, asset)}</div>
             </div>`);
@@ -235,10 +227,21 @@ export function mount({ view, params, setTitle }) {
             openTransactionForm({ symbol, side: 'sell' });
             return;
         }
-        const edit = event.target.closest('[data-edit]');
+        const edit = event.target.closest('[data-edit-lot]');
         if (edit) {
-            const tx = detail.transactions.find((item) => item.id === edit.dataset.edit);
-            if (tx) openTransactionForm({ transaction: tx });
+            const lot = (detail.lots || []).find((item) => item.id === edit.dataset.editLot);
+            if (lot) openTransactionForm({ transaction: { ...lot, symbol } });
+            return;
+        }
+        if (event.target.closest('[data-untrack]')) {
+            try {
+                await api.del(`/api/stocks/${encodeURIComponent(symbol)}`);
+                await store.loadAssets({ force: true });
+                notify.success('سهم از فهرست حذف شد');
+                window.location.hash = '#/market';
+            } catch (error) {
+                notify.error(error.message);
+            }
             return;
         }
         const watch = event.target.closest('[data-watch]');

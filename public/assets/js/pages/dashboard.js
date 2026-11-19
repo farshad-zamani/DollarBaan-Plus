@@ -8,6 +8,7 @@ import {
 import { lineChart, sparkline, cssVar } from '../lib/charts.js';
 import { avatar, deltaText, deltaPill } from '../ui/asset-visuals.js';
 import { openTransactionForm } from '../ui/transaction-form.js';
+import { CASH_SYMBOL } from '../plus/cash-forms.js';
 
 export const RANGES = [
     ['1m', '۱ ماه'],
@@ -51,13 +52,13 @@ function kpis(portfolio, status) {
                 </div>
                 <div class="hero-meta">
                     ${deltaPill(totals.dayChange, dayText)}
-                    <span>${number(totals.holdings)} دارایی${status && status.lastSuccessAt ? ` · قیمت‌ها ${relativeTime(status.lastSuccessAt)}` : ''}</span>
+                    <span>${number(totals.holdings)} دارایی${totals.cash > 0 ? ` · پول نقد ${compactMoney(totals.cash)}` : ''}${status && status.lastSuccessAt ? ` · قیمت‌ها ${relativeTime(status.lastSuccessAt)}` : ''}</span>
                 </div>
             </article>
             <article class="card stat">
                 <div class="stat-label">${icon('trending-up')}سود و زیان کل</div>
                 <div class="stat-value">${compactMoney(totals.pnl, { sign: true })} <span class="unit">${currencyLabel()}</span></div>
-                <div class="stat-foot">${deltaText(totals.pnlPct)} <span>از کل خریدها</span></div>
+                <div class="stat-foot">${deltaText(totals.pnlPct)} <span>از کل خریدها${totals.withdrawn > 0 ? ` · ${compactMoney(totals.withdrawn)} برداشت‌شده` : ''}</span></div>
             </article>
             <article class="card stat">
                 <div class="stat-label">${icon('piggy-bank')}بهای تمام‌شده</div>
@@ -164,11 +165,11 @@ function recentCard(transactions) {
                         ${avatar(tx, 'sm')}
                         <div class="grow">
                             <span class="title">${tx.name}</span>
-                            <span class="meta">${jalaliDate(tx.date)} · ${quantity(tx.quantity)} ${unitLabel(tx.unit)}</span>
+                            <span class="meta">${jalaliDate(tx.date)} · ${tx.symbol === CASH_SYMBOL ? 'پول نقد' : `${quantity(tx.quantity)} ${unitLabel(tx.unit)}`}${tx.location ? ` · ${tx.location}` : ''}</span>
                         </div>
                         <div class="end">
                             <span class="value">${money(tx.total)}</span>
-                            <span class="sub"><span class="badge ${tx.side}">${tx.side === 'buy' ? 'خرید' : 'فروش'}</span></span>
+                            <span class="sub">${tx.kind === 'withdrawal' ? html`<span class="badge">برداشت سود</span>` : html`<span class="badge ${tx.side}">${tx.symbol === CASH_SYMBOL ? (tx.side === 'buy' ? 'افزودن' : 'کاهش') : (tx.side === 'buy' ? 'خرید' : 'فروش')}</span>`}</span>
                         </div>
                     </button>`)}
             </div>
@@ -180,8 +181,8 @@ function welcome(watchlist) {
         <article class="card">
             <div class="empty" style="padding:48px 24px">
                 <span class="empty-icon">${icon('sparkles')}</span>
-                <h3>به دلاربان خوش آمدید</h3>
-                <p>خرید و فروش‌های خود را ثبت کنید تا ارزش لحظه‌ای سبد، سود و زیان و روند دارایی‌هایتان را به تومان ببینید. قیمت دلار، طلا، سکه و رمزارز به‌طور خودکار به‌روز می‌شود.</p>
+                <h3>به دلاربان پلاس خوش آمدید</h3>
+                <p>خرید و فروش‌های خود را ثبت کنید تا ارزش لحظه‌ای سبد، سود و زیان و روند دارایی‌هایتان را به تومان ببینید. قیمت دلار، طلا، سکه، رمزارز و سهام بورس به‌طور خودکار به‌روز می‌شود؛ پول نقد، محل نگهداری و پروفایل‌های جداگانه هم پشتیبانی می‌شوند.</p>
                 <div class="actions">
                     <button type="button" class="btn btn-primary" data-add>${icon('plus')}<span>ثبت اولین تراکنش</span></button>
                     <a class="btn btn-secondary" href="#/settings">${icon('upload')}<span>بازیابی از فایل پشتیبان</span></a>

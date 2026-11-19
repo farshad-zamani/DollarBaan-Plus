@@ -15,6 +15,8 @@ export const UNIT_LABELS = {
     coin: 'عدد',
     mesghal: 'مثقال',
     troy_ounce: 'اونس',
+    toman: 'تومان',
+    share: 'سهم',
 };
 
 export const CATEGORY_LABELS = {
@@ -24,6 +26,8 @@ export const CATEGORY_LABELS = {
     gold: 'طلا',
     fund: 'صندوق طلا',
     crypto: 'رمزارز',
+    stock: 'سهام بورس',
+    cash: 'پول نقد',
     custom: 'دارایی دستی',
 };
 

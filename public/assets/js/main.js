@@ -12,11 +12,19 @@ import * as transactions from './pages/transactions.js';
 import * as market from './pages/market.js';
 import * as asset from './pages/asset.js';
 import * as settings from './pages/settings.js';
+import * as cash from './pages/cash.js';
+import * as pnl from './pages/pnl.js';
+import { mountProfileTabs } from './plus/profile-tabs.js';
+import { mountLockScreen } from './plus/lock-ui.js';
+import * as lock from './plus/lock.js';
+import { openDialog } from './ui/dialog.js';
 
 const ROUTES = [
     { name: 'dashboard', pattern: /^\/?$/, page: dashboard, title: 'داشبورد' },
     { name: 'holdings', pattern: /^\/holdings\/?$/, page: holdings, title: 'دارایی‌های من' },
     { name: 'transactions', pattern: /^\/transactions\/?$/, page: transactions, title: 'تراکنش‌ها' },
+    { name: 'cash', pattern: /^\/cash\/?$/, page: cash, title: 'پول نقد' },
+    { name: 'pnl', pattern: /^\/pnl\/?$/, page: pnl, title: 'سود و زیان' },
     { name: 'market', pattern: /^\/market\/?$/, page: market, title: 'بازار' },
     { name: 'asset', pattern: /^\/asset\/([A-Za-z0-9_]+)\/?$/, page: asset, title: 'دارایی', nav: 'market' },
     { name: 'settings', pattern: /^\/settings\/?$/, page: settings, title: 'تنظیمات' },
@@ -32,20 +40,47 @@ function setTitle(title, subtitle = '') {
     document.title = title === 'داشبورد' ? 'دلاربان پلاس' : `${title} · دلاربان پلاس`;
 }
 
+// Pages that live behind the "more" button of the mobile tab bar.
+const MORE_ROUTES = new Set(['transactions', 'market', 'settings']);
+const MORE_LINKS = [
+    ['#/transactions', 'تراکنش‌ها', 'arrow-left-right'],
+    ['#/market', 'بازار و سهام', 'chart-candlestick'],
+    ['#/settings', 'تنظیمات', 'settings'],
+];
+
 function setActiveNav(name) {
     for (const link of $$('[data-route]')) {
         if (link.dataset.route === name) link.setAttribute('aria-current', 'page');
         else link.removeAttribute('aria-current');
     }
+    const more = $('#moreBtn');
+    if (more) {
+        if (MORE_ROUTES.has(name)) more.setAttribute('aria-current', 'page');
+        else more.removeAttribute('aria-current');
+    }
+}
+
+function openMoreMenu() {
+    const instance = openDialog({
+        title: 'بیشتر',
+        size: 'sm',
+        body: html`<nav class="more-menu" aria-label="صفحه‌های بیشتر">${MORE_LINKS.map(([href, label, name]) => html`
+            <a class="more-link" href="${href}" data-close-more>${icon(name)}<span>${label}</span>${icon('chevron-left', 'icon-sm')}</a>`)}</nav>`,
+    });
+    instance.body.addEventListener('click', (event) => {
+        if (event.target.closest('[data-close-more]')) instance.close(null);
+    });
 }
 
 function resolve() {
-    const path = decodeURIComponent(window.location.hash.replace(/^#/, '')) || '/';
+    const [rawPath, search = ''] = window.location.hash.replace(/^#/, '').split('?');
+    const path = decodeURIComponent(rawPath) || '/';
+    const query = new URLSearchParams(search);
     for (const route of ROUTES) {
         const match = route.pattern.exec(path);
-        if (match) return { route, params: match.slice(1) };
+        if (match) return { route, params: match.slice(1), query };
     }
-    return { route: ROUTES[0], params: [] };
+    return { route: ROUTES[0], params: [], query };
 }
 
 async function navigate() {
@@ -54,7 +89,7 @@ async function navigate() {
         const close = dialog.querySelector('[data-close]');
         if (close) close.click();
     }
-    const { route, params } = resolve();
+    const { route, params, query } = resolve();
     if (current && current.instance && current.instance.unmount) current.instance.unmount();
     const view = $('#view');
     view.replaceChildren();
@@ -63,7 +98,7 @@ async function navigate() {
     current = { route, instance: null };
     const entry = current;
     try {
-        const instance = await route.page.mount({ view, params, setTitle });
+        const instance = await route.page.mount({ view, params, query, setTitle });
         if (current === entry) entry.instance = instance;
         else if (instance && instance.unmount) instance.unmount();
     } catch (error) {
@@ -179,7 +214,17 @@ async function logout() {
     }
 }
 
+/** Everything on screen that depends on the open profile or the lock. */
+function renderChrome() {
+    renderThemeIcon();
+    renderBanner();
+    renderStatus(store.status);
+    const lockButton = $('#lockBtn');
+    if (lockButton) lockButton.hidden = !(IS_LOCAL && lock.isEnabled());
+}
+
 async function start() {
+    if (IS_LOCAL) mountLockScreen();
     try {
         await store.bootstrap();
     } catch (error) {
@@ -187,9 +232,17 @@ async function start() {
         return;
     }
 
-    renderThemeIcon();
-    renderBanner();
-    renderStatus(store.status);
+    renderChrome();
+    mountProfileTabs($('#profileBar'));
+    store.on('profile', async () => {
+        renderChrome();
+        await navigate();
+    });
+    if (IS_LOCAL) {
+        $('#lockBtn').addEventListener('click', () => lock.lock());
+        lock.onLockChange(renderChrome);
+    }
+    $('#moreBtn').addEventListener('click', openMoreMenu);
 
     let legacyWasPending = Boolean(store.status && store.status.legacyPending);
     store.on('status', (status) => {

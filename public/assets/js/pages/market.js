@@ -3,6 +3,7 @@ import { html, icon, setHtml } from '../lib/dom.js';
 import { money, compactMoney, relativeTime, searchKey, CATEGORY_LABELS, number, currencyLabel } from '../format.js';
 import { assetCell, assetSub, deltaText } from '../ui/asset-visuals.js';
 import { notify } from '../ui/toast.js';
+import { mountStockSearch } from '../plus/stock-search.js';
 
 const PAGE_SIZE = 80;
 
@@ -25,7 +26,21 @@ export function mount({ view, setTitle }) {
 
     setHtml(view, html`<div class="card card-pad"><span class="skeleton" style="height:320px"></span></div>`);
 
-    const marketAssets = () => store.assets.filter((asset) => asset.source === 'market');
+    const marketAssets = () => store.assets.filter((asset) => asset.source === 'market' || asset.source === 'stock');
+    let stockOff = null;
+
+    /** The stock-exchange search sits above the list while the "stocks" category is open. */
+    function syncStockPanel() {
+        const host = view.querySelector('[data-stock-panel]');
+        if (!host) return;
+        if (stockOff) stockOff();
+        stockOff = null;
+        if (filters.category === 'stock') {
+            stockOff = mountStockSearch(host, { onTracked: () => store.loadAssets({ force: true }).then(() => alive && renderResults()) });
+        } else {
+            setHtml(host, '');
+        }
+    }
 
     function filtered() {
         const tokens = searchKey(filters.query).split(' ').filter(Boolean);
@@ -121,13 +136,15 @@ export function mount({ view, setTitle }) {
                 </label>
                 <div class="chips" role="group" aria-label="دسته‌بندی">
                     <button type="button" class="chip" data-category="all" aria-pressed="${filters.category === 'all'}">همه <span class="count">${number(assets.length)}</span></button>
-                    ${store.categories.filter((key) => counts.has(key)).map((key) => html`
-                        <button type="button" class="chip" data-category="${key}" aria-pressed="${filters.category === key}">${CATEGORY_LABELS[key]} <span class="count">${number(counts.get(key))}</span></button>`)}
+                    ${store.categories.filter((key) => counts.has(key) || key === 'stock').map((key) => html`
+                        <button type="button" class="chip" data-category="${key}" aria-pressed="${filters.category === key}">${CATEGORY_LABELS[key]} <span class="count">${number(counts.get(key) || 0)}</span></button>`)}
                 </div>
                 <span class="spacer"></span>
                 <button type="button" class="chip" data-watched aria-pressed="${filters.watched}">${icon('star', 'icon-sm')}دیده‌بان</button>
             </div>
+            <div data-stock-panel></div>
             <div data-results></div>`);
+        syncStockPanel();
         renderResults();
     }
 
@@ -173,6 +190,7 @@ export function mount({ view, setTitle }) {
             for (const element of view.querySelectorAll('[data-category]')) {
                 element.setAttribute('aria-pressed', String(element.dataset.category === filters.category));
             }
+            syncStockPanel();
             renderResults();
             return;
         }
@@ -221,6 +239,7 @@ export function mount({ view, setTitle }) {
     return {
         unmount() {
             alive = false;
+            if (stockOff) stockOff();
             view.removeEventListener('click', onClick);
             view.removeEventListener('input', onInput);
             view.removeEventListener('keydown', onKey);

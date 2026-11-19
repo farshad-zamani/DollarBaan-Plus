@@ -42,6 +42,12 @@
                 <a class="nav-item" href="#/transactions" data-route="transactions" title="تراکنش‌ها">
                     <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#arrow-left-right"></use></svg><span>تراکنش‌ها</span>
                 </a>
+                <a class="nav-item" href="#/cash" data-route="cash" title="پول نقد">
+                    <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#banknote"></use></svg><span>پول نقد</span>
+                </a>
+                <a class="nav-item" href="#/pnl" data-route="pnl" title="سود و زیان">
+                    <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#chart-line"></use></svg><span>سود و زیان</span>
+                </a>
                 <a class="nav-item" href="#/market" data-route="market" title="بازار">
                     <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#chart-candlestick"></use></svg><span>بازار</span>
                 </a>
@@ -58,6 +64,7 @@
         </aside>
 
         <div class="main">
+            <div class="profile-bar" id="profileBar" aria-label="پروفایل‌ها"></div>
             <header class="topbar" id="topbar">
                 <a class="topbar-brand" href="#/" aria-label="دلاربان پلاس">
                     <img class="brand-mark" src="assets/img/logo.svg" alt="" width="34" height="34">
@@ -69,6 +76,9 @@
                 <div class="topbar-actions">
                     <button type="button" class="status-pill" id="statusPill" data-state="stale">
                         <span class="status-dot"></span><span class="status-text">در حال بارگذاری…</span>
+                    </button>
+                    <button type="button" class="icon-btn" id="lockBtn" aria-label="قفل کردن برنامه" title="قفل کردن برنامه" hidden>
+                        <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#lock"></use></svg>
                     </button>
                     <button type="button" class="icon-btn" id="themeBtn" aria-label="تغییر پوسته روشن و تیره">
                         <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#moon"></use></svg>
@@ -94,15 +104,15 @@
             <a class="tab" href="#/holdings" data-route="holdings">
                 <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#wallet"></use></svg><span>دارایی‌ها</span>
             </a>
-            <a class="tab" href="#/transactions" data-route="transactions">
-                <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#arrow-left-right"></use></svg><span>تراکنش‌ها</span>
+            <a class="tab" href="#/pnl" data-route="pnl">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#chart-line"></use></svg><span>سود و زیان</span>
             </a>
-            <a class="tab" href="#/market" data-route="market">
-                <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#chart-candlestick"></use></svg><span>بازار</span>
+            <a class="tab" href="#/cash" data-route="cash">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#banknote"></use></svg><span>پول نقد</span>
             </a>
-            <a class="tab" href="#/settings" data-route="settings">
-                <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#settings"></use></svg><span>تنظیمات</span>
-            </a>
+            <button type="button" class="tab" id="moreBtn" data-more aria-haspopup="dialog">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#ellipsis"></use></svg><span>بیشتر</span>
+            </button>
         </nav>
     </div>
 

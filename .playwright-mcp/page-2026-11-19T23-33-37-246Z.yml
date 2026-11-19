@@ -1,0 +1,983 @@
+- generic [ref=f4e1]:
+  - link "رفتن به محتوای اصلی" [ref=f4e2] [cursor=pointer]:
+    - /url: "#view"
+  - generic [ref=f4e3]:
+    - complementary "منوی اصلی" [ref=f4e4]:
+      - link "دلاربان پلاس، داشبورد" [ref=f4e5] [cursor=pointer]:
+        - /url: "#/"
+        - generic [ref=f4e6]:
+          - text: دلاربان پلاس
+          - generic [ref=f4e7]: پایش دارایی‌های شما
+      - navigation [ref=f4e8]:
+        - link "داشبورد" [ref=f4e9] [cursor=pointer]:
+          - /url: "#/"
+        - link "دارایی‌های من" [ref=f4e13] [cursor=pointer]:
+          - /url: "#/holdings"
+        - link "تراکنش‌ها" [ref=f4e17] [cursor=pointer]:
+          - /url: "#/transactions"
+        - link "پول نقد" [ref=f4e21] [cursor=pointer]:
+          - /url: "#/cash"
+        - link "سود و زیان" [ref=f4e25] [cursor=pointer]:
+          - /url: "#/pnl"
+        - link "بازار" [ref=f4e29] [cursor=pointer]:
+          - /url: "#/market"
+        - link "تنظیمات" [ref=f4e33] [cursor=pointer]:
+          - /url: "#/settings"
+      - generic [ref=f4e38]:
+        - text: منبع قیمت‌ها
+        - strong [ref=f4e644]: Iran Market
+        - text: انتشار ۳ دقیقه پیش
+    - generic [ref=f4e43]:
+      - generic "پروفایل‌ها" [ref=f4e44]:
+        - tablist "پروفایل‌ها" [ref=f4e67]:
+          - tab "پروفایل من" [selected] [ref=f4e68] [cursor=pointer]
+        - button "پروفایل جدید" [ref=f4e72] [cursor=pointer]
+        - button "مدیریت پروفایل‌ها" [ref=f4e76] [cursor=pointer]
+      - banner [ref=f4e45]:
+        - generic [ref=f4e46]:
+          - heading "دارایی‌های من" [level=1] [ref=f4e922]
+          - paragraph
+        - generic [ref=f4e48]:
+          - 'button "به‌روزرسانی ۱ دقیقه پیش. منبع: Iran Market — برای به‌روزرسانی کلیک کنید" [ref=f4e645] [cursor=pointer]':
+            - generic [ref=f4e647]: به‌روزرسانی ۱ دقیقه پیش
+          - button "پوسته تیره" [ref=f4e83] [cursor=pointer]
+          - button "ثبت تراکنش" [ref=f4e55] [cursor=pointer]
+      - main [ref=f4e59]:
+        - generic [ref=f4e925]:
+          - generic [ref=f4e926]:
+            - generic [ref=f4e927]: ارزش روز
+            - generic [ref=f4e928]: ۶۸۶٬۲۲۸٬۰۰۰ تومان
+          - generic [ref=f4e929]:
+            - generic [ref=f4e930]: بهای تمام‌شده
+            - generic [ref=f4e931]: ۶۳۰٬۹۰۰٬۰۰۰ تومان
+          - generic [ref=f4e932]:
+            - generic [ref=f4e933]: سود و زیان باز
+            - generic [ref=f4e934]: +۵۵٫۳ میلیون تومان
+          - generic [ref=f4e935]:
+            - generic [ref=f4e936]: سود محقق‌شده
+            - generic [ref=f4e937]: +۳٫۴ میلیون تومان
+        - generic [ref=f4e938]:
+          - searchbox "جستجو در دارایی‌ها" [ref=f4e940]
+          - group "دسته‌بندی" [ref=f4e941]:
+            - button "همه ۳" [pressed] [ref=f4e942] [cursor=pointer]:
+              - text: همه
+              - generic [ref=f4e943]: ۳
+            - button "ارز" [ref=f4e944] [cursor=pointer]
+            - button "طلا" [ref=f4e945] [cursor=pointer]
+            - button "پول نقد" [ref=f4e946] [cursor=pointer]
+          - combobox "مرتب‌سازی" [ref=f4e947]:
+            - option "بیشترین ارزش" [selected]
+            - option "بیشترین سود"
+            - option "بیشترین بازده"
+            - option "تغییر امروز"
+            - option "نام"
+          - generic [ref=f4e948] [cursor=pointer]:
+            - checkbox "فروخته‌شده‌ها" [ref=f4e949]
+            - text: فروخته‌شده‌ها
+          - button "پول نقد" [ref=f4e950] [cursor=pointer]
+        - paragraph [ref=f4e954]: روی هر دارایی بزنید تا دفعات ثبت و محل نگهداری آن به تفکیک نمایش داده شود.
+        - table [ref=f4e958]:
+          - rowgroup [ref=f4e959]:
+            - row [ref=f4e960]:
+              - columnheader "دارایی" [ref=f4e961]
+              - columnheader "مقدار" [ref=f4e962]
+              - columnheader "میانگین خرید" [ref=f4e963]
+              - columnheader "قیمت روز" [ref=f4e964]
+              - columnheader "ارزش" [ref=f4e965]
+              - columnheader "سود و زیان" [ref=f4e966]
+              - columnheader "سهم از سبد" [ref=f4e967]
+          - rowgroup [ref=f4e968]:
+            - row [ref=f4e969] [cursor=pointer]:
+              - cell "دلار آمریکا ارز · ۳ ثبت · ۲ محل" [ref=f4e970]:
+                - generic [ref=f4e979]:
+                  - generic [ref=f4e980]: دلار آمریکا
+                  - generic [ref=f4e981]: ارز · ۳ ثبت · ۲ محل
+              - cell "۱٬۳۰۰ واحد" [ref=f4e982]:
+                - text: ۱٬۳۰۰
+                - generic [ref=f4e983]: واحد
+              - cell "۲۴۵٬۰۰۰" [ref=f4e984]
+              - cell "۲۶۹٬۹۷۰ ۰٫۰۰٪" [ref=f4e985]:
+                - text: ۲۶۹٬۹۷۰
+                - generic [ref=f4e986]: ۰٫۰۰٪
+              - cell "۳۵۰٬۹۶۱٬۰۰۰" [ref=f4e988]
+              - cell "+۳۲٬۴۶۱٬۰۰۰ افزایش ۱۰٫۱۹٪" [ref=f4e989]:
+                - text: +۳۲٬۴۶۱٬۰۰۰
+                - generic [ref=f4e991]:
+                  - generic [ref=f4e994]: افزایش
+                  - text: ۱۰٫۱۹٪
+              - cell "۵۱٫۱٪" [ref=f4e995]
+            - row [ref=f4e1000] [cursor=pointer]:
+              - cell "طلای ۱۸ عیار (هر گرم) طلا · هر گرم · گاوصندوق" [ref=f4e1001]:
+                - generic [ref=f4e1010]:
+                  - generic [ref=f4e1011]: طلای ۱۸ عیار (هر گرم)
+                  - generic [ref=f4e1012]: طلا · هر گرم · گاوصندوق
+              - cell "۱۰ گرم" [ref=f4e1013]:
+                - text: ۱۰
+                - generic [ref=f4e1014]: گرم
+              - cell "۲۲٬۰۰۰٬۰۰۰" [ref=f4e1015]
+              - cell "۲۴٬۲۸۶٬۷۰۰ ۰٫۰۰٪" [ref=f4e1016]:
+                - text: ۲۴٬۲۸۶٬۷۰۰
+                - generic [ref=f4e1017]: ۰٫۰۰٪
+              - cell "۲۴۲٬۸۶۷٬۰۰۰" [ref=f4e1019]
+              - cell "+۲۲٬۸۶۷٬۰۰۰ افزایش ۱۰٫۳۹٪" [ref=f4e1020]:
+                - text: +۲۲٬۸۶۷٬۰۰۰
+                - generic [ref=f4e1022]:
+                  - generic [ref=f4e1025]: افزایش
+                  - text: ۱۰٫۳۹٪
+              - cell "۳۵٫۴٪" [ref=f4e1026]
+            - row [ref=f4e1031] [cursor=pointer]:
+              - cell "پول نقد پول نقد · ۴ ثبت · بانک ملت" [ref=f4e1032]:
+                - generic [ref=f4e1041]:
+                  - generic [ref=f4e1042]: پول نقد
+                  - generic [ref=f4e1043]: پول نقد · ۴ ثبت · بانک ملت
+              - cell "۹۲٬۴۰۰٬۰۰۰" [ref=f4e1044]
+              - cell "—" [ref=f4e1045]
+              - cell "—" [ref=f4e1046]
+              - cell "۹۲٬۴۰۰٬۰۰۰" [ref=f4e1047]
+              - cell "—" [ref=f4e1048]
+              - cell "۱۳٫۵٪" [ref=f4e1049]
+      - contentinfo [ref=f4e60]:
+        - generic [ref=f4e61]:
+          - text: دلاربان پلاس · بر پایهٔ
+          - link "دلاربان" [ref=f4e62] [cursor=pointer]:
+            - /url: https://github.com/MahdiGraph/DollarBaan
+          - text: اثر MahdiGraph
+        - generic [aria-hidden] [ref=f4e63]: ·
+        - link [ref=f4e64] [cursor=pointer]:
+          - /url: https://cloudtart.com
+          - text: ارتقا‌یافته توسط
+          - strong [ref=f4e65]: CloudTart
+          - text: · cloudtart.com
+  - dialog [ref=f4e1054]:
+    - generic [ref=f4e1055]:
+      - heading "ثبت تراکنش جدید" [level=2] [ref=f4e1056]
+      - button "بستن" [ref=f4e1057] [cursor=pointer]
+    - generic [ref=f4e1061]:
+      - group "نوع تراکنش" [ref=f4e1062]:
+        - button "خرید" [pressed] [ref=f4e1063] [cursor=pointer]
+        - button "فروش" [ref=f4e1067] [cursor=pointer]
+      - generic [ref=f4e1071]:
+        - generic [ref=f4e1072]: دارایی
+        - generic [ref=f4e1073]:
+          - button "یک دارایی انتخاب کنید" [expanded] [ref=f4e1074] [cursor=pointer]
+          - generic [ref=f4e1078]:
+            - generic [ref=f4e1079]:
+              - combobox "جستجوی دارایی" [expanded] [active] [ref=f4e1081]
+              - group "دسته‌بندی" [ref=f4e1082]:
+                - button "همه" [pressed] [ref=f4e1083] [cursor=pointer]
+                - button "دارایی‌های من" [ref=f4e1084] [cursor=pointer]
+                - button "ارز" [ref=f4e1085] [cursor=pointer]
+                - button "سکه" [ref=f4e1086] [cursor=pointer]
+                - button "نقره و فلزات" [ref=f4e1087] [cursor=pointer]
+                - button "طلا" [ref=f4e1088] [cursor=pointer]
+                - button "صندوق طلا" [ref=f4e1089] [cursor=pointer]
+                - button "رمزارز" [ref=f4e1090] [cursor=pointer]
+                - button "پول نقد" [ref=f4e1091] [cursor=pointer]
+                - button "سهام بورس" [ref=f4e1092] [cursor=pointer]
+            - listbox "فهرست دارایی‌ها" [ref=f4e1093]:
+              - generic [ref=f4e1094]: دارایی‌های من
+              - option "دلار آمریکا ارز ۲۶۹٬۹۷۰" [ref=f4e1095] [cursor=pointer]:
+                - generic [ref=f4e1099]:
+                  - generic [ref=f4e1100]: دلار آمریکا
+                  - generic [ref=f4e1101]: ارز
+                - generic [ref=f4e1102]: ۲۶۹٬۹۷۰
+              - option "طلای ۱۸ عیار (هر گرم) طلا · هر گرم ۲۴٬۲۸۶٬۷۰۰" [ref=f4e1103] [cursor=pointer]:
+                - generic [ref=f4e1107]:
+                  - generic [ref=f4e1108]: طلای ۱۸ عیار (هر گرم)
+                  - generic [ref=f4e1109]: طلا · هر گرم
+                - generic [ref=f4e1110]: ۲۴٬۲۸۶٬۷۰۰
+              - generic [ref=f4e1111]: ارز
+              - option "یورو ارز ۲۹۷٬۳۳۰" [ref=f4e1112] [cursor=pointer]:
+                - generic [ref=f4e1116]:
+                  - generic [ref=f4e1117]: یورو
+                  - generic [ref=f4e1118]: ارز
+                - generic [ref=f4e1119]: ۲۹۷٬۳۳۰
+              - option "پوند انگلیس ارز ۳۵۴٬۹۷۰" [ref=f4e1120] [cursor=pointer]:
+                - generic [ref=f4e1124]:
+                  - generic [ref=f4e1125]: پوند انگلیس
+                  - generic [ref=f4e1126]: ارز
+                - generic [ref=f4e1127]: ۳۵۴٬۹۷۰
+              - option "درهم امارات ارز ۷۳٬۵۴۵" [ref=f4e1128] [cursor=pointer]:
+                - generic [ref=f4e1132]:
+                  - generic [ref=f4e1133]: درهم امارات
+                  - generic [ref=f4e1134]: ارز
+                - generic [ref=f4e1135]: ۷۳٬۵۴۵
+              - option "لیر ترکیه ارز ۵٬۳۵۰" [ref=f4e1136] [cursor=pointer]:
+                - generic [ref=f4e1140]:
+                  - generic [ref=f4e1141]: لیر ترکیه
+                  - generic [ref=f4e1142]: ارز
+                - generic [ref=f4e1143]: ۵٬۳۵۰
+              - option "دلار کانادا ارز ۱۸۸٬۸۹۰" [ref=f4e1144] [cursor=pointer]:
+                - generic [ref=f4e1148]:
+                  - generic [ref=f4e1149]: دلار کانادا
+                  - generic [ref=f4e1150]: ارز
+                - generic [ref=f4e1151]: ۱۸۸٬۸۹۰
+              - option "دلار استرالیا ارز ۱۸۱٬۲۲۰" [ref=f4e1152] [cursor=pointer]:
+                - generic [ref=f4e1156]:
+                  - generic [ref=f4e1157]: دلار استرالیا
+                  - generic [ref=f4e1158]: ارز
+                - generic [ref=f4e1159]: ۱۸۱٬۲۲۰
+              - option "یوان چین ارز ۴۰٬۵۰۰" [ref=f4e1160] [cursor=pointer]:
+                - generic [ref=f4e1164]:
+                  - generic [ref=f4e1165]: یوان چین
+                  - generic [ref=f4e1166]: ارز
+                - generic [ref=f4e1167]: ۴۰٬۵۰۰
+              - option "فرانک سوئیس ارز ۳۲۰٬۴۵۰" [ref=f4e1168] [cursor=pointer]:
+                - generic [ref=f4e1172]:
+                  - generic [ref=f4e1173]: فرانک سوئیس
+                  - generic [ref=f4e1174]: ارز
+                - generic [ref=f4e1175]: ۳۲۰٬۴۵۰
+              - option "ین ژاپن (۱۰۰ ین) ارز ۱۶۸٬۹۷۵" [ref=f4e1176] [cursor=pointer]:
+                - generic [ref=f4e1180]:
+                  - generic [ref=f4e1181]: ین ژاپن (۱۰۰ ین)
+                  - generic [ref=f4e1182]: ارز
+                - generic [ref=f4e1183]: ۱۶۸٬۹۷۵
+              - option "دینار عراق ارز ۱۷۳٫۲" [ref=f4e1184] [cursor=pointer]:
+                - generic [ref=f4e1188]:
+                  - generic [ref=f4e1189]: دینار عراق
+                  - generic [ref=f4e1190]: ارز
+                - generic [ref=f4e1191]: ۱۷۳٫۲
+              - option "روبل روسیه ارز ۳٬۲۹۷" [ref=f4e1192] [cursor=pointer]:
+                - generic [ref=f4e1196]:
+                  - generic [ref=f4e1197]: روبل روسیه
+                  - generic [ref=f4e1198]: ارز
+                - generic [ref=f4e1199]: ۳٬۲۹۷
+              - option "ریال عمان ارز ۷۰۲٬۲۹۰" [ref=f4e1200] [cursor=pointer]:
+                - generic [ref=f4e1204]:
+                  - generic [ref=f4e1205]: ریال عمان
+                  - generic [ref=f4e1206]: ارز
+                - generic [ref=f4e1207]: ۷۰۲٬۲۹۰
+              - option "دینار کویت ارز ۸۶۷٬۴۰۰" [ref=f4e1208] [cursor=pointer]:
+                - generic [ref=f4e1212]:
+                  - generic [ref=f4e1213]: دینار کویت
+                  - generic [ref=f4e1214]: ارز
+                - generic [ref=f4e1215]: ۸۶۷٬۴۰۰
+              - option "ریال عربستان ارز ۷۱٬۹۸۷" [ref=f4e1216] [cursor=pointer]:
+                - generic [ref=f4e1220]:
+                  - generic [ref=f4e1221]: ریال عربستان
+                  - generic [ref=f4e1222]: ارز
+                - generic [ref=f4e1223]: ۷۱٬۹۸۷
+              - option "آریاری ماداگاسکار ارز ۵۸" [ref=f4e1224] [cursor=pointer]:
+                - generic [ref=f4e1228]:
+                  - generic [ref=f4e1229]: آریاری ماداگاسکار
+                  - generic [ref=f4e1230]: ارز
+                - generic [ref=f4e1231]: ۵۸
+              - option "آنتیل گیلدر هلند ارز ۱۴۹٬۸۰۰" [ref=f4e1232] [cursor=pointer]:
+                - generic [ref=f4e1236]:
+                  - generic [ref=f4e1237]: آنتیل گیلدر هلند
+                  - generic [ref=f4e1238]: ارز
+                - generic [ref=f4e1239]: ۱۴۹٬۸۰۰
+              - option "افغانی ارز ۴٬۲۵۱" [ref=f4e1240] [cursor=pointer]:
+                - generic [ref=f4e1244]:
+                  - generic [ref=f4e1245]: افغانی
+                  - generic [ref=f4e1246]: ارز
+                - generic [ref=f4e1247]: ۴٬۲۵۱
+              - option "اوگویا موریتانا ارز ۶٬۶۲۰" [ref=f4e1248] [cursor=pointer]:
+                - generic [ref=f4e1252]:
+                  - generic [ref=f4e1253]: اوگویا موریتانا
+                  - generic [ref=f4e1254]: ارز
+                - generic [ref=f4e1255]: ۶٬۶۲۰
+              - option "بات تایلند ارز ۷٬۹۶۵" [ref=f4e1256] [cursor=pointer]:
+                - generic [ref=f4e1260]:
+                  - generic [ref=f4e1261]: بات تایلند
+                  - generic [ref=f4e1262]: ارز
+                - generic [ref=f4e1263]: ۷٬۹۶۵
+              - option "بولبوئا پاناما ارز ۲۶۳٬۹۷۰" [ref=f4e1264] [cursor=pointer]:
+                - generic [ref=f4e1268]:
+                  - generic [ref=f4e1269]: بولبوئا پاناما
+                  - generic [ref=f4e1270]: ارز
+                - generic [ref=f4e1271]: ۲۶۳٬۹۷۰
+              - option "بولیوار ونزوئلا ارز ۲۹۴" [ref=f4e1272] [cursor=pointer]:
+                - generic [ref=f4e1276]:
+                  - generic [ref=f4e1277]: بولیوار ونزوئلا
+                  - generic [ref=f4e1278]: ارز
+                - generic [ref=f4e1279]: ۲۹۴
+              - option "بیر اتیوپی ارز ۱٬۵۹۰" [ref=f4e1280] [cursor=pointer]:
+                - generic [ref=f4e1284]:
+                  - generic [ref=f4e1285]: بیر اتیوپی
+                  - generic [ref=f4e1286]: ارز
+                - generic [ref=f4e1287]: ۱٬۵۹۰
+              - option "پاتاکا ماکائو ارز ۳۳٬۳۶۰" [ref=f4e1288] [cursor=pointer]:
+                - generic [ref=f4e1292]:
+                  - generic [ref=f4e1293]: پاتاکا ماکائو
+                  - generic [ref=f4e1294]: ارز
+                - generic [ref=f4e1295]: ۳۳٬۳۶۰
+              - option "پزوی آرژانتین ارز ۱۷۳" [ref=f4e1296] [cursor=pointer]:
+                - generic [ref=f4e1300]:
+                  - generic [ref=f4e1301]: پزوی آرژانتین
+                  - generic [ref=f4e1302]: ارز
+                - generic [ref=f4e1303]: ۱۷۳
+              - option "پزوی اروگوئه ارز ۶٬۸۶۰" [ref=f4e1304] [cursor=pointer]:
+                - generic [ref=f4e1308]:
+                  - generic [ref=f4e1309]: پزوی اروگوئه
+                  - generic [ref=f4e1310]: ارز
+                - generic [ref=f4e1311]: ۶٬۸۶۰
+              - option "پزوی دومنیکن ارز ۴٬۳۵۰" [ref=f4e1312] [cursor=pointer]:
+                - generic [ref=f4e1316]:
+                  - generic [ref=f4e1317]: پزوی دومنیکن
+                  - generic [ref=f4e1318]: ارز
+                - generic [ref=f4e1319]: ۴٬۳۵۰
+              - option "پزوی شیلی ارز ۲۷۰" [ref=f4e1320] [cursor=pointer]:
+                - generic [ref=f4e1324]:
+                  - generic [ref=f4e1325]: پزوی شیلی
+                  - generic [ref=f4e1326]: ارز
+                - generic [ref=f4e1327]: ۲۷۰
+              - option "پزوی فیلیپین ارز ۴٬۲۴۰" [ref=f4e1328] [cursor=pointer]:
+                - generic [ref=f4e1332]:
+                  - generic [ref=f4e1333]: پزوی فیلیپین
+                  - generic [ref=f4e1334]: ارز
+                - generic [ref=f4e1335]: ۴٬۲۴۰
+              - option "پزوی کلمبیا ارز ۸۰" [ref=f4e1336] [cursor=pointer]:
+                - generic [ref=f4e1340]:
+                  - generic [ref=f4e1341]: پزوی کلمبیا
+                  - generic [ref=f4e1342]: ارز
+                - generic [ref=f4e1343]: ۸۰
+              - option "پزوی کوبا ارز ۱۱٬۲۳۰" [ref=f4e1344] [cursor=pointer]:
+                - generic [ref=f4e1348]:
+                  - generic [ref=f4e1349]: پزوی کوبا
+                  - generic [ref=f4e1350]: ارز
+                - generic [ref=f4e1351]: ۱۱٬۲۳۰
+              - option "پزوی مکزیک ارز ۱۴٬۳۱۰" [ref=f4e1352] [cursor=pointer]:
+                - generic [ref=f4e1356]:
+                  - generic [ref=f4e1357]: پزوی مکزیک
+                  - generic [ref=f4e1358]: ارز
+                - generic [ref=f4e1359]: ۱۴٬۳۱۰
+              - option "پوله بوتسوانا ارز ۱۸٬۰۶۰" [ref=f4e1360] [cursor=pointer]:
+                - generic [ref=f4e1364]:
+                  - generic [ref=f4e1365]: پوله بوتسوانا
+                  - generic [ref=f4e1366]: ارز
+                - generic [ref=f4e1367]: ۱۸٬۰۶۰
+              - option "پوند سودان ارز ۴۴۶" [ref=f4e1368] [cursor=pointer]:
+                - generic [ref=f4e1372]:
+                  - generic [ref=f4e1373]: پوند سودان
+                  - generic [ref=f4e1374]: ارز
+                - generic [ref=f4e1375]: ۴۴۶
+              - option "پوند سوریه ارز ۲٬۲۲۴" [ref=f4e1376] [cursor=pointer]:
+                - generic [ref=f4e1380]:
+                  - generic [ref=f4e1381]: پوند سوریه
+                  - generic [ref=f4e1382]: ارز
+                - generic [ref=f4e1383]: ۲٬۲۲۴
+              - option "پوند سینت هلنا ارز ۳۵۵٬۰۶۰" [ref=f4e1384] [cursor=pointer]:
+                - generic [ref=f4e1388]:
+                  - generic [ref=f4e1389]: پوند سینت هلنا
+                  - generic [ref=f4e1390]: ارز
+                - generic [ref=f4e1391]: ۳۵۵٬۰۶۰
+              - option "پوند قبرس ارز ۵٬۹۲۰" [ref=f4e1392] [cursor=pointer]:
+                - generic [ref=f4e1396]:
+                  - generic [ref=f4e1397]: پوند قبرس
+                  - generic [ref=f4e1398]: ارز
+                - generic [ref=f4e1399]: ۵٬۹۲۰
+              - option "پوند لبنان ارز ۳" [ref=f4e1400] [cursor=pointer]:
+                - generic [ref=f4e1404]:
+                  - generic [ref=f4e1405]: پوند لبنان
+                  - generic [ref=f4e1406]: ارز
+                - generic [ref=f4e1407]: ۳
+              - option "پوند مصر ارز ۵٬۰۱۰" [ref=f4e1408] [cursor=pointer]:
+                - generic [ref=f4e1412]:
+                  - generic [ref=f4e1413]: پوند مصر
+                  - generic [ref=f4e1414]: ارز
+                - generic [ref=f4e1415]: ۵٬۰۱۰
+              - option "تاکا بنگلادش ارز ۲٬۱۶۰" [ref=f4e1416] [cursor=pointer]:
+                - generic [ref=f4e1420]:
+                  - generic [ref=f4e1421]: تاکا بنگلادش
+                  - generic [ref=f4e1422]: ارز
+                - generic [ref=f4e1423]: ۲٬۱۶۰
+              - option "تنگه قزاقستان ارز ۵۹۹" [ref=f4e1424] [cursor=pointer]:
+                - generic [ref=f4e1428]:
+                  - generic [ref=f4e1429]: تنگه قزاقستان
+                  - generic [ref=f4e1430]: ارز
+                - generic [ref=f4e1431]: ۵۹۹
+              - option "درام ارمنستان ارز ۷۴۸" [ref=f4e1432] [cursor=pointer]:
+                - generic [ref=f4e1436]:
+                  - generic [ref=f4e1437]: درام ارمنستان
+                  - generic [ref=f4e1438]: ارز
+                - generic [ref=f4e1439]: ۷۴۸
+              - option "درهم مراکش ارز ۲۷٬۱۲۰" [ref=f4e1440] [cursor=pointer]:
+                - generic [ref=f4e1444]:
+                  - generic [ref=f4e1445]: درهم مراکش
+                  - generic [ref=f4e1446]: ارز
+                - generic [ref=f4e1447]: ۲۷٬۱۲۰
+              - option "دلار باربادوس ارز ۱۲۹٬۸۶۰" [ref=f4e1448] [cursor=pointer]:
+                - generic [ref=f4e1452]:
+                  - generic [ref=f4e1453]: دلار باربادوس
+                  - generic [ref=f4e1454]: ارز
+                - generic [ref=f4e1455]: ۱۲۹٬۸۶۰
+              - option "دلار باهاماس ارز ۲۶۱٬۵۷۰" [ref=f4e1456] [cursor=pointer]:
+                - generic [ref=f4e1460]:
+                  - generic [ref=f4e1461]: دلار باهاماس
+                  - generic [ref=f4e1462]: ارز
+                - generic [ref=f4e1463]: ۲۶۱٬۵۷۰
+              - option "دلار بلیز ارز ۱۳۰٬۰۴۰" [ref=f4e1464] [cursor=pointer]:
+                - generic [ref=f4e1468]:
+                  - generic [ref=f4e1469]: دلار بلیز
+                  - generic [ref=f4e1470]: ارز
+                - generic [ref=f4e1471]: ۱۳۰٬۰۴۰
+              - option "دلار تایوان ارز ۸٬۲۱۰" [ref=f4e1472] [cursor=pointer]:
+                - generic [ref=f4e1476]:
+                  - generic [ref=f4e1477]: دلار تایوان
+                  - generic [ref=f4e1478]: ارز
+                - generic [ref=f4e1479]: ۸٬۲۱۰
+              - option "دلار ترینیداد و توباگو ارز ۳۸٬۱۴۰" [ref=f4e1480] [cursor=pointer]:
+                - generic [ref=f4e1484]:
+                  - generic [ref=f4e1485]: دلار ترینیداد و توباگو
+                  - generic [ref=f4e1486]: ارز
+                - generic [ref=f4e1487]: ۳۸٬۱۴۰
+              - option "دلار جامایکا ارز ۱٬۶۵۰" [ref=f4e1488] [cursor=pointer]:
+                - generic [ref=f4e1492]:
+                  - generic [ref=f4e1493]: دلار جامایکا
+                  - generic [ref=f4e1494]: ارز
+                - generic [ref=f4e1495]: ۱٬۶۵۰
+              - option "دلار جزایر کیمن ارز ۳۲۶٬۲۸۰" [ref=f4e1496] [cursor=pointer]:
+                - generic [ref=f4e1500]:
+                  - generic [ref=f4e1501]: دلار جزایر کیمن
+                  - generic [ref=f4e1502]: ارز
+                - generic [ref=f4e1503]: ۳۲۶٬۲۸۰
+              - option "دلار سنگاپور ارز ۲۰۹٬۳۴۰" [ref=f4e1504] [cursor=pointer]:
+                - generic [ref=f4e1508]:
+                  - generic [ref=f4e1509]: دلار سنگاپور
+                  - generic [ref=f4e1510]: ارز
+                - generic [ref=f4e1511]: ۲۰۹٬۳۴۰
+              - option "دلار فیجی ارز ۱۱۵٬۰۶۶" [ref=f4e1512] [cursor=pointer]:
+                - generic [ref=f4e1516]:
+                  - generic [ref=f4e1517]: دلار فیجی
+                  - generic [ref=f4e1518]: ارز
+                - generic [ref=f4e1519]: ۱۱۵٬۰۶۶
+              - option "دلار کارائیب شرقی ارز ۹۹٬۲۶۰" [ref=f4e1520] [cursor=pointer]:
+                - generic [ref=f4e1524]:
+                  - generic [ref=f4e1525]: دلار کارائیب شرقی
+                  - generic [ref=f4e1526]: ارز
+                - generic [ref=f4e1527]: ۹۹٬۲۶۰
+              - option "دلار گویان ارز ۱٬۳۰۰" [ref=f4e1528] [cursor=pointer]:
+                - generic [ref=f4e1532]:
+                  - generic [ref=f4e1533]: دلار گویان
+                  - generic [ref=f4e1534]: ارز
+                - generic [ref=f4e1535]: ۱٬۳۰۰
+              - option "دلار لیبریا ارز ۱٬۶۵۰" [ref=f4e1536] [cursor=pointer]:
+                - generic [ref=f4e1540]:
+                  - generic [ref=f4e1541]: دلار لیبریا
+                  - generic [ref=f4e1542]: ارز
+                - generic [ref=f4e1543]: ۱٬۶۵۰
+              - option "دلار نامبیا ارز ۱۵٬۶۰۰" [ref=f4e1544] [cursor=pointer]:
+                - generic [ref=f4e1548]:
+                  - generic [ref=f4e1549]: دلار نامبیا
+                  - generic [ref=f4e1550]: ارز
+                - generic [ref=f4e1551]: ۱۵٬۶۰۰
+              - option "دلار نیوزیلند ارز ۱۴۹٬۲۰۰" [ref=f4e1552] [cursor=pointer]:
+                - generic [ref=f4e1556]:
+                  - generic [ref=f4e1557]: دلار نیوزیلند
+                  - generic [ref=f4e1558]: ارز
+                - generic [ref=f4e1559]: ۱۴۹٬۲۰۰
+              - option "دلار هنگ کنگ ارز ۳۴٬۴۲۰" [ref=f4e1560] [cursor=pointer]:
+                - generic [ref=f4e1564]:
+                  - generic [ref=f4e1565]: دلار هنگ کنگ
+                  - generic [ref=f4e1566]: ارز
+                - generic [ref=f4e1567]: ۳۴٬۴۲۰
+              - option "دلاسی گامبیا ارز ۳٬۵۹۰" [ref=f4e1568] [cursor=pointer]:
+                - generic [ref=f4e1572]:
+                  - generic [ref=f4e1573]: دلاسی گامبیا
+                  - generic [ref=f4e1574]: ارز
+                - generic [ref=f4e1575]: ۳٬۵۹۰
+              - option "دوبرا سائوتومه و پرنسیپ ارز ۱۱٬۸۷۱" [ref=f4e1576] [cursor=pointer]:
+                - generic [ref=f4e1580]:
+                  - generic [ref=f4e1581]: دوبرا سائوتومه و پرنسیپ
+                  - generic [ref=f4e1582]: ارز
+                - generic [ref=f4e1583]: ۱۱٬۸۷۱
+              - option "دونگ ویتنام ارز ۱۱" [ref=f4e1584] [cursor=pointer]:
+                - generic [ref=f4e1588]:
+                  - generic [ref=f4e1589]: دونگ ویتنام
+                  - generic [ref=f4e1590]: ارز
+                - generic [ref=f4e1591]: ۱۱
+              - option "دینار اردن ارز ۳۸۱٬۳۳۰" [ref=f4e1592] [cursor=pointer]:
+                - generic [ref=f4e1596]:
+                  - generic [ref=f4e1597]: دینار اردن
+                  - generic [ref=f4e1598]: ارز
+                - generic [ref=f4e1599]: ۳۸۱٬۳۳۰
+              - option "دینار الجزایر ارز ۱٬۹۶۰" [ref=f4e1600] [cursor=pointer]:
+                - generic [ref=f4e1604]:
+                  - generic [ref=f4e1605]: دینار الجزایر
+                  - generic [ref=f4e1606]: ارز
+                - generic [ref=f4e1607]: ۱٬۹۶۰
+              - option "دینار بحرین ارز ۷۱۷٬۱۱۰" [ref=f4e1608] [cursor=pointer]:
+                - generic [ref=f4e1612]:
+                  - generic [ref=f4e1613]: دینار بحرین
+                  - generic [ref=f4e1614]: ارز
+                - generic [ref=f4e1615]: ۷۱۷٬۱۱۰
+              - option "دینار تونس ارز ۸۶٬۴۷۰" [ref=f4e1616] [cursor=pointer]:
+                - generic [ref=f4e1620]:
+                  - generic [ref=f4e1621]: دینار تونس
+                  - generic [ref=f4e1622]: ارز
+                - generic [ref=f4e1623]: ۸۶٬۴۷۰
+              - option "دینار صربستان ارز ۲٬۵۱۱" [ref=f4e1624] [cursor=pointer]:
+                - generic [ref=f4e1628]:
+                  - generic [ref=f4e1629]: دینار صربستان
+                  - generic [ref=f4e1630]: ارز
+                - generic [ref=f4e1631]: ۲٬۵۱۱
+              - option "دینار لیبی ارز ۴۱٬۵۲۰" [ref=f4e1632] [cursor=pointer]:
+                - generic [ref=f4e1636]:
+                  - generic [ref=f4e1637]: دینار لیبی
+                  - generic [ref=f4e1638]: ارز
+                - generic [ref=f4e1639]: ۴۱٬۵۲۰
+              - option "دینار مقدونیه ارز ۴٬۸۰۰" [ref=f4e1640] [cursor=pointer]:
+                - generic [ref=f4e1644]:
+                  - generic [ref=f4e1645]: دینار مقدونیه
+                  - generic [ref=f4e1646]: ارز
+                - generic [ref=f4e1647]: ۴٬۸۰۰
+              - option "رئال برزیل ارز ۴۵٬۸۴۰" [ref=f4e1648] [cursor=pointer]:
+                - generic [ref=f4e1652]:
+                  - generic [ref=f4e1653]: رئال برزیل
+                  - generic [ref=f4e1654]: ارز
+                - generic [ref=f4e1655]: ۴۵٬۸۴۰
+              - option "رند آفریقای جنوبی ارز ۱۵٬۶۱۰" [ref=f4e1656] [cursor=pointer]:
+                - generic [ref=f4e1660]:
+                  - generic [ref=f4e1661]: رند آفریقای جنوبی
+                  - generic [ref=f4e1662]: ارز
+                - generic [ref=f4e1663]: ۱۵٬۶۱۰
+              - option "روبل بلاروس ارز ۹۳٬۲۳۰" [ref=f4e1664] [cursor=pointer]:
+                - generic [ref=f4e1668]:
+                  - generic [ref=f4e1669]: روبل بلاروس
+                  - generic [ref=f4e1670]: ارز
+                - generic [ref=f4e1671]: ۹۳٬۲۳۰
+              - option "روپیه اندونزی ارز ۱۵" [ref=f4e1672] [cursor=pointer]:
+                - generic [ref=f4e1676]:
+                  - generic [ref=f4e1677]: روپیه اندونزی
+                  - generic [ref=f4e1678]: ارز
+                - generic [ref=f4e1679]: ۱۵
+              - option "روپیه پاکستان ارز ۹۶۶" [ref=f4e1680] [cursor=pointer]:
+                - generic [ref=f4e1684]:
+                  - generic [ref=f4e1685]: روپیه پاکستان
+                  - generic [ref=f4e1686]: ارز
+                - generic [ref=f4e1687]: ۹۶۶
+              - option "روپیه سریلانکا ارز ۸۱۱" [ref=f4e1688] [cursor=pointer]:
+                - generic [ref=f4e1692]:
+                  - generic [ref=f4e1693]: روپیه سریلانکا
+                  - generic [ref=f4e1694]: ارز
+                - generic [ref=f4e1695]: ۸۱۱
+              - option "روپیه سیشل ارز ۱۸٬۲۵۰" [ref=f4e1696] [cursor=pointer]:
+                - generic [ref=f4e1700]:
+                  - generic [ref=f4e1701]: روپیه سیشل
+                  - generic [ref=f4e1702]: ارز
+                - generic [ref=f4e1703]: ۱۸٬۲۵۰
+              - option "روپیه موریس ارز ۵٬۶۴۰" [ref=f4e1704] [cursor=pointer]:
+                - generic [ref=f4e1708]:
+                  - generic [ref=f4e1709]: روپیه موریس
+                  - generic [ref=f4e1710]: ارز
+                - generic [ref=f4e1711]: ۵٬۶۴۰
+              - option "روپیه نپال ارز ۱٬۷۵۰" [ref=f4e1712] [cursor=pointer]:
+                - generic [ref=f4e1716]:
+                  - generic [ref=f4e1717]: روپیه نپال
+                  - generic [ref=f4e1718]: ارز
+                - generic [ref=f4e1719]: ۱٬۷۵۰
+              - option "روپیه هند ارز ۲٬۸۹۴" [ref=f4e1720] [cursor=pointer]:
+                - generic [ref=f4e1724]:
+                  - generic [ref=f4e1725]: روپیه هند
+                  - generic [ref=f4e1726]: ارز
+                - generic [ref=f4e1727]: ۲٬۸۹۴
+              - option "روفیا مالدیو ارز ۱۷٬۴۲۰" [ref=f4e1728] [cursor=pointer]:
+                - generic [ref=f4e1732]:
+                  - generic [ref=f4e1733]: روفیا مالدیو
+                  - generic [ref=f4e1734]: ارز
+                - generic [ref=f4e1735]: ۱۷٬۴۲۰
+              - option "ریال قطر ارز ۷۳٬۵۵۰" [ref=f4e1736] [cursor=pointer]:
+                - generic [ref=f4e1740]:
+                  - generic [ref=f4e1741]: ریال قطر
+                  - generic [ref=f4e1742]: ارز
+                - generic [ref=f4e1743]: ۷۳٬۵۵۰
+              - option "ریال یمن ارز ۱٬۱۴۰" [ref=f4e1744] [cursor=pointer]:
+                - generic [ref=f4e1748]:
+                  - generic [ref=f4e1749]: ریال یمن
+                  - generic [ref=f4e1750]: ارز
+                - generic [ref=f4e1751]: ۱٬۱۴۰
+              - option "ریل کامبوج ارز ۶۳٫۵" [ref=f4e1752] [cursor=pointer]:
+                - generic [ref=f4e1756]:
+                  - generic [ref=f4e1757]: ریل کامبوج
+                  - generic [ref=f4e1758]: ارز
+                - generic [ref=f4e1759]: ۶۳٫۵
+              - option "رینگیت مالزی ارز ۶۵٬۶۹۰" [ref=f4e1760] [cursor=pointer]:
+                - generic [ref=f4e1764]:
+                  - generic [ref=f4e1765]: رینگیت مالزی
+                  - generic [ref=f4e1766]: ارز
+                - generic [ref=f4e1767]: ۶۵٬۶۹۰
+              - option "زلوتی لهستان ارز ۶۷٬۱۸۰" [ref=f4e1768] [cursor=pointer]:
+                - generic [ref=f4e1772]:
+                  - generic [ref=f4e1773]: زلوتی لهستان
+                  - generic [ref=f4e1774]: ارز
+                - generic [ref=f4e1775]: ۶۷٬۱۸۰
+              - option "سامانی تاجیکستان ارز ۲۸٬۴۳۰" [ref=f4e1776] [cursor=pointer]:
+                - generic [ref=f4e1780]:
+                  - generic [ref=f4e1781]: سامانی تاجیکستان
+                  - generic [ref=f4e1782]: ارز
+                - generic [ref=f4e1783]: ۲۸٬۴۳۰
+              - option "سدی غنا ارز ۲۲٬۱۵۰" [ref=f4e1784] [cursor=pointer]:
+                - generic [ref=f4e1788]:
+                  - generic [ref=f4e1789]: سدی غنا
+                  - generic [ref=f4e1790]: ارز
+                - generic [ref=f4e1791]: ۲۲٬۱۵۰
+              - option "سول پرو ارز ۸۱٬۶۵۰" [ref=f4e1792] [cursor=pointer]:
+                - generic [ref=f4e1796]:
+                  - generic [ref=f4e1797]: سول پرو
+                  - generic [ref=f4e1798]: ارز
+                - generic [ref=f4e1799]: ۸۱٬۶۵۰
+              - option "سوم ازبکستان ارز ۲۲" [ref=f4e1800] [cursor=pointer]:
+                - generic [ref=f4e1804]:
+                  - generic [ref=f4e1805]: سوم ازبکستان
+                  - generic [ref=f4e1806]: ارز
+                - generic [ref=f4e1807]: ۲۲
+              - option "سوم قرقیزستان ارز ۳٬۰۸۷" [ref=f4e1808] [cursor=pointer]:
+                - generic [ref=f4e1812]:
+                  - generic [ref=f4e1813]: سوم قرقیزستان
+                  - generic [ref=f4e1814]: ارز
+                - generic [ref=f4e1815]: ۳٬۰۸۷
+              - option "شیلینگ اوگاندا ارز ۶۲" [ref=f4e1816] [cursor=pointer]:
+                - generic [ref=f4e1820]:
+                  - generic [ref=f4e1821]: شیلینگ اوگاندا
+                  - generic [ref=f4e1822]: ارز
+                - generic [ref=f4e1823]: ۶۲
+              - option "شیلینگ تانزانیا ارز ۱۰۲" [ref=f4e1824] [cursor=pointer]:
+                - generic [ref=f4e1828]:
+                  - generic [ref=f4e1829]: شیلینگ تانزانیا
+                  - generic [ref=f4e1830]: ارز
+                - generic [ref=f4e1831]: ۱۰۲
+              - option "شیلینگ سومالی ارز ۴۴۴" [ref=f4e1832] [cursor=pointer]:
+                - generic [ref=f4e1836]:
+                  - generic [ref=f4e1837]: شیلینگ سومالی
+                  - generic [ref=f4e1838]: ارز
+                - generic [ref=f4e1839]: ۴۴۴
+              - option "شیلینگ کنیا ارز ۲٬۰۷۰" [ref=f4e1840] [cursor=pointer]:
+                - generic [ref=f4e1844]:
+                  - generic [ref=f4e1845]: شیلینگ کنیا
+                  - generic [ref=f4e1846]: ارز
+                - generic [ref=f4e1847]: ۲٬۰۷۰
+              - option "فرانک آفریقا ارز ۴۳۹" [ref=f4e1848] [cursor=pointer]:
+                - generic [ref=f4e1852]:
+                  - generic [ref=f4e1853]: فرانک آفریقا
+                  - generic [ref=f4e1854]: ارز
+                - generic [ref=f4e1855]: ۴۳۹
+              - option "فرانک آفریقای غربی ارز ۴۳۹" [ref=f4e1856] [cursor=pointer]:
+                - generic [ref=f4e1860]:
+                  - generic [ref=f4e1861]: فرانک آفریقای غربی
+                  - generic [ref=f4e1862]: ارز
+                - generic [ref=f4e1863]: ۴۳۹
+              - option "فرانک اقیانوسیه ارز ۲٬۴۲۰" [ref=f4e1864] [cursor=pointer]:
+                - generic [ref=f4e1868]:
+                  - generic [ref=f4e1869]: فرانک اقیانوسیه
+                  - generic [ref=f4e1870]: ارز
+                - generic [ref=f4e1871]: ۲٬۴۲۰
+              - option "فرانک بوروندی ارز ۸۹٫۴" [ref=f4e1872] [cursor=pointer]:
+                - generic [ref=f4e1876]:
+                  - generic [ref=f4e1877]: فرانک بوروندی
+                  - generic [ref=f4e1878]: ارز
+                - generic [ref=f4e1879]: ۸۹٫۴
+              - option "فرانک جیبوتی ارز ۱٬۵۱۰" [ref=f4e1880] [cursor=pointer]:
+                - generic [ref=f4e1884]:
+                  - generic [ref=f4e1885]: فرانک جیبوتی
+                  - generic [ref=f4e1886]: ارز
+                - generic [ref=f4e1887]: ۱٬۵۱۰
+              - option "فرانک رواندا ارز ۱۷۷" [ref=f4e1888] [cursor=pointer]:
+                - generic [ref=f4e1892]:
+                  - generic [ref=f4e1893]: فرانک رواندا
+                  - generic [ref=f4e1894]: ارز
+                - generic [ref=f4e1895]: ۱۷۷
+              - option "فرانک کنگو ارز ۱۲۰" [ref=f4e1896] [cursor=pointer]:
+                - generic [ref=f4e1900]:
+                  - generic [ref=f4e1901]: فرانک کنگو
+                  - generic [ref=f4e1902]: ارز
+                - generic [ref=f4e1903]: ۱۲۰
+              - option "فرانک کومور ارز ۶۰۰" [ref=f4e1904] [cursor=pointer]:
+                - generic [ref=f4e1908]:
+                  - generic [ref=f4e1909]: فرانک کومور
+                  - generic [ref=f4e1910]: ارز
+                - generic [ref=f4e1911]: ۶۰۰
+              - option "فرانک گینه ارز ۳۰٫۳" [ref=f4e1912] [cursor=pointer]:
+                - generic [ref=f4e1916]:
+                  - generic [ref=f4e1917]: فرانک گینه
+                  - generic [ref=f4e1918]: ارز
+                - generic [ref=f4e1919]: ۳۰٫۳
+              - option "فلورین آروبا ارز ۱۵۰٬۸۷۰" [ref=f4e1920] [cursor=pointer]:
+                - generic [ref=f4e1924]:
+                  - generic [ref=f4e1925]: فلورین آروبا
+                  - generic [ref=f4e1926]: ارز
+                - generic [ref=f4e1927]: ۱۵۰٬۸۷۰
+              - option "فورینت مجارستان ارز ۸۱۰" [ref=f4e1928] [cursor=pointer]:
+                - generic [ref=f4e1932]:
+                  - generic [ref=f4e1933]: فورینت مجارستان
+                  - generic [ref=f4e1934]: ارز
+                - generic [ref=f4e1935]: ۸۱۰
+              - option "کرون چک ارز ۱۲٬۱۶۰" [ref=f4e1936] [cursor=pointer]:
+                - generic [ref=f4e1940]:
+                  - generic [ref=f4e1941]: کرون چک
+                  - generic [ref=f4e1942]: ارز
+                - generic [ref=f4e1943]: ۱۲٬۱۶۰
+              - option "کرون دانمارک ارز ۳۹٬۷۲۰" [ref=f4e1944] [cursor=pointer]:
+                - generic [ref=f4e1948]:
+                  - generic [ref=f4e1949]: کرون دانمارک
+                  - generic [ref=f4e1950]: ارز
+                - generic [ref=f4e1951]: ۳۹٬۷۲۰
+              - option "کرون سوئد ارز ۲۶٬۶۵۰" [ref=f4e1952] [cursor=pointer]:
+                - generic [ref=f4e1956]:
+                  - generic [ref=f4e1957]: کرون سوئد
+                  - generic [ref=f4e1958]: ارز
+                - generic [ref=f4e1959]: ۲۶٬۶۵۰
+              - option "کرون نروژ ارز ۲۷٬۸۶۰" [ref=f4e1960] [cursor=pointer]:
+                - generic [ref=f4e1964]:
+                  - generic [ref=f4e1965]: کرون نروژ
+                  - generic [ref=f4e1966]: ارز
+                - generic [ref=f4e1967]: ۲۷٬۸۶۰
+              - option "کرونا ایسلند ارز ۲٬۱۶۰" [ref=f4e1968] [cursor=pointer]:
+                - generic [ref=f4e1972]:
+                  - generic [ref=f4e1973]: کرونا ایسلند
+                  - generic [ref=f4e1974]: ارز
+                - generic [ref=f4e1975]: ۲٬۱۶۰
+              - option "کواچا زامبیا ارز ۱۲٬۷۶۰" [ref=f4e1976] [cursor=pointer]:
+                - generic [ref=f4e1980]:
+                  - generic [ref=f4e1981]: کواچا زامبیا
+                  - generic [ref=f4e1982]: ارز
+                - generic [ref=f4e1983]: ۱۲٬۷۶۰
+              - option "کواچا مالاوی ارز ۱۵۲٫۹" [ref=f4e1984] [cursor=pointer]:
+                - generic [ref=f4e1988]:
+                  - generic [ref=f4e1989]: کواچا مالاوی
+                  - generic [ref=f4e1990]: ارز
+                - generic [ref=f4e1991]: ۱۵۲٫۹
+              - option "کوردوبا نیکاراگوئه ارز ۷٬۱۵۰" [ref=f4e1992] [cursor=pointer]:
+                - generic [ref=f4e1996]:
+                  - generic [ref=f4e1997]: کوردوبا نیکاراگوئه
+                  - generic [ref=f4e1998]: ارز
+                - generic [ref=f4e1999]: ۷٬۱۵۰
+              - option "کولون السالوادور ارز ۲۹٬۶۳۰" [ref=f4e2000] [cursor=pointer]:
+                - generic [ref=f4e2004]:
+                  - generic [ref=f4e2005]: کولون السالوادور
+                  - generic [ref=f4e2006]: ارز
+                - generic [ref=f4e2007]: ۲۹٬۶۳۰
+              - option "کولون کاستاریکا ارز ۶۰۰" [ref=f4e2008] [cursor=pointer]:
+                - generic [ref=f4e2012]:
+                  - generic [ref=f4e2013]: کولون کاستاریکا
+                  - generic [ref=f4e2014]: ارز
+                - generic [ref=f4e2015]: ۶۰۰
+              - option "کونا کرواسی ارز ۳۸٬۳۷۰" [ref=f4e2016] [cursor=pointer]:
+                - generic [ref=f4e2020]:
+                  - generic [ref=f4e2021]: کونا کرواسی
+                  - generic [ref=f4e2022]: ارز
+                - generic [ref=f4e2023]: ۳۸٬۳۷۰
+              - option "کیات میانمار ارز ۱۲۹" [ref=f4e2024] [cursor=pointer]:
+                - generic [ref=f4e2028]:
+                  - generic [ref=f4e2029]: کیات میانمار
+                  - generic [ref=f4e2030]: ارز
+                - generic [ref=f4e2031]: ۱۲۹
+              - option "کیپ لائوس ارز ۱۲" [ref=f4e2032] [cursor=pointer]:
+                - generic [ref=f4e2036]:
+                  - generic [ref=f4e2037]: کیپ لائوس
+                  - generic [ref=f4e2038]: ارز
+                - generic [ref=f4e2039]: ۱۲
+              - option "کینا پاپوا گینه نو ارز ۵۹٬۰۳۰" [ref=f4e2040] [cursor=pointer]:
+                - generic [ref=f4e2044]:
+                  - generic [ref=f4e2045]: کینا پاپوا گینه نو
+                  - generic [ref=f4e2046]: ارز
+                - generic [ref=f4e2047]: ۵۹٬۰۳۰
+              - option "گواتزال گواتمالا ارز ۳۵٬۲۹۰" [ref=f4e2048] [cursor=pointer]:
+                - generic [ref=f4e2052]:
+                  - generic [ref=f4e2053]: گواتزال گواتمالا
+                  - generic [ref=f4e2054]: ارز
+                - generic [ref=f4e2055]: ۳۵٬۲۹۰
+              - option "گورانی پاراگوئه ارز ۴۲" [ref=f4e2056] [cursor=pointer]:
+                - generic [ref=f4e2060]:
+                  - generic [ref=f4e2061]: گورانی پاراگوئه
+                  - generic [ref=f4e2062]: ارز
+                - generic [ref=f4e2063]: ۴۲
+              - option "گورده هایتی ارز ۲٬۰۴۰" [ref=f4e2064] [cursor=pointer]:
+                - generic [ref=f4e2068]:
+                  - generic [ref=f4e2069]: گورده هایتی
+                  - generic [ref=f4e2070]: ارز
+                - generic [ref=f4e2071]: ۲٬۰۴۰
+              - generic [ref=f4e2072]: سکه
+              - option "سکه امامی سکه · هر عدد ۲۴۹٬۵۹۰٬۰۰۰" [ref=f4e2073] [cursor=pointer]:
+                - generic [ref=f4e2077]:
+                  - generic [ref=f4e2078]: سکه امامی
+                  - generic [ref=f4e2079]: سکه · هر عدد
+                - generic [ref=f4e2080]: ۲۴۹٬۵۹۰٬۰۰۰
+              - option "سکه بهار آزادی سکه · هر عدد ۲۳۹٬۸۴۰٬۰۰۰" [ref=f4e2081] [cursor=pointer]:
+                - generic [ref=f4e2085]:
+                  - generic [ref=f4e2086]: سکه بهار آزادی
+                  - generic [ref=f4e2087]: سکه · هر عدد
+                - generic [ref=f4e2088]: ۲۳۹٬۸۴۰٬۰۰۰
+              - option "نیم سکه سکه · هر عدد ۱۳۰٬۸۹۰٬۰۰۰" [ref=f4e2089] [cursor=pointer]:
+                - generic [ref=f4e2093]:
+                  - generic [ref=f4e2094]: نیم سکه
+                  - generic [ref=f4e2095]: سکه · هر عدد
+                - generic [ref=f4e2096]: ۱۳۰٬۸۹۰٬۰۰۰
+              - option "ربع سکه سکه · هر عدد ۷۱٬۱۵۰٬۰۰۰" [ref=f4e2097] [cursor=pointer]:
+                - generic [ref=f4e2101]:
+                  - generic [ref=f4e2102]: ربع سکه
+                  - generic [ref=f4e2103]: سکه · هر عدد
+                - generic [ref=f4e2104]: ۷۱٬۱۵۰٬۰۰۰
+              - option "سکه گرمی سکه · هر عدد ۳۶٬۰۰۰٬۰۰۰" [ref=f4e2105] [cursor=pointer]:
+                - generic [ref=f4e2109]:
+                  - generic [ref=f4e2110]: سکه گرمی
+                  - generic [ref=f4e2111]: سکه · هر عدد
+                - generic [ref=f4e2112]: ۳۶٬۰۰۰٬۰۰۰
+              - generic [ref=f4e2113]: نقره و فلزات
+              - option "نقره ۹۹۹ (هر گرم) نقره و فلزات · هر گرم ۴۰۹٬۲۹۰" [ref=f4e2114] [cursor=pointer]:
+                - generic [ref=f4e2118]:
+                  - generic [ref=f4e2119]: نقره ۹۹۹ (هر گرم)
+                  - generic [ref=f4e2120]: نقره و فلزات · هر گرم
+                - generic [ref=f4e2121]: ۴۰۹٬۲۹۰
+              - option "نقره ۹۲۵ (هر گرم) نقره و فلزات · هر گرم ۳۷۰٬۸۱۶" [ref=f4e2122] [cursor=pointer]:
+                - generic [ref=f4e2126]:
+                  - generic [ref=f4e2127]: نقره ۹۲۵ (هر گرم)
+                  - generic [ref=f4e2128]: نقره و فلزات · هر گرم
+                - generic [ref=f4e2129]: ۳۷۰٬۸۱۶
+              - option "انس طلا نقره و فلزات · هر اونس ۹۷۹٬۰۰۵٬۷۱۰" [ref=f4e2130] [cursor=pointer]:
+                - generic [ref=f4e2134]:
+                  - generic [ref=f4e2135]: انس طلا
+                  - generic [ref=f4e2136]: نقره و فلزات · هر اونس
+                - generic [ref=f4e2137]: ۹۷۹٬۰۰۵٬۷۱۰
+              - generic [ref=f4e2138]: طلا
+              - option "طلای ۲۴ عیار (هر گرم) طلا · هر گرم ۳۲٬۳۸۱٬۹۰۰" [ref=f4e2139] [cursor=pointer]:
+                - generic [ref=f4e2143]:
+                  - generic [ref=f4e2144]: طلای ۲۴ عیار (هر گرم)
+                  - generic [ref=f4e2145]: طلا · هر گرم
+                - generic [ref=f4e2146]: ۳۲٬۳۸۱٬۹۰۰
+              - option "مثقال طلا طلا · هر مثقال ۱۰۵٬۱۹۶٬۰۰۰" [ref=f4e2147] [cursor=pointer]:
+                - generic [ref=f4e2151]:
+                  - generic [ref=f4e2152]: مثقال طلا
+                  - generic [ref=f4e2153]: طلا · هر مثقال
+                - generic [ref=f4e2154]: ۱۰۵٬۱۹۶٬۰۰۰
+              - option "طلای دست دوم (هر گرم) طلا · هر گرم ۲۳٬۹۶۲٬۸۳۷" [ref=f4e2155] [cursor=pointer]:
+                - generic [ref=f4e2159]:
+                  - generic [ref=f4e2160]: طلای دست دوم (هر گرم)
+                  - generic [ref=f4e2161]: طلا · هر گرم
+                - generic [ref=f4e2162]: ۲۳٬۹۶۲٬۸۳۷
+              - option "طلای ۱۸ عیار ۷۴۰ (هر گرم) طلا · هر گرم ۲۳٬۹۶۲٬۸۰۰" [ref=f4e2163] [cursor=pointer]:
+                - generic [ref=f4e2167]:
+                  - generic [ref=f4e2168]: طلای ۱۸ عیار ۷۴۰ (هر گرم)
+                  - generic [ref=f4e2169]: طلا · هر گرم
+                - generic [ref=f4e2170]: ۲۳٬۹۶۲٬۸۰۰
+              - option "آبشده نقدی طلا · هر مثقال ۱۰۵٬۲۲۴٬۰۰۰" [ref=f4e2171] [cursor=pointer]:
+                - generic [ref=f4e2175]:
+                  - generic [ref=f4e2176]: آبشده نقدی
+                  - generic [ref=f4e2177]: طلا · هر مثقال
+                - generic [ref=f4e2178]: ۱۰۵٬۲۲۴٬۰۰۰
+              - generic [ref=f4e2179]: رمزارز
+              - option "تتر (ریالی) رمزارز ۲۷۱٬۵۳۰" [ref=f4e2180] [cursor=pointer]:
+                - generic [ref=f4e2184]:
+                  - generic [ref=f4e2185]: تتر (ریالی)
+                  - generic [ref=f4e2186]: رمزارز
+                - generic [ref=f4e2187]: ۲۷۱٬۵۳۰
+              - option "بیت‌کوین رمزارز ۱۶٬۸۱۳٬۳۵۴٬۳۴۱" [ref=f4e2188] [cursor=pointer]:
+                - generic [ref=f4e2192]:
+                  - generic [ref=f4e2193]: بیت‌کوین
+                  - generic [ref=f4e2194]: رمزارز
+                - generic [ref=f4e2195]: ۱۶٬۸۱۳٬۳۵۴٬۳۴۱
+              - option "اتریوم رمزارز ۴۷۷٬۲۰۵٬۲۳۰" [ref=f4e2196] [cursor=pointer]:
+                - generic [ref=f4e2200]:
+                  - generic [ref=f4e2201]: اتریوم
+                  - generic [ref=f4e2202]: رمزارز
+                - generic [ref=f4e2203]: ۴۷۷٬۲۰۵٬۲۳۰
+              - option "تون‌کوین رمزارز ۶۰۳٬۸۰۰" [ref=f4e2204] [cursor=pointer]:
+                - generic [ref=f4e2208]:
+                  - generic [ref=f4e2209]: تون‌کوین
+                  - generic [ref=f4e2210]: رمزارز
+                - generic [ref=f4e2211]: ۶۰۳٬۸۰۰
+              - option "ترون رمزارز ۸۵٬۲۲۹" [ref=f4e2212] [cursor=pointer]:
+                - generic [ref=f4e2216]:
+                  - generic [ref=f4e2217]: ترون
+                  - generic [ref=f4e2218]: رمزارز
+                - generic [ref=f4e2219]: ۸۵٬۲۲۹
+              - option "سولانا رمزارز ۱۹٬۹۲۹٬۳۳۶" [ref=f4e2220] [cursor=pointer]:
+                - generic [ref=f4e2224]:
+                  - generic [ref=f4e2225]: سولانا
+                  - generic [ref=f4e2226]: رمزارز
+                - generic [ref=f4e2227]: ۱۹٬۹۲۹٬۳۳۶
+              - option "بایننس کوین رمزارز ۱۵۷٬۹۱۱٬۵۱۴" [ref=f4e2228] [cursor=pointer]:
+                - generic [ref=f4e2232]:
+                  - generic [ref=f4e2233]: بایننس کوین
+                  - generic [ref=f4e2234]: رمزارز
+                - generic [ref=f4e2235]: ۱۵۷٬۹۱۱٬۵۱۴
+              - option "ریپل رمزارز ۲۶۱٬۲۶۰" [ref=f4e2236] [cursor=pointer]:
+                - generic [ref=f4e2240]:
+                  - generic [ref=f4e2241]: ریپل
+                  - generic [ref=f4e2242]: رمزارز
+                - generic [ref=f4e2243]: ۲۶۱٬۲۶۰
+              - option "دوج‌کوین رمزارز ۱۵٬۸۰۳" [ref=f4e2244] [cursor=pointer]:
+                - generic [ref=f4e2248]:
+                  - generic [ref=f4e2249]: دوج‌کوین
+                  - generic [ref=f4e2250]: رمزارز
+                - generic [ref=f4e2251]: ۱۵٬۸۰۳
+              - option "کاردانو رمزارز ۴۱٬۲۱۲" [ref=f4e2252] [cursor=pointer]:
+                - generic [ref=f4e2256]:
+                  - generic [ref=f4e2257]: کاردانو
+                  - generic [ref=f4e2258]: رمزارز
+                - generic [ref=f4e2259]: ۴۱٬۲۱۲
+              - option "یو اس دی کوین رمزارز ۲۷۱٬۳۹۹" [ref=f4e2260] [cursor=pointer]:
+                - generic [ref=f4e2264]:
+                  - generic [ref=f4e2265]: یو اس دی کوین
+                  - generic [ref=f4e2266]: رمزارز
+                - generic [ref=f4e2267]: ۲۷۱٬۳۹۹
+              - option "لایت‌کوین رمزارز ۱۱٬۵۳۵٬۶۹۰" [ref=f4e2268] [cursor=pointer]:
+                - generic [ref=f4e2272]:
+                  - generic [ref=f4e2273]: لایت‌کوین
+                  - generic [ref=f4e2274]: رمزارز
+                - generic [ref=f4e2275]: ۱۱٬۵۳۵٬۶۹۰
+              - option "پولکادات رمزارز ۱۹۳٬۸۰۲" [ref=f4e2276] [cursor=pointer]:
+                - generic [ref=f4e2280]:
+                  - generic [ref=f4e2281]: پولکادات
+                  - generic [ref=f4e2282]: رمزارز
+                - generic [ref=f4e2283]: ۱۹۳٬۸۰۲
+              - option "آوالانچ رمزارز ۱٬۹۰۹٬۲۱۱" [ref=f4e2284] [cursor=pointer]:
+                - generic [ref=f4e2288]:
+                  - generic [ref=f4e2289]: آوالانچ
+                  - generic [ref=f4e2290]: رمزارز
+                - generic [ref=f4e2291]: ۱٬۹۰۹٬۲۱۱
+              - option "چین‌لینک رمزارز ۲٬۴۴۹٬۹۹۹" [ref=f4e2292] [cursor=pointer]:
+                - generic [ref=f4e2296]:
+                  - generic [ref=f4e2297]: چین‌لینک
+                  - generic [ref=f4e2298]: رمزارز
+                - generic [ref=f4e2299]: ۲٬۴۴۹٬۹۹۹
+            - generic [ref=f4e2300]:
+              - button "تعریف دارایی دستی (ملک، خودرو، سپرده…)" [ref=f4e2301] [cursor=pointer]
+              - button "افزودن یا کاهش پول نقد" [ref=f4e2305] [cursor=pointer]
+      - generic [ref=f4e2309]:
+        - generic [ref=f4e2310]: تاریخ (شمسی)
+        - generic [ref=f4e2311]:
+          - textbox "تاریخ (شمسی)" [ref=f4e2312]:
+            - /placeholder: ۱۴۰۴/۰۱/۰۱
+            - text: ۱۴۰۵/۰۸/۲۹
+          - button "باز کردن تقویم" [ref=f4e2313] [cursor=pointer]
+      - generic [ref=f4e2316]:
+        - generic [ref=f4e2317]: ورود بر اساس
+        - group "روش ورود" [ref=f4e2318]:
+          - button "مقدار" [pressed] [ref=f4e2319] [cursor=pointer]
+          - button "مبلغ کل" [ref=f4e2320] [cursor=pointer]
+      - generic [ref=f4e2321]:
+        - generic [ref=f4e2322]: مقدار
+        - generic [ref=f4e2323]:
+          - textbox "مقدار" [ref=f4e2324]:
+            - /placeholder: ۰
+          - generic: واحد
+      - generic [ref=f4e2326]:
+        - generic [ref=f4e2327]: قیمت هر واحد
+        - generic [ref=f4e2328]:
+          - textbox "قیمت هر واحد" [ref=f4e2329]:
+            - /placeholder: ۰
+          - generic: تومان
+      - generic [ref=f4e2331]:
+        - generic [ref=f4e2332]: کارمزد (اختیاری)
+        - generic [ref=f4e2333]:
+          - textbox "کارمزد (اختیاری)" [ref=f4e2334]:
+            - /placeholder: ۰
+          - generic: تومان
+      - generic [ref=f4e2335]:
+        - generic [ref=f4e2336]: یادداشت (اختیاری)
+        - textbox "یادداشت (اختیاری)" [ref=f4e2337]:
+          - /placeholder: مثلاً خرید از صرافی
+      - generic [ref=f4e2338]:
+        - generic [ref=f4e2339]: محل نگهداری (اختیاری)
+        - combobox "محل نگهداری (اختیاری)" [ref=f4e2341]
+      - generic [ref=f4e2343] [cursor=pointer]:
+        - checkbox "از موجودی پول نقد کسر شود" [ref=f4e2344]
+        - generic [ref=f4e2345]: از موجودی پول نقد کسر شود
+      - generic [ref=f4e2347]:
+        - generic [ref=f4e2348]: مبلغ معامله
+        - strong [ref=f4e2349]: —
+      - alert
+    - generic [ref=f4e2350]:
+      - button "انصراف" [ref=f4e2351] [cursor=pointer]
+      - button "ثبت خرید" [ref=f4e2352] [cursor=pointer]

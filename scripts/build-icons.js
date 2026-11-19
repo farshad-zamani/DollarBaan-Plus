@@ -9,13 +9,16 @@ const fs = require('fs');
 const path = require('path');
 
 const ICONS = [
-    'activity', 'arrow-down', 'arrow-down-left', 'arrow-left-right', 'arrow-up', 'arrow-up-right',
-    'banknote', 'bitcoin', 'calendar', 'car', 'chart-candlestick', 'chart-line', 'chart-pie', 'check',
-    'chevron-down', 'chevron-left', 'chevron-right', 'circle-alert', 'circle-check', 'cloud-off', 'coins',
-    'download', 'eye', 'eye-off', 'file-spreadsheet', 'gem', 'hand-coins', 'house', 'info', 'key-round',
-    'landmark', 'layout-dashboard', 'log-out', 'medal', 'moon', 'package', 'pencil', 'piggy-bank', 'plus',
-    'refresh-cw', 'search', 'settings', 'sparkles', 'star', 'sun', 'table-2', 'trash-2', 'trending-down',
-    'trending-up', 'triangle-alert', 'upload', 'wallet', 'x',
+    'activity', 'arrow-down', 'arrow-down-left', 'arrow-down-to-line', 'arrow-left-right', 'arrow-up',
+    'arrow-up-from-line', 'arrow-up-right', 'banknote', 'bitcoin', 'building-2', 'calendar', 'calendar-range',
+    'car', 'chart-candlestick', 'chart-column', 'chart-line', 'chart-pie', 'check', 'chevron-down',
+    'chevron-left', 'chevron-right', 'chevron-up', 'circle-alert', 'circle-check', 'circle-help', 'cloud-off',
+    'coins', 'copy-plus', 'database', 'download', 'ellipsis', 'eye', 'eye-off', 'file-spreadsheet', 'filter',
+    'folder', 'gem', 'hand-coins', 'history', 'house', 'info', 'key-round', 'landmark', 'layers',
+    'layout-dashboard', 'list', 'lock', 'lock-open', 'log-out', 'map-pin', 'medal', 'moon', 'package',
+    'pen-line', 'pencil', 'percent', 'piggy-bank', 'plus', 'receipt', 'refresh-cw', 'repeat', 'save', 'scale',
+    'search', 'settings', 'shield-check', 'sparkles', 'star', 'sun', 'table-2', 'tag', 'tags', 'trash-2',
+    'trending-down', 'trending-up', 'triangle-alert', 'upload', 'user-round', 'users-round', 'wallet', 'x',
 ];
 
 const source = process.argv[2];

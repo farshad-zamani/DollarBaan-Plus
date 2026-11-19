@@ -1,0 +1,266 @@
+- generic [ref=f4e1]:
+  - link "رفتن به محتوای اصلی" [ref=f4e2] [cursor=pointer]:
+    - /url: "#view"
+  - generic [ref=f4e3]:
+    - complementary "منوی اصلی" [ref=f4e4]:
+      - link "دلاربان پلاس، داشبورد" [ref=f4e5] [cursor=pointer]:
+        - /url: "#/"
+        - generic [ref=f4e6]:
+          - text: دلاربان پلاس
+          - generic [ref=f4e7]: پایش دارایی‌های شما
+      - navigation [ref=f4e8]:
+        - link "داشبورد" [ref=f4e9] [cursor=pointer]:
+          - /url: "#/"
+        - link "دارایی‌های من" [ref=f4e13] [cursor=pointer]:
+          - /url: "#/holdings"
+        - link "تراکنش‌ها" [ref=f4e17] [cursor=pointer]:
+          - /url: "#/transactions"
+        - link "پول نقد" [ref=f4e21] [cursor=pointer]:
+          - /url: "#/cash"
+        - link "سود و زیان" [ref=f4e25] [cursor=pointer]:
+          - /url: "#/pnl"
+        - link "بازار" [ref=f4e29] [cursor=pointer]:
+          - /url: "#/market"
+        - link "تنظیمات" [ref=f4e33] [cursor=pointer]:
+          - /url: "#/settings"
+      - generic [ref=f4e38]:
+        - text: منبع قیمت‌ها
+        - strong [ref=f4e66]: Iran Market
+        - text: انتشار ۲ دقیقه پیش
+    - generic [ref=f4e43]:
+      - generic "پروفایل‌ها" [ref=f4e44]:
+        - tablist "پروفایل‌ها" [ref=f4e67]:
+          - tab "پروفایل من" [selected] [ref=f4e68] [cursor=pointer]
+        - button "پروفایل جدید" [ref=f4e72] [cursor=pointer]
+        - button "مدیریت پروفایل‌ها" [ref=f4e76] [cursor=pointer]
+      - banner [ref=f4e45]:
+        - generic [ref=f4e46]:
+          - heading "دارایی‌های من" [level=1] [ref=f4e184]
+          - paragraph
+        - generic [ref=f4e48]:
+          - 'button "به‌روزرسانی همین الان. منبع: Iran Market — برای به‌روزرسانی کلیک کنید" [ref=f4e80] [cursor=pointer]':
+            - generic [ref=f4e82]: به‌روزرسانی همین الان
+          - button "پوسته تیره" [ref=f4e83] [cursor=pointer]
+          - button "ثبت تراکنش" [ref=f4e55] [cursor=pointer]
+      - main [ref=f4e59]:
+        - generic [ref=f4e187]:
+          - generic [ref=f4e188]:
+            - generic [ref=f4e189]: ارزش روز
+            - generic [ref=f4e190]: ۶۸۶٬۲۲۸٬۰۰۰ تومان
+          - generic [ref=f4e191]:
+            - generic [ref=f4e192]: بهای تمام‌شده
+            - generic [ref=f4e193]: ۶۳۰٬۹۰۰٬۰۰۰ تومان
+          - generic [ref=f4e194]:
+            - generic [ref=f4e195]: سود و زیان باز
+            - generic [ref=f4e196]: +۵۵٫۳ میلیون تومان
+          - generic [ref=f4e197]:
+            - generic [ref=f4e198]: سود محقق‌شده
+            - generic [ref=f4e199]: +۳٫۴ میلیون تومان
+        - generic [ref=f4e200]:
+          - searchbox "جستجو در دارایی‌ها" [ref=f4e202]
+          - group "دسته‌بندی" [ref=f4e203]:
+            - button "همه ۳" [pressed] [ref=f4e204] [cursor=pointer]:
+              - text: همه
+              - generic [ref=f4e205]: ۳
+            - button "ارز" [ref=f4e206] [cursor=pointer]
+            - button "طلا" [ref=f4e207] [cursor=pointer]
+            - button "پول نقد" [ref=f4e208] [cursor=pointer]
+          - combobox "مرتب‌سازی" [ref=f4e209]:
+            - option "بیشترین ارزش" [selected]
+            - option "بیشترین سود"
+            - option "بیشترین بازده"
+            - option "تغییر امروز"
+            - option "نام"
+          - generic [ref=f4e210] [cursor=pointer]:
+            - checkbox "فروخته‌شده‌ها" [ref=f4e211]
+            - text: فروخته‌شده‌ها
+          - button "پول نقد" [ref=f4e212] [cursor=pointer]
+        - paragraph [ref=f4e216]: روی هر دارایی بزنید تا دفعات ثبت و محل نگهداری آن به تفکیک نمایش داده شود.
+        - table [ref=f4e220]:
+          - rowgroup [ref=f4e221]:
+            - row [ref=f4e222]:
+              - columnheader "دارایی" [ref=f4e223]
+              - columnheader "مقدار" [ref=f4e224]
+              - columnheader "میانگین خرید" [ref=f4e225]
+              - columnheader "قیمت روز" [ref=f4e226]
+              - columnheader "ارزش" [ref=f4e227]
+              - columnheader "سود و زیان" [ref=f4e228]
+              - columnheader "سهم از سبد" [ref=f4e229]
+          - rowgroup [ref=f4e230]:
+            - row [expanded] [active] [ref=f4e231] [cursor=pointer]:
+              - cell "دلار آمریکا ارز · ۳ ثبت · ۲ محل" [ref=f4e232]:
+                - generic [ref=f4e241]:
+                  - generic [ref=f4e242]: دلار آمریکا
+                  - generic [ref=f4e243]: ارز · ۳ ثبت · ۲ محل
+              - cell "۱٬۳۰۰ واحد" [ref=f4e244]:
+                - text: ۱٬۳۰۰
+                - generic [ref=f4e245]: واحد
+              - cell "۲۴۵٬۰۰۰" [ref=f4e246]
+              - cell "۲۶۹٬۹۷۰ ۰٫۰۰٪" [ref=f4e247]:
+                - text: ۲۶۹٬۹۷۰
+                - generic [ref=f4e248]: ۰٫۰۰٪
+              - cell "۳۵۰٬۹۶۱٬۰۰۰" [ref=f4e250]
+              - cell "+۳۲٬۴۶۱٬۰۰۰ افزایش ۱۰٫۱۹٪" [ref=f4e251]:
+                - text: +۳۲٬۴۶۱٬۰۰۰
+                - generic [ref=f4e253]:
+                  - generic [ref=f4e256]: افزایش
+                  - text: ۱۰٫۱۹٪
+              - cell "۵۱٫۱٪" [ref=f4e257]
+            - row [ref=f4e262]:
+              - cell [ref=f4e263]:
+                - generic [ref=f4e264]:
+                  - generic [ref=f4e265]:
+                    - generic [ref=f4e266]:
+                      - heading "محل نگهداری" [level=3] [ref=f4e267]
+                      - table [ref=f4e271]:
+                        - rowgroup [ref=f4e272]:
+                          - row [ref=f4e273]:
+                            - columnheader "محل" [ref=f4e274]
+                            - columnheader "مقدار" [ref=f4e275]
+                            - columnheader "میانگین خرید" [ref=f4e276]
+                            - columnheader "ارزش" [ref=f4e277]
+                            - columnheader "سود و زیان" [ref=f4e278]
+                            - columnheader "سهم" [ref=f4e279]
+                        - rowgroup [ref=f4e280]:
+                          - row [ref=f4e281]:
+                            - cell "صرافی" [ref=f4e282]
+                            - cell "۸۰۰ واحد" [ref=f4e283]:
+                              - text: ۸۰۰
+                              - generic [ref=f4e284]: واحد
+                            - cell "۲۴۰٬۰۰۰" [ref=f4e285]
+                            - cell "۲۱۵٬۹۷۶٬۰۰۰" [ref=f4e286]
+                            - cell "+۲۳٬۹۷۶٬۰۰۰ افزایش ۱۲٫۴۹٪" [ref=f4e287]:
+                              - text: +۲۳٬۹۷۶٬۰۰۰
+                              - generic [ref=f4e289]:
+                                - generic [ref=f4e292]: افزایش
+                                - text: ۱۲٫۴۹٪
+                            - cell "۶۱٫۵٪" [ref=f4e293]
+                          - row [ref=f4e298]:
+                            - cell "گاوصندوق" [ref=f4e299]
+                            - cell "۵۰۰ واحد" [ref=f4e300]:
+                              - text: ۵۰۰
+                              - generic [ref=f4e301]: واحد
+                            - cell "۲۵۵٬۰۰۰" [ref=f4e302]
+                            - cell "۱۳۴٬۹۸۵٬۰۰۰" [ref=f4e303]
+                            - cell "+۷٬۴۸۵٬۰۰۰ افزایش ۵٫۸۷٪" [ref=f4e304]:
+                              - text: +۷٬۴۸۵٬۰۰۰
+                              - generic [ref=f4e306]:
+                                - generic [ref=f4e309]: افزایش
+                                - text: ۵٫۸۷٪
+                            - cell "۳۸٫۵٪" [ref=f4e310]
+                    - generic [ref=f4e315]:
+                      - heading "دفعات ثبت (۳ مورد، تازه‌ترین بالا)" [level=3] [ref=f4e316]:
+                        - text: دفعات ثبت
+                        - generic [ref=f4e319]: (۳ مورد، تازه‌ترین بالا)
+                      - table [ref=f4e321]:
+                        - rowgroup [ref=f4e322]:
+                          - row [ref=f4e323]:
+                            - columnheader "تاریخ" [ref=f4e324]
+                            - columnheader "نوع" [ref=f4e325]
+                            - columnheader "مقدار" [ref=f4e326]
+                            - columnheader "قیمت واحد" [ref=f4e327]
+                            - columnheader "مبلغ کل" [ref=f4e328]
+                            - columnheader "محل" [ref=f4e329]
+                            - columnheader "باقی‌مانده" [ref=f4e330]
+                            - columnheader "سود و زیان باقی‌مانده" [ref=f4e331]
+                            - columnheader "عملیات" [ref=f4e332]
+                        - rowgroup [ref=f4e334]:
+                          - row [ref=f4e335]:
+                            - cell "۱۴۰۵/۰۸/۲۳" [ref=f4e336]
+                            - cell "فروش" [ref=f4e337]
+                            - cell "۲۰۰ واحد" [ref=f4e339]:
+                              - text: ۲۰۰
+                              - generic [ref=f4e340]: واحد
+                            - cell "۲۶۲٬۰۰۰" [ref=f4e341]
+                            - cell "۵۲٬۴۰۰٬۰۰۰" [ref=f4e342]
+                            - cell "صرافی" [ref=f4e343]
+                            - cell "—" [ref=f4e344]
+                            - cell "—" [ref=f4e345]
+                            - cell [ref=f4e346]:
+                              - button "ویرایش" [ref=f4e347] [cursor=pointer]
+                          - row [ref=f4e350]:
+                            - cell "۱۴۰۵/۰۸/۰۸" [ref=f4e351]
+                            - cell "خرید" [ref=f4e352]
+                            - cell "۵۰۰ واحد" [ref=f4e354]:
+                              - text: ۵۰۰
+                              - generic [ref=f4e355]: واحد
+                            - cell "۲۵۵٬۰۰۰" [ref=f4e356]
+                            - cell "۱۲۷٬۵۰۰٬۰۰۰" [ref=f4e357]
+                            - cell "گاوصندوق" [ref=f4e358]
+                            - cell "۵۰۰ واحد" [ref=f4e359]:
+                              - text: ۵۰۰
+                              - generic [ref=f4e360]: واحد
+                            - cell "+۷٫۴۹ میلیون افزایش ۵٫۸۷٪" [ref=f4e361]:
+                              - text: +۷٫۴۹ میلیون
+                              - generic [ref=f4e363]:
+                                - generic [ref=f4e366]: افزایش
+                                - text: ۵٫۸۷٪
+                            - cell [ref=f4e367]:
+                              - button "ویرایش" [ref=f4e368] [cursor=pointer]
+                          - row [ref=f4e371]:
+                            - cell "۱۴۰۵/۰۷/۱۳" [ref=f4e372]
+                            - cell "خرید" [ref=f4e373]
+                            - cell "۱٬۰۰۰ واحد" [ref=f4e375]:
+                              - text: ۱٬۰۰۰
+                              - generic [ref=f4e376]: واحد
+                            - cell "۲۴۰٬۰۰۰" [ref=f4e377]
+                            - cell "۲۴۰٬۰۰۰٬۰۰۰" [ref=f4e378]
+                            - cell "صرافی" [ref=f4e379]
+                            - cell "۸۰۰ واحد" [ref=f4e380]:
+                              - text: ۸۰۰
+                              - generic [ref=f4e381]: واحد
+                            - cell "+۲۴ میلیون افزایش ۱۲٫۴۹٪" [ref=f4e382]:
+                              - text: +۲۴ میلیون
+                              - generic [ref=f4e384]:
+                                - generic [ref=f4e387]: افزایش
+                                - text: ۱۲٫۴۹٪
+                            - cell [ref=f4e388]:
+                              - button "ویرایش" [ref=f4e389] [cursor=pointer]
+                      - paragraph [ref=f4e392]: باقی‌مانده و سود هر دفعه به روش «اولین ورودی، اولین خروجی» نشان داده می‌شود؛ سود کل دارایی بالا بر پایهٔ میانگین قیمت خرید است.
+                  - generic [ref=f4e393]:
+                    - button "ثبت خرید" [ref=f4e394] [cursor=pointer]
+                    - button "ثبت فروش" [ref=f4e398] [cursor=pointer]
+                    - link "نمودار و جزئیات" [ref=f4e402] [cursor=pointer]:
+                      - /url: "#/asset/USD_IRR_FREE"
+            - row [ref=f4e406] [cursor=pointer]:
+              - cell "طلای ۱۸ عیار (هر گرم) طلا · هر گرم · گاوصندوق" [ref=f4e407]:
+                - generic [ref=f4e416]:
+                  - generic [ref=f4e417]: طلای ۱۸ عیار (هر گرم)
+                  - generic [ref=f4e418]: طلا · هر گرم · گاوصندوق
+              - cell "۱۰ گرم" [ref=f4e419]:
+                - text: ۱۰
+                - generic [ref=f4e420]: گرم
+              - cell "۲۲٬۰۰۰٬۰۰۰" [ref=f4e421]
+              - cell "۲۴٬۲۸۶٬۷۰۰ ۰٫۰۰٪" [ref=f4e422]:
+                - text: ۲۴٬۲۸۶٬۷۰۰
+                - generic [ref=f4e423]: ۰٫۰۰٪
+              - cell "۲۴۲٬۸۶۷٬۰۰۰" [ref=f4e425]
+              - cell "+۲۲٬۸۶۷٬۰۰۰ افزایش ۱۰٫۳۹٪" [ref=f4e426]:
+                - text: +۲۲٬۸۶۷٬۰۰۰
+                - generic [ref=f4e428]:
+                  - generic [ref=f4e431]: افزایش
+                  - text: ۱۰٫۳۹٪
+              - cell "۳۵٫۴٪" [ref=f4e432]
+            - row [ref=f4e437] [cursor=pointer]:
+              - cell "پول نقد پول نقد · ۴ ثبت · بانک ملت" [ref=f4e438]:
+                - generic [ref=f4e447]:
+                  - generic [ref=f4e448]: پول نقد
+                  - generic [ref=f4e449]: پول نقد · ۴ ثبت · بانک ملت
+              - cell "۹۲٬۴۰۰٬۰۰۰" [ref=f4e450]
+              - cell "—" [ref=f4e451]
+              - cell "—" [ref=f4e452]
+              - cell "۹۲٬۴۰۰٬۰۰۰" [ref=f4e453]
+              - cell "—" [ref=f4e454]
+              - cell "۱۳٫۵٪" [ref=f4e455]
+      - contentinfo [ref=f4e60]:
+        - generic [ref=f4e61]:
+          - text: دلاربان پلاس · بر پایهٔ
+          - link "دلاربان" [ref=f4e62] [cursor=pointer]:
+            - /url: https://github.com/MahdiGraph/DollarBaan
+          - text: اثر MahdiGraph
+        - generic [aria-hidden] [ref=f4e63]: ·
+        - link [ref=f4e64] [cursor=pointer]:
+          - /url: https://cloudtart.com
+          - text: ارتقا‌یافته توسط
+          - strong [ref=f4e65]: CloudTart
+          - text: · cloudtart.com

@@ -8,6 +8,8 @@ const CATEGORY_ICONS = {
     gold: 'gem',
     fund: 'chart-pie',
     crypto: 'bitcoin',
+    stock: 'chart-column',
+    cash: 'wallet',
     custom: 'package',
 };
 
@@ -41,6 +43,8 @@ export function categoryLabel(asset) {
 export function assetSub(asset) {
     if (!asset) return '';
     const parts = [categoryLabel(asset)];
+    if (asset.category === 'stock' && asset.nameEn) parts.push(asset.nameEn);
+    if (asset.category === 'cash') return parts.join(' · ');
     if (asset.unit && asset.unit !== 'unit') parts.push(`هر ${unitLabel(asset.unit)}`);
     return parts.join(' · ');
 }

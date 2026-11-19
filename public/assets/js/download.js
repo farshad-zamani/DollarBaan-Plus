@@ -1,4 +1,4 @@
-import { IS_LOCAL, localDownload } from './api.js';
+import { IS_LOCAL, localDownload, serverProfile } from './api.js';
 
 function nativePlugins() {
     const capacitor = window.Capacitor;
@@ -32,7 +32,8 @@ export async function saveFile({ filename, type, body }) {
 export async function downloadExport(path) {
     if (!IS_LOCAL) {
         const link = document.createElement('a');
-        link.href = path;
+        const profile = /[?&]profile=/.test(path) ? '' : serverProfile();
+        link.href = profile ? `${path}${path.includes('?') ? '&' : '?'}profile=${encodeURIComponent(profile)}` : path;
         link.download = '';
         document.body.append(link);
         link.click();

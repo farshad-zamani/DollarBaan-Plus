@@ -7,6 +7,9 @@ import { themeMode, setThemeMode } from '../ui/theme.js';
 import { confirmDialog, withBusy } from '../ui/dialog.js';
 import { notify } from '../ui/toast.js';
 import { RANGES } from './dashboard.js';
+import { mountLockSettings } from '../plus/lock-ui.js';
+import { openManageProfiles, openAddProfile } from '../plus/profile-tabs.js';
+import { backupKind } from '../shared/plus/backup.js';
 
 const INTERVALS = [
     [15, '۱۵ دقیقه'],
@@ -36,6 +39,21 @@ function segmented(name, options, value) {
     return html`<div class="segmented" role="group" data-segment="${name}">
         ${options.map(([key, label]) => html`<button type="button" data-value="${key}" aria-pressed="${String(key) === String(value)}">${label}</button>`)}
     </div>`;
+}
+
+/** Stock prices come from the Tehran Stock Exchange, separately from the main price source. */
+function stockStatus(status) {
+    const stocks = status && status.stocks;
+    if (!stocks || !stocks.count) return '';
+    const failed = stocks.ok === false;
+    return html`
+        <div class="alert ${failed ? 'error' : 'info'}" style="margin:0">
+            ${icon(failed ? 'circle-alert' : 'chart-column')}
+            <div class="grow">
+                <strong>سهام بورس تهران:</strong> ${number(stocks.count)} نماد ·
+                ${failed ? stocks.error : `آخرین به‌روزرسانی ${stocks.lastSuccessAt ? relativeTime(stocks.lastSuccessAt) : 'هنوز انجام نشده'}`}
+            </div>
+        </div>`;
 }
 
 function statusBlock(status) {
@@ -98,7 +116,21 @@ export function mount({ view, setTitle }) {
             </div>`;
     }
 
+    let lockCleanup = null;
+
+    function mountExtras() {
+        if (lockCleanup) lockCleanup();
+        lockCleanup = null;
+        const host = view.querySelector('[data-lock-section]');
+        if (host) lockCleanup = mountLockSettings(host);
+    }
+
     function render() {
+        renderSections();
+        mountExtras();
+    }
+
+    function renderSections() {
         const current = store.preferences;
         setHtml(view, html`
             <div class="settings">
@@ -133,6 +165,7 @@ export function mount({ view, setTitle }) {
                             <span class="test-result" data-test-result aria-live="polite"></span>
                         </div>
                         <div data-status>${statusBlock(store.status)}</div>
+                        ${stockStatus(store.status)}
                     </div>
                 </section>
 
@@ -200,35 +233,73 @@ export function mount({ view, setTitle }) {
                     </div>
                 </section>`}
 
-                <section class="card settings-section" id="backup">
+                <section class="card settings-section" id="profiles">
                     <header>
-                        <h2>پشتیبان‌گیری</h2>
-                        <p>همه تراکنش‌ها و دارایی‌های دستی را در یک فایل ذخیره کنید یا روی نصب دیگری بازگردانید.</p>
+                        <h2>پروفایل‌ها</h2>
+                        <p>هر پروفایل محیط کاملاً جداگانه‌ای با دارایی‌ها، تراکنش‌ها، پول نقد و تنظیمات خودش است. تب‌های بالای برنامه پروفایل‌ها را نشان می‌دهند.</p>
                     </header>
                     <div class="settings-body">
+                        <div class="chips">${store.profiles.map((profile) => html`<span class="chip" aria-pressed="${profile.id === store.activeProfile}">${profile.name}</span>`)}</div>
                         <div class="settings-actions">
-                            <button type="button" class="btn btn-secondary" data-download="/api/export">${icon('download')}<span>دانلود فایل پشتیبان</span></button>
-                            <button type="button" class="btn btn-secondary" data-download="/api/export.csv">${icon('file-spreadsheet')}<span>خروجی اکسل تراکنش‌ها</span></button>
-                        </div>
-                        <div class="field">
-                            <span class="field-label">بازگردانی از فایل پشتیبان</span>
-                            <div class="settings-actions">
-                                <label class="btn btn-secondary">${icon('upload')}<span>انتخاب فایل…</span>
-                                    <input type="file" class="sr-only" accept="application/json,.json" data-import></label>
-                                <label class="check"><input type="checkbox" data-replace>جایگزینی کامل تراکنش‌های فعلی</label>
-                            </div>
-                            <span class="field-hint">در حالت عادی، تراکنش‌های فایل با داده‌های فعلی ادغام می‌شوند و موارد تکراری دوباره ثبت نمی‌شوند.</span>
+                            <button type="button" class="btn btn-secondary" data-manage-profiles>${icon('users-round')}<span>مدیریت پروفایل‌ها</span></button>
+                            <button type="button" class="btn btn-ghost" data-add-profile>${icon('plus')}<span>پروفایل جدید</span></button>
                         </div>
                     </div>
                 </section>
 
+                ${IS_LOCAL ? html`<section class="card settings-section" id="lock" data-lock-section></section>` : ''}
+
+                <section class="card settings-section" id="backup">
+                    <header>
+                        <h2>پشتیبان‌گیری و بازیابی</h2>
+                        <p>از هر پروفایل جداگانه پشتیبان بگیرید یا از همهٔ پروفایل‌ها و تنظیمات برنامه یک فایل کامل بسازید. فایل پشتیبان نسخهٔ اصلی دلاربان را هم می‌توانید در هر پروفایل بازیابی کنید.</p>
+                    </header>
+                    <div class="settings-body">
+                        <h3 class="settings-sub">پشتیبان یک پروفایل</h3>
+                        <div class="field">
+                            <label for="backup-profile">پروفایل</label>
+                            <select id="backup-profile" class="select" data-backup-profile>
+                                ${store.profiles.map((profile) => html`<option value="${profile.id}" ${profile.id === store.activeProfile ? html`selected` : ''}>${profile.name}</option>`)}
+                            </select>
+                        </div>
+                        <div class="settings-actions">
+                            <button type="button" class="btn btn-secondary" data-profile-export="/api/export">${icon('download')}<span>دانلود پشتیبان پروفایل</span></button>
+                            <button type="button" class="btn btn-secondary" data-profile-export="/api/export.csv">${icon('file-spreadsheet')}<span>خروجی اکسل تراکنش‌ها</span></button>
+                        </div>
+                        <div class="field">
+                            <label for="restore-profile">بازگردانی از فایل در</label>
+                            <select id="restore-profile" class="select" data-restore-profile>
+                                ${store.profiles.map((profile) => html`<option value="${profile.id}" ${profile.id === store.activeProfile ? html`selected` : ''}>${profile.name}</option>`)}
+                                <option value="__new__">پروفایل جدید…</option>
+                            </select>
+                            <div class="settings-actions">
+                                <label class="btn btn-secondary">${icon('upload')}<span>انتخاب فایل…</span>
+                                    <input type="file" class="sr-only" accept="application/json,.json" data-import></label>
+                                <label class="check"><input type="checkbox" data-replace>جایگزینی کامل اطلاعات پروفایل</label>
+                            </div>
+                            <span class="field-hint">در حالت عادی، اطلاعات فایل با پروفایل انتخاب‌شده ادغام می‌شود و موارد تکراری دوباره ثبت نمی‌شوند.</span>
+                        </div>
+
+                        <h3 class="settings-sub">پشتیبان کامل (همهٔ پروفایل‌ها و تنظیمات)</h3>
+                        <div class="settings-actions">
+                            <button type="button" class="btn btn-primary" data-full-export>${icon('database')}<span>دانلود پشتیبان کامل</span></button>
+                            <label class="btn btn-secondary">${icon('upload')}<span>بازیابی پشتیبان کامل…</span>
+                                <input type="file" class="sr-only" accept="application/json,.json" data-import-full></label>
+                            <label class="check"><input type="checkbox" data-replace-full>جایگزینی کامل (پروفایل‌های دیگر حذف می‌شوند)</label>
+                        </div>
+                        <span class="field-hint">پشتیبان کامل شامل همهٔ پروفایل‌ها، دارایی‌ها، تراکنش‌ها، پول نقد، سهام، برداشت‌ها، تنظیمات و ظاهر برنامه است. رمز قفل برنامه در آن ذخیره نمی‌شود. اگر کلید API نوسان را وارد کرده باشید در فایل قرار می‌گیرد؛ فایل را امن نگه دارید.</span>
+                    </div>
+                </section>
+
                 <section class="card settings-section" id="about">
-                    <header><h2>درباره دلاربان</h2></header>
+                    <header><h2>درباره دلاربان پلاس</h2></header>
                     <div class="settings-body">
                         <dl class="kv">
                             <dt>نسخه</dt><dd><span class="ltr">${store.version}</span> · ${runtimeLabel()}</dd>
-                            <dt>کد منبع</dt><dd><a href="https://github.com/MahdiGraph/DollarBaan" target="_blank" rel="noopener">github.com/MahdiGraph/DollarBaan</a></dd>
-                            <dt>داده بازار</dt><dd><a href="https://github.com/iran-market/iran-market.github.io" target="_blank" rel="noopener">Iran Market Data</a> <span class="muted">(منبع اولیه: TGJU)</span></dd>
+                            <dt>کد منبع</dt><dd><a href="https://github.com/farshad-zamani/DollarBaan-Plus" target="_blank" rel="noopener">github.com/farshad-zamani/DollarBaan-Plus</a></dd>
+                            <dt>بر پایهٔ</dt><dd><a href="https://github.com/MahdiGraph/DollarBaan" target="_blank" rel="noopener">دلاربان</a> <span class="muted">اثر MahdiGraph، با مجوز MIT</span></dd>
+                            <dt>ارتقا و توسعه</dt><dd><a href="https://cloudtart.com" target="_blank" rel="noopener"><strong>CloudTart</strong> (<span class="ltr">cloudtart.com</span>)</a></dd>
+                            <dt>داده بازار</dt><dd><a href="https://github.com/iran-market/iran-market.github.io" target="_blank" rel="noopener">Iran Market Data</a> <span class="muted">(ارز، طلا، سکه و رمزارز)</span> · بورس تهران (TSETMC) برای سهام</dd>
                         </dl>
                         <p class="small muted">قیمت‌ها صرفاً برای اطلاع‌رسانی هستند و توصیه خرید یا فروش محسوب نمی‌شوند.</p>
                     </div>
@@ -305,37 +376,92 @@ export function mount({ view, setTitle }) {
         });
     }
 
-    async function importFile(input) {
-        const file = input.files && input.files[0];
+    async function readJson(input) {
+        const chosen = input.files && input.files[0];
         input.value = '';
-        if (!file) return;
-        let payload;
+        if (!chosen) return null;
         try {
-            payload = JSON.parse(await file.text());
+            return JSON.parse(await chosen.text());
         } catch {
             notify.error('فایل انتخاب‌شده JSON معتبر نیست');
+            return null;
+        }
+    }
+
+    async function afterRestore() {
+        store.reset();
+        await store.bootstrap();
+        await store.refreshProfiles();
+        store.emit('profile', store.activeProfile);
+    }
+
+    async function importFile(input) {
+        const payload = await readJson(input);
+        if (!payload) return;
+        const kind = backupKind(payload);
+        if (kind === 'plus-full') {
+            notify.error('این فایل پشتیبان کامل همه پروفایل‌هاست؛ آن را با «بازیابی پشتیبان کامل» بازیابی کنید');
             return;
         }
-        if (!payload || payload.app !== 'DollarBaan' || !Array.isArray(payload.transactions)) {
-            notify.error('این فایل پشتیبان دلاربان نیست');
+        if (!kind) {
+            notify.error('این فایل پشتیبان دلاربان یا دلاربان پلاس نیست');
             return;
         }
         const replace = view.querySelector('[data-replace]').checked;
+        const target = view.querySelector('[data-restore-profile]').value;
         const customCount = Array.isArray(payload.customAssets) ? payload.customAssets.length : 0;
+        const where = target === '__new__' ? 'یک پروفایل جدید' : `پروفایل «${(store.profiles.find((item) => item.id === target) || {}).name}»`;
         const confirmed = await confirmDialog({
             title: 'بازگردانی پشتیبان',
-            message: `${number(payload.transactions.length)} تراکنش و ${number(customCount)} دارایی دستی ${replace ? 'جایگزین تمام تراکنش‌های فعلی می‌شوند' : 'با داده‌های فعلی ادغام می‌شوند'}. ادامه می‌دهید؟`,
+            message: `${number(payload.transactions.length)} تراکنش و ${number(customCount)} دارایی دستی ${kind === 'original' ? '(فایل نسخهٔ اصلی دلاربان) ' : ''}در ${where} ${replace && target !== '__new__' ? 'جایگزین اطلاعات فعلی می‌شود' : 'بازگردانی می‌شود'}. ادامه می‌دهید؟`,
             confirmText: 'بازگردانی',
+            danger: replace && target !== '__new__',
+        });
+        if (!confirmed) return;
+        try {
+            if (target === '__new__') {
+                const suggested = payload.profile && payload.profile.name ? payload.profile.name : 'پروفایل بازیابی‌شده';
+                openAddProfileFromFile(payload, suggested);
+                return;
+            }
+            const result = await api.post(`/api/import?profile=${encodeURIComponent(target)}${replace ? '&mode=replace' : ''}`, payload);
+            notify.success(`${number(result.transactions)} تراکنش بازگردانی شد`);
+            if (target === store.activeProfile) {
+                await store.loadAssets({ force: true });
+                await store.bootstrap();
+                store.dataChanged();
+                render();
+            }
+        } catch (error) {
+            notify.error(error.message);
+        }
+    }
+
+    /** Restoring into a new profile asks for its name first. */
+    function openAddProfileFromFile(payload, suggestedName) {
+        openAddProfile({ payload, name: suggestedName });
+    }
+
+    async function importFull(input) {
+        const payload = await readJson(input);
+        if (!payload) return;
+        if (backupKind(payload) !== 'plus-full') {
+            notify.error('این فایل، پشتیبان کامل دلاربان پلاس نیست؛ پشتیبان یک پروفایل را از بخش بالاتر بازیابی کنید');
+            return;
+        }
+        const replace = view.querySelector('[data-replace-full]').checked;
+        const confirmed = await confirmDialog({
+            title: 'بازیابی پشتیبان کامل',
+            message: `${number(payload.profiles.length)} پروفایل ${replace ? 'جایگزین همهٔ پروفایل‌های فعلی می‌شود (پروفایل‌هایی که در فایل نیستند حذف می‌شوند)' : 'با پروفایل‌های فعلی ادغام می‌شود'}. ادامه می‌دهید؟`,
+            confirmText: 'بازیابی',
             danger: replace,
         });
         if (!confirmed) return;
         try {
-            const result = await api.post(`/api/import${replace ? '?mode=replace' : ''}`, payload);
-            await store.loadAssets({ force: true });
-            await store.bootstrap();
-            notify.success(`${number(result.transactions)} تراکنش بازگردانی شد`);
-            store.dataChanged();
-            render();
+            const result = await api.post(`/api/backup/full${replace ? '?mode=replace' : ''}`, payload);
+            if (result.appSettings && (result.appSettings.theme === 'light' || result.appSettings.theme === 'dark')) setThemeMode(result.appSettings.theme);
+            await afterRestore();
+            notify.success(`${number(result.profiles)} پروفایل بازیابی شد`);
         } catch (error) {
             notify.error(error.message);
         }
@@ -356,6 +482,32 @@ export function mount({ view, setTitle }) {
                 if (name === 'range') await store.savePreferences({ chartRange: value });
             } catch (error) {
                 notify.error(error.message);
+            }
+            return;
+        }
+        if (event.target.closest('[data-manage-profiles]')) {
+            openManageProfiles();
+            return;
+        }
+        if (event.target.closest('[data-add-profile]')) {
+            openAddProfile();
+            return;
+        }
+        const profileExport = event.target.closest('[data-profile-export]');
+        if (profileExport) {
+            const id = view.querySelector('[data-backup-profile]').value;
+            try {
+                await downloadExport(`${profileExport.dataset.profileExport}?profile=${encodeURIComponent(id)}`);
+            } catch (error) {
+                notify.error(error.message || 'ساخت فایل ناموفق بود');
+            }
+            return;
+        }
+        if (event.target.closest('[data-full-export]')) {
+            try {
+                await downloadExport('/api/backup/full');
+            } catch (error) {
+                notify.error(error.message || 'ساخت فایل ناموفق بود');
             }
             return;
         }
@@ -438,6 +590,8 @@ export function mount({ view, setTitle }) {
             draft.refreshMinutes = Number(target.value);
         } else if (target.matches('[data-import]')) {
             importFile(target);
+        } else if (target.matches('[data-import-full]')) {
+            importFull(target);
         }
     };
 
@@ -470,6 +624,7 @@ export function mount({ view, setTitle }) {
     return {
         unmount() {
             alive = false;
+            if (lockCleanup) lockCleanup();
             view.removeEventListener('click', onClick);
             view.removeEventListener('change', onChange);
             view.removeEventListener('input', onInput);

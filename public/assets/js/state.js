@@ -1,4 +1,4 @@
-import { api } from './api.js';
+import { api, IS_LOCAL, setServerProfile } from './api.js';
 import { setDisplayUnit } from './format.js';
 
 const listeners = new Map();
@@ -12,6 +12,8 @@ export const store = {
     categories: [],
     customKinds: [],
     status: null,
+    profiles: [],
+    activeProfile: null,
     assets: [],
     assetMap: new Map(),
     assetsLoadedAt: 0,
@@ -41,8 +43,44 @@ export const store = {
         this.providers = data.providers;
         this.categories = data.categories;
         this.customKinds = data.customKinds;
+        this.profiles = data.profiles || [];
+        this.activeProfile = data.active || (data.profile && data.profile.id) || null;
+        if (!IS_LOCAL && this.activeProfile) setServerProfile(this.activeProfile);
         this.setPreferences(data.preferences);
         this.setStatus(data.status);
+    },
+
+    activeProfileName() {
+        const found = this.profiles.find((item) => item.id === this.activeProfile);
+        return found ? found.name : '';
+    },
+
+    /** Drops everything loaded for the previous profile. */
+    reset() {
+        this.assets = [];
+        this.assetMap = new Map();
+        this.assetsLoadedAt = 0;
+        this.portfolio = null;
+        this.status = null;
+    },
+
+    /** Opens another profile: the page reloads its data through the 'profile' event. */
+    async switchProfile(id) {
+        if (id === this.activeProfile) return;
+        if (IS_LOCAL) await api.post(`/api/profiles/${encodeURIComponent(id)}/activate`);
+        else setServerProfile(id);
+        this.reset();
+        await this.bootstrap();
+        this.activeProfile = id;
+        this.emit('profile', id);
+    },
+
+    /** Re-reads the profile list (after one was added, renamed, removed or moved). */
+    async refreshProfiles() {
+        const data = await api.get('/api/profiles');
+        this.profiles = data.profiles;
+        this.emit('profiles', data.profiles);
+        return data;
     },
 
     setPreferences(preferences) {
@@ -57,7 +95,8 @@ export const store = {
         const previous = this.status;
         this.status = status;
         this.emit('status', status);
-        if (previous && status.lastSuccessAt && previous.lastSuccessAt !== status.lastSuccessAt) {
+        const stocksChanged = previous && previous.stocks && status.stocks && previous.stocks.lastSuccessAt !== status.stocks.lastSuccessAt;
+        if (previous && ((status.lastSuccessAt && previous.lastSuccessAt !== status.lastSuccessAt) || stocksChanged)) {
             this.assetsLoadedAt = 0;
             this.emit('synced', status);
         }

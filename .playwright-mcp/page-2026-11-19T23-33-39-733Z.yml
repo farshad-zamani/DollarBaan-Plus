@@ -1,0 +1,231 @@
+- generic [ref=f4e1]:
+  - link "رفتن به محتوای اصلی" [ref=f4e2] [cursor=pointer]:
+    - /url: "#view"
+  - generic [ref=f4e3]:
+    - complementary "منوی اصلی" [ref=f4e4]:
+      - link "دلاربان پلاس، داشبورد" [ref=f4e5] [cursor=pointer]:
+        - /url: "#/"
+        - generic [ref=f4e6]:
+          - text: دلاربان پلاس
+          - generic [ref=f4e7]: پایش دارایی‌های شما
+      - navigation [ref=f4e8]:
+        - link "داشبورد" [ref=f4e9] [cursor=pointer]:
+          - /url: "#/"
+        - link "دارایی‌های من" [ref=f4e13] [cursor=pointer]:
+          - /url: "#/holdings"
+        - link "تراکنش‌ها" [ref=f4e17] [cursor=pointer]:
+          - /url: "#/transactions"
+        - link "پول نقد" [ref=f4e21] [cursor=pointer]:
+          - /url: "#/cash"
+        - link "سود و زیان" [ref=f4e25] [cursor=pointer]:
+          - /url: "#/pnl"
+        - link "بازار" [ref=f4e29] [cursor=pointer]:
+          - /url: "#/market"
+        - link "تنظیمات" [ref=f4e33] [cursor=pointer]:
+          - /url: "#/settings"
+      - generic [ref=f4e38]:
+        - text: منبع قیمت‌ها
+        - strong [ref=f4e644]: Iran Market
+        - text: انتشار ۳ دقیقه پیش
+    - generic [ref=f4e43]:
+      - generic "پروفایل‌ها" [ref=f4e44]:
+        - tablist "پروفایل‌ها" [ref=f4e67]:
+          - tab "پروفایل من" [selected] [ref=f4e68] [cursor=pointer]
+        - button "پروفایل جدید" [ref=f4e72] [cursor=pointer]
+        - button "مدیریت پروفایل‌ها" [ref=f4e76] [cursor=pointer]
+      - banner [ref=f4e45]:
+        - generic [ref=f4e46]:
+          - heading "دارایی‌های من" [level=1] [ref=f4e922]
+          - paragraph
+        - generic [ref=f4e48]:
+          - 'button "به‌روزرسانی ۱ دقیقه پیش. منبع: Iran Market — برای به‌روزرسانی کلیک کنید" [ref=f4e645] [cursor=pointer]':
+            - generic [ref=f4e647]: به‌روزرسانی ۱ دقیقه پیش
+          - button "پوسته تیره" [ref=f4e83] [cursor=pointer]
+          - button "ثبت تراکنش" [ref=f4e55] [cursor=pointer]
+      - main [ref=f4e59]:
+        - generic [ref=f4e925]:
+          - generic [ref=f4e926]:
+            - generic [ref=f4e927]: ارزش روز
+            - generic [ref=f4e928]: ۶۸۶٬۲۲۸٬۰۰۰ تومان
+          - generic [ref=f4e929]:
+            - generic [ref=f4e930]: بهای تمام‌شده
+            - generic [ref=f4e931]: ۶۳۰٬۹۰۰٬۰۰۰ تومان
+          - generic [ref=f4e932]:
+            - generic [ref=f4e933]: سود و زیان باز
+            - generic [ref=f4e934]: +۵۵٫۳ میلیون تومان
+          - generic [ref=f4e935]:
+            - generic [ref=f4e936]: سود محقق‌شده
+            - generic [ref=f4e937]: +۳٫۴ میلیون تومان
+        - generic [ref=f4e938]:
+          - searchbox "جستجو در دارایی‌ها" [ref=f4e940]
+          - group "دسته‌بندی" [ref=f4e941]:
+            - button "همه ۳" [pressed] [ref=f4e942] [cursor=pointer]:
+              - text: همه
+              - generic [ref=f4e943]: ۳
+            - button "ارز" [ref=f4e944] [cursor=pointer]
+            - button "طلا" [ref=f4e945] [cursor=pointer]
+            - button "پول نقد" [ref=f4e946] [cursor=pointer]
+          - combobox "مرتب‌سازی" [ref=f4e947]:
+            - option "بیشترین ارزش" [selected]
+            - option "بیشترین سود"
+            - option "بیشترین بازده"
+            - option "تغییر امروز"
+            - option "نام"
+          - generic [ref=f4e948] [cursor=pointer]:
+            - checkbox "فروخته‌شده‌ها" [ref=f4e949]
+            - text: فروخته‌شده‌ها
+          - button "پول نقد" [ref=f4e950] [cursor=pointer]
+        - paragraph [ref=f4e954]: روی هر دارایی بزنید تا دفعات ثبت و محل نگهداری آن به تفکیک نمایش داده شود.
+        - table [ref=f4e958]:
+          - rowgroup [ref=f4e959]:
+            - row [ref=f4e960]:
+              - columnheader "دارایی" [ref=f4e961]
+              - columnheader "مقدار" [ref=f4e962]
+              - columnheader "میانگین خرید" [ref=f4e963]
+              - columnheader "قیمت روز" [ref=f4e964]
+              - columnheader "ارزش" [ref=f4e965]
+              - columnheader "سود و زیان" [ref=f4e966]
+              - columnheader "سهم از سبد" [ref=f4e967]
+          - rowgroup [ref=f4e968]:
+            - row [ref=f4e969] [cursor=pointer]:
+              - cell "دلار آمریکا ارز · ۳ ثبت · ۲ محل" [ref=f4e970]:
+                - generic [ref=f4e979]:
+                  - generic [ref=f4e980]: دلار آمریکا
+                  - generic [ref=f4e981]: ارز · ۳ ثبت · ۲ محل
+              - cell "۱٬۳۰۰ واحد" [ref=f4e982]:
+                - text: ۱٬۳۰۰
+                - generic [ref=f4e983]: واحد
+              - cell "۲۴۵٬۰۰۰" [ref=f4e984]
+              - cell "۲۶۹٬۹۷۰ ۰٫۰۰٪" [ref=f4e985]:
+                - text: ۲۶۹٬۹۷۰
+                - generic [ref=f4e986]: ۰٫۰۰٪
+              - cell "۳۵۰٬۹۶۱٬۰۰۰" [ref=f4e988]
+              - cell "+۳۲٬۴۶۱٬۰۰۰ افزایش ۱۰٫۱۹٪" [ref=f4e989]:
+                - text: +۳۲٬۴۶۱٬۰۰۰
+                - generic [ref=f4e991]:
+                  - generic [ref=f4e994]: افزایش
+                  - text: ۱۰٫۱۹٪
+              - cell "۵۱٫۱٪" [ref=f4e995]
+            - row [ref=f4e1000] [cursor=pointer]:
+              - cell "طلای ۱۸ عیار (هر گرم) طلا · هر گرم · گاوصندوق" [ref=f4e1001]:
+                - generic [ref=f4e1010]:
+                  - generic [ref=f4e1011]: طلای ۱۸ عیار (هر گرم)
+                  - generic [ref=f4e1012]: طلا · هر گرم · گاوصندوق
+              - cell "۱۰ گرم" [ref=f4e1013]:
+                - text: ۱۰
+                - generic [ref=f4e1014]: گرم
+              - cell "۲۲٬۰۰۰٬۰۰۰" [ref=f4e1015]
+              - cell "۲۴٬۲۸۶٬۷۰۰ ۰٫۰۰٪" [ref=f4e1016]:
+                - text: ۲۴٬۲۸۶٬۷۰۰
+                - generic [ref=f4e1017]: ۰٫۰۰٪
+              - cell "۲۴۲٬۸۶۷٬۰۰۰" [ref=f4e1019]
+              - cell "+۲۲٬۸۶۷٬۰۰۰ افزایش ۱۰٫۳۹٪" [ref=f4e1020]:
+                - text: +۲۲٬۸۶۷٬۰۰۰
+                - generic [ref=f4e1022]:
+                  - generic [ref=f4e1025]: افزایش
+                  - text: ۱۰٫۳۹٪
+              - cell "۳۵٫۴٪" [ref=f4e1026]
+            - row [ref=f4e1031] [cursor=pointer]:
+              - cell "پول نقد پول نقد · ۴ ثبت · بانک ملت" [ref=f4e1032]:
+                - generic [ref=f4e1041]:
+                  - generic [ref=f4e1042]: پول نقد
+                  - generic [ref=f4e1043]: پول نقد · ۴ ثبت · بانک ملت
+              - cell "۹۲٬۴۰۰٬۰۰۰" [ref=f4e1044]
+              - cell "—" [ref=f4e1045]
+              - cell "—" [ref=f4e1046]
+              - cell "۹۲٬۴۰۰٬۰۰۰" [ref=f4e1047]
+              - cell "—" [ref=f4e1048]
+              - cell "۱۳٫۵٪" [ref=f4e1049]
+      - contentinfo [ref=f4e60]:
+        - generic [ref=f4e61]:
+          - text: دلاربان پلاس · بر پایهٔ
+          - link "دلاربان" [ref=f4e62] [cursor=pointer]:
+            - /url: https://github.com/MahdiGraph/DollarBaan
+          - text: اثر MahdiGraph
+        - generic [aria-hidden] [ref=f4e63]: ·
+        - link [ref=f4e64] [cursor=pointer]:
+          - /url: https://cloudtart.com
+          - text: ارتقا‌یافته توسط
+          - strong [ref=f4e65]: CloudTart
+          - text: · cloudtart.com
+  - dialog [ref=f4e1054]:
+    - generic [ref=f4e1055]:
+      - heading "ثبت تراکنش جدید" [level=2] [ref=f4e1056]
+      - button "بستن" [ref=f4e1057] [cursor=pointer]
+    - generic [ref=f4e1061]:
+      - group "نوع تراکنش" [ref=f4e1062]:
+        - button "خرید" [pressed] [ref=f4e1063] [cursor=pointer]
+        - button "فروش" [ref=f4e1067] [cursor=pointer]
+      - generic [ref=f4e1071]:
+        - generic [ref=f4e1072]: دارایی
+        - generic [ref=f4e1073]:
+          - button "یک دارایی انتخاب کنید" [expanded] [ref=f4e1074] [cursor=pointer]
+          - generic [ref=f4e1078]:
+            - generic [ref=f4e1079]:
+              - combobox "جستجوی دارایی" [expanded] [active] [ref=f4e1081]
+              - group "دسته‌بندی" [ref=f4e1082]:
+                - button "همه" [ref=f4e2356] [cursor=pointer]
+                - button "دارایی‌های من" [ref=f4e2357] [cursor=pointer]
+                - button "ارز" [ref=f4e2358] [cursor=pointer]
+                - button "سکه" [ref=f4e2359] [cursor=pointer]
+                - button "نقره و فلزات" [ref=f4e2360] [cursor=pointer]
+                - button "طلا" [ref=f4e2361] [cursor=pointer]
+                - button "صندوق طلا" [ref=f4e2362] [cursor=pointer]
+                - button "رمزارز" [ref=f4e2363] [cursor=pointer]
+                - button "پول نقد" [ref=f4e2364] [cursor=pointer]
+                - button "سهام بورس" [pressed] [ref=f4e2365] [cursor=pointer]
+            - listbox "فهرست دارایی‌ها" [ref=f4e1093]:
+              - generic [ref=f4e2366]: موردی پیدا نشد؛ می‌توانید آن را به‌صورت دستی تعریف کنید.
+              - generic [ref=f4e2367]:
+                - generic [ref=f4e2368]: جستجو در بورس تهران
+                - generic [ref=f4e2369]: نام یا نماد سهم را بنویسید (مثلاً فولاد یا وبملت).
+            - generic [ref=f4e2300]:
+              - button "تعریف دارایی دستی (ملک، خودرو، سپرده…)" [ref=f4e2301] [cursor=pointer]
+              - button "افزودن یا کاهش پول نقد" [ref=f4e2305] [cursor=pointer]
+      - generic [ref=f4e2309]:
+        - generic [ref=f4e2310]: تاریخ (شمسی)
+        - generic [ref=f4e2311]:
+          - textbox "تاریخ (شمسی)" [ref=f4e2312]:
+            - /placeholder: ۱۴۰۴/۰۱/۰۱
+            - text: ۱۴۰۵/۰۸/۲۹
+          - button "باز کردن تقویم" [ref=f4e2313] [cursor=pointer]
+      - generic [ref=f4e2316]:
+        - generic [ref=f4e2317]: ورود بر اساس
+        - group "روش ورود" [ref=f4e2318]:
+          - button "مقدار" [pressed] [ref=f4e2319] [cursor=pointer]
+          - button "مبلغ کل" [ref=f4e2320] [cursor=pointer]
+      - generic [ref=f4e2321]:
+        - generic [ref=f4e2322]: مقدار
+        - generic [ref=f4e2323]:
+          - textbox "مقدار" [ref=f4e2324]:
+            - /placeholder: ۰
+          - generic: واحد
+      - generic [ref=f4e2326]:
+        - generic [ref=f4e2327]: قیمت هر واحد
+        - generic [ref=f4e2328]:
+          - textbox "قیمت هر واحد" [ref=f4e2329]:
+            - /placeholder: ۰
+          - generic: تومان
+      - generic [ref=f4e2331]:
+        - generic [ref=f4e2332]: کارمزد (اختیاری)
+        - generic [ref=f4e2333]:
+          - textbox "کارمزد (اختیاری)" [ref=f4e2334]:
+            - /placeholder: ۰
+          - generic: تومان
+      - generic [ref=f4e2335]:
+        - generic [ref=f4e2336]: یادداشت (اختیاری)
+        - textbox "یادداشت (اختیاری)" [ref=f4e2337]:
+          - /placeholder: مثلاً خرید از صرافی
+      - generic [ref=f4e2338]:
+        - generic [ref=f4e2339]: محل نگهداری (اختیاری)
+        - combobox "محل نگهداری (اختیاری)" [ref=f4e2341]
+      - generic [ref=f4e2343] [cursor=pointer]:
+        - checkbox "از موجودی پول نقد کسر شود" [ref=f4e2344]
+        - generic [ref=f4e2345]: از موجودی پول نقد کسر شود
+      - generic [ref=f4e2347]:
+        - generic [ref=f4e2348]: مبلغ معامله
+        - strong [ref=f4e2349]: —
+      - alert
+    - generic [ref=f4e2350]:
+      - button "انصراف" [ref=f4e2351] [cursor=pointer]
+      - button "ثبت خرید" [ref=f4e2352] [cursor=pointer]

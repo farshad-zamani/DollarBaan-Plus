@@ -1,0 +1,4 @@
+[     148ms] TypeError: $ is not a function or its return value is not iterable
+    at setActiveNav (http://localhost:8081/assets/js/main.js:52:24)
+    at navigate (http://localhost:8081/assets/js/main.js:96:5)
+    at start (http://localhost:8081/assets/js/main.js:285:11)

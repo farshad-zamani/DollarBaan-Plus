@@ -59,7 +59,9 @@ export function buildLots(transactions, price) {
 
 /**
  * Holdings split by storage location. Each location is replayed on its own, so a purchase and a
- * sale recorded at the same place net out there. Locations holding nothing are left out.
+ * sale recorded at the same place net out there. A sale recorded without a location is taken from
+ * the places that hold the asset, largest first, so the parts always add up to what is owned.
+ * Locations holding nothing are left out.
  */
 export function locationBreakdown(transactions, price) {
     const groups = new Map();
@@ -68,23 +70,45 @@ export function locationBreakdown(transactions, price) {
         if (!groups.has(key)) groups.set(key, []);
         groups.get(key).push(tx);
     }
+
+    // Units sold without a location beyond what was bought without one.
+    let deficit = 0;
+    let unplaced = 0;
+    for (const tx of sortTransactions(groups.get('') || [])) {
+        if (tx.side === 'buy') {
+            unplaced += tx.quantity;
+        } else {
+            const taken = Math.min(tx.quantity, unplaced);
+            unplaced -= taken;
+            deficit += tx.quantity - taken;
+        }
+    }
+
     const rows = [];
-    let total = 0;
     for (const [location, list] of groups) {
         const state = [...replay(list).values()][0];
         if (!state || state.quantity <= EPSILON) continue;
-        const value = price > 0 ? state.quantity * price : null;
-        total += value || 0;
-        rows.push({
-            location,
-            quantity: state.quantity,
-            cost: state.cost,
-            avgCost: state.cost / state.quantity,
-            value,
-            unrealized: value === null ? null : value - state.cost,
-            unrealizedPct: value === null ? null : pct(value - state.cost, state.cost),
-        });
+        rows.push({ location, quantity: state.quantity, cost: state.cost, avgCost: state.cost / state.quantity });
     }
-    for (const row of rows) row.share = total > 0 && row.value !== null ? (row.value / total) * 100 : null;
-    return rows.sort((a, b) => (b.value || 0) - (a.value || 0));
+    for (const row of [...rows].filter((item) => item.location).sort((a, b) => b.quantity - a.quantity)) {
+        if (deficit <= EPSILON) break;
+        const taken = Math.min(row.quantity, deficit);
+        row.quantity -= taken;
+        row.cost -= row.avgCost * taken;
+        deficit -= taken;
+    }
+
+    let total = 0;
+    const out = rows.filter((row) => row.quantity > EPSILON).map((row) => {
+        const value = price > 0 ? row.quantity * price : null;
+        total += value || 0;
+        return {
+            ...row,
+            value,
+            unrealized: value === null ? null : value - row.cost,
+            unrealizedPct: value === null ? null : pct(value - row.cost, row.cost),
+        };
+    });
+    for (const row of out) row.share = total > 0 && row.value !== null ? (row.value / total) * 100 : null;
+    return out.sort((a, b) => (b.value || 0) - (a.value || 0));
 }

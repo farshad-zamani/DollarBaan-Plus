@@ -298,7 +298,7 @@ const appRoutes = compile([
                 throw error;
             }
             if (body.open !== false) await switchTo(profile.id);
-            return describeProfiles();
+            return { ...describeProfiles(), created: profile.id };
         },
     },
     {
