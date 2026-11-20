@@ -20,7 +20,9 @@ async function main() {
 
     const app = createApp();
     const server = await new Promise((resolve, reject) => {
-        const onListening = () => resolve(instance);
+        // Express 5 also calls this when binding fails (with the error); treating that as "listening"
+        // would let the process exit silently, so a bind error is rejected and reported below.
+        const onListening = (error) => (error ? reject(error) : resolve(instance));
         const instance = config.host
             ? app.listen(config.port, config.host, onListening)
             : app.listen(config.port, onListening);
@@ -57,6 +59,8 @@ async function main() {
 main().catch((error) => {
     if (error && error.code === 'EADDRINUSE') {
         logger.error(`Port ${config.port} is already in use. Stop the other process or set PORT in .env.`);
+    } else if (error && error.code === 'EACCES') {
+        logger.error(`Port ${config.port} cannot be used (it needs administrator rights or is reserved by the system). Set another PORT in .env.`);
     } else {
         logger.error(`Startup failed: ${error && error.stack ? error.stack : error}`);
     }
