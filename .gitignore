@@ -56,3 +56,6 @@ build/
 coverage/
 .playwright-mcp/
 shot-*.png
+
+# Windows builds downloaded from releases for local installing (one folder per version)
+release-builds/
