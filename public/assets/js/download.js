@@ -15,6 +15,9 @@ export async function saveFile({ filename, type, body }) {
         } catch (error) {
             // Closing the share sheet is not an error.
             if (!/cancel/i.test(String(error && error.message))) throw error;
+        } finally {
+            // The export is plain text: do not leave a copy of it in the app's cache.
+            plugins.Filesystem.deleteFile({ path: filename, directory: 'CACHE' }).catch(() => {});
         }
         return;
     }
