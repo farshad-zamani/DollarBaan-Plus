@@ -1,7 +1,7 @@
 name: Release
 
 # Builds the desktop apps (Windows, macOS, Linux) and the Android APK, smoke-tests each one,
-# and publishes them as a GitHub release when a version tag (v2.1.0, ...) is pushed.
+# and publishes them as a GitHub release when a version tag (v1.1.0, ...) is pushed.
 # The APK is published once the Android signing key is configured (scripts/android-signing.sh);
 # running this workflow again for the tag then adds it to the existing release.
 # "Run workflow" on a branch builds and tests everything without publishing.

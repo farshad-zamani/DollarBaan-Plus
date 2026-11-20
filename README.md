@@ -235,7 +235,7 @@ npx cap open android   # باز کردن در Android Studio؛ یا: npm run apk
 ```bash
 # نسخه را در package.json تغییر دهید و تغییرات را در CHANGELOG.md بنویسید، سپس:
 npm run version:sync
-git commit -am "Release 1.0.1" && git tag v1.0.1 && git push && git push --tags
+git commit -am "Release 1.1.1" && git tag v1.1.1 && git push && git push --tags
 ```
 
 فایل APK فقط وقتی منتشر می‌شود که کلید امضای اندروید یک بار ساخته شده باشد: `bash scripts/android-signing.sh` (کلید بیرون از مخزن ساخته و در Secrets مخزن ذخیره می‌شود؛ از پوشهٔ آن نسخهٔ پشتیبان نگه دارید، چون به‌روزرسانی APK فقط با همین کلید ممکن است).
