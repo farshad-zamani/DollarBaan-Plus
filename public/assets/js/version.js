@@ -1,2 +1,2 @@
 // Single source of the app version for the browser bundle; kept in sync by scripts/sync-version.js.
-export const VERSION = '1.1.0';
+export const VERSION = '1.2.0';

@@ -1,11 +1,12 @@
 import { html, icon, setHtml } from '../lib/dom.js';
 import { store } from '../state.js';
-import { CATEGORY_LABELS, money, searchKey } from '../format.js';
+import { CATEGORY_LABELS, money, searchKey, searchRank } from '../format.js';
 import { avatar, assetSub } from './asset-visuals.js';
 import { api } from '../api.js';
 import { notify } from './toast.js';
 
 const MAX_RESULTS = 150;
+const EXCHANGE_CATEGORIES = ['stock', 'etf', 'fund'];
 let uid = 0;
 
 function matches(asset, tokens) {
@@ -93,6 +94,7 @@ export function createAssetPicker(container, { value = null, onChange, onCreateC
         let assets = store.assets.filter((asset) => !exclude.includes(asset.symbol) && matches(asset, tokens));
         if (category === 'held') assets = assets.filter((asset) => held.has(asset.symbol));
         else if (category !== 'all') assets = assets.filter((asset) => asset.category === category);
+        if (tokens.length) assets = assets.map((asset) => [searchRank(asset.name, tokens), asset]).sort((a, b) => a[0] - b[0]).map(([, asset]) => asset);
         if (heldFirst && held.size) {
             assets = [...assets.filter((asset) => held.has(asset.symbol)), ...assets.filter((asset) => !held.has(asset.symbol))];
         }
@@ -101,7 +103,11 @@ export function createAssetPicker(container, { value = null, onChange, onCreateC
         active = -1;
 
         if (!assets.length) {
-            setHtml(list, html`<div class="picker-empty">موردی پیدا نشد${onCreateCustom ? '؛ می‌توانید آن را به‌صورت دستی تعریف کنید' : ''}.</div>`);
+            const stocks = store.status && store.status.stocks;
+            const exchange = EXCHANGE_CATEGORIES.includes(category) && stocks && stocks.ok === false && !stocks.count;
+            setHtml(list, exchange
+                ? html`<div class="picker-empty neg">فهرست بورس هنوز دریافت نشده است. ${stocks.error || ''}</div>`
+                : html`<div class="picker-empty">موردی پیدا نشد${onCreateCustom ? '؛ می‌توانید آن را به‌صورت دستی تعریف کنید' : ''}.</div>`);
             return;
         }
         const grouped = !tokens.length && category === 'all';
@@ -121,24 +127,29 @@ export function createAssetPicker(container, { value = null, onChange, onCreateC
         setHtml(list, sections);
     }
 
-    /* ---------- Tehran stocks: searched on the stock exchange, then added to the profile ---------- */
+    /* ---------- other exchange instruments (bonds...): searched on the exchange on request ---------- */
 
-    const remote = { query: '', results: null, loading: false, error: null, token: 0, timer: null };
+    const remote = { enabled: false, results: null, loading: false, error: null, token: 0 };
+
+    function resetRemote() {
+        remote.token += 1;
+        Object.assign(remote, { enabled: false, results: null, loading: false, error: null });
+    }
 
     function renderRemote() {
-        if (category !== 'stock') return;
+        const text = query.trim();
+        if (text.length < 2 || !(category === 'all' || EXCHANGE_CATEGORIES.includes(category))) return;
         const box = document.createElement('div');
         box.className = 'picker-remote';
-        const text = query.trim();
-        if (text.length < 2) {
-            setHtml(box, html`<div class="picker-group">جستجو در بورس تهران</div><div class="picker-empty">نام یا نماد سهم را بنویسید (مثلاً فولاد یا وبملت).</div>`);
+        if (!remote.enabled) {
+            setHtml(box, html`<button type="button" class="btn btn-ghost btn-sm btn-block" data-remote-search>${icon('search', 'icon-sm')}<span>جستجوی «${text}» در سایت بورس (اوراق و نمادهای دیگر)</span></button>`);
         } else if (remote.loading) {
-            setHtml(box, html`<div class="picker-group">جستجو در بورس تهران</div><div class="picker-empty">${icon('refresh-cw', 'icon-sm spin')} در حال جستجو…</div>`);
+            setHtml(box, html`<div class="picker-group">سایت بورس تهران</div><div class="picker-empty">${icon('refresh-cw', 'icon-sm spin')} در حال جستجو…</div>`);
         } else if (remote.error) {
-            setHtml(box, html`<div class="picker-group">جستجو در بورس تهران</div><div class="picker-empty neg">${remote.error}</div>`);
+            setHtml(box, html`<div class="picker-group">سایت بورس تهران</div><div class="picker-empty neg">${remote.error}</div>`);
         } else {
             const fresh = (remote.results || []).filter((item) => !item.tracked);
-            setHtml(box, html`<div class="picker-group">از بورس تهران${fresh.length ? '' : ' (نتیجهٔ جدیدی نیست)'}</div>
+            setHtml(box, html`<div class="picker-group">از سایت بورس تهران${fresh.length ? '' : ' (نتیجهٔ جدیدی نیست)'}</div>
                 ${fresh.map((item) => html`
                     <button type="button" class="picker-option picker-remote-option" role="option" data-ins-code="${item.insCode}" tabindex="-1">
                         <span class="asset-avatar sm cat-stock">${icon('chart-column')}</span>
@@ -149,31 +160,20 @@ export function createAssetPicker(container, { value = null, onChange, onCreateC
         list.append(box);
     }
 
-    function scheduleRemote() {
-        clearTimeout(remote.timer);
-        if (category !== 'stock' || query.trim().length < 2) {
-            remote.results = null;
-            remote.error = null;
-            remote.loading = false;
-            return;
-        }
-        remote.loading = true;
-        remote.error = null;
+    async function runRemote() {
         const token = remote.token + 1;
-        remote.token = token;
-        remote.timer = setTimeout(async () => {
-            try {
-                const results = await api.get(`/api/stocks/search?q=${encodeURIComponent(query.trim())}`);
-                if (token !== remote.token) return;
-                remote.results = results;
-            } catch (error) {
-                if (token !== remote.token) return;
-                remote.results = null;
-                remote.error = error.message;
-            }
-            remote.loading = false;
-            renderList();
-        }, 350);
+        Object.assign(remote, { token, enabled: true, loading: true, error: null, results: null });
+        renderList();
+        try {
+            const results = await api.get(`/api/stocks/search?q=${encodeURIComponent(query.trim())}`);
+            if (token !== remote.token) return;
+            remote.results = results;
+        } catch (error) {
+            if (token !== remote.token) return;
+            remote.error = error.message;
+        }
+        remote.loading = false;
+        renderList();
     }
 
     function renderList() {
@@ -194,7 +194,8 @@ export function createAssetPicker(container, { value = null, onChange, onCreateC
 
     function activate(target) {
         if (!target) return;
-        if (target.dataset.insCode) trackStock(target.dataset.insCode);
+        if (target.matches('[data-remote-search]')) runRemote();
+        else if (target.dataset.insCode) trackStock(target.dataset.insCode);
         else choose(target.dataset.symbol);
     }
 
@@ -239,7 +240,7 @@ export function createAssetPicker(container, { value = null, onChange, onCreateC
     trigger.addEventListener('click', () => (panel.hidden ? open() : close()));
     search.addEventListener('input', () => {
         query = search.value;
-        scheduleRemote();
+        resetRemote();
         renderList();
     });
     search.addEventListener('keydown', (event) => {
@@ -265,13 +266,13 @@ export function createAssetPicker(container, { value = null, onChange, onCreateC
         const chip = event.target.closest('[data-category]');
         if (!chip) return;
         category = chip.dataset.category;
+        resetRemote();
         renderChips();
-        scheduleRemote();
         renderList();
         search.focus();
     });
     list.addEventListener('click', (event) => {
-        activate(event.target.closest('.picker-option'));
+        activate(event.target.closest('.picker-option, [data-remote-search]'));
     });
     const createCash = container.querySelector('[data-create-cash]');
     if (createCash) {

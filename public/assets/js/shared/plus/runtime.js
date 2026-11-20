@@ -35,9 +35,9 @@ export function createPlus({ store, market, settings, portfolio, platform }) {
 
     // Old prices: reach back as far as a date needs before answering, and say when a price is an estimate.
     const basePriceAt = market.priceAt.bind(market);
-    market.priceAt = async (symbol, date) => {
-        await history.ensureCoverage(symbol, date);
-        const result = await basePriceAt(symbol, date);
+    market.priceAt = async (symbol, date, options = {}) => {
+        await history.ensureCoverage(symbol, date, { force: Boolean(options.refresh) });
+        const result = await basePriceAt(symbol, date, options);
         const info = result && result.date ? history.describe(symbol, result.date) : null;
         return info ? { ...result, ...info } : result;
     };
@@ -51,6 +51,15 @@ export function createPlus({ store, market, settings, portfolio, platform }) {
 
     return {
         ...plus,
+        /** True when prices (of the main source or of the stock exchange) are older than the refresh interval. */
+        isStale() {
+            return market.isStale() || stocks.isStale();
+        },
+        /** Brings prices up to date after the app was out of sight: each source on its own schedule. */
+        syncIfStale() {
+            if (market.isStale() && !market.syncing) market.sync({ reason: 'resume' });
+            else if (stocks.isStale() && !stocks.syncing) stocks.sync({ reason: 'resume' });
+        },
         /** Call once after market.init(): the built-in cash asset and stock state. */
         async init() {
             await stocks.init();

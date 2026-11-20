@@ -59,7 +59,7 @@ export async function exportProfile(core, { name = null } = {}) {
             navasan: prefs.navasan,
         },
         customAssets,
-        stocks: plus.stocks ? plus.stocks.exportStocks() : [],
+        stocks: plus.stocks ? plus.stocks.exportStocks([...transactions.map((tx) => tx.symbol), ...prefs.watchlist]) : [],
         cash: { sources: plus.cash.config() },
         locations: plus.locations.saved(),
         withdrawals: await plus.withdrawals.docs(),
@@ -101,6 +101,8 @@ export async function importProfile(core, payload, { mode = 'merge' } = {}) {
     const plusFile = kind === 'plus-profile';
     const replace = mode === 'replace';
     const { market, settings, plus, store } = core;
+    // Files of the first release name gold funds by symbols that no longer exist.
+    payload = plus.stocks ? await plus.stocks.remapLegacyBackup(payload) : payload;
     if (payload.transactions.length > MAX_TRANSACTIONS) throw badRequest('تعداد تراکنش‌های فایل بیش از حد مجاز است');
 
     // A brand new profile has no prices yet; fetch them once so the file's assets can be recognized.

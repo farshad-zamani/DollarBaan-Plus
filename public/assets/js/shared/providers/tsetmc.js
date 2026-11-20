@@ -7,6 +7,9 @@ export const TSETMC_BASE = 'https://cdn.tsetmc.com/api';
 
 const INS_CODE = /^\d{4,24}$/;
 
+// A liquid, always-listed share whose price answer tells the date of the latest session (Foolad).
+const REFERENCE_INSTRUMENT = '46348559193224090';
+
 export const isInsCode = (value) => INS_CODE.test(String(value));
 
 /** Arabic yeh/kaf and friends to the Persian letters people type and expect to read. */
@@ -132,6 +135,83 @@ export function normalizeHistory(payload) {
     return [...byDate.values()].sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
 }
 
+/* ---------- the whole market in one request ---------- */
+
+// The market watch lists every instrument with its latest prices (rials), so one answer replaces
+// thousands of per-symbol requests. Only the kinds people can hold are kept.
+export const MARKET_WATCH_PATH = '/ClosingPrice/GetMarketWatch?market=0'
+    + [1, 2, 3, 4, 5, 6, 7, 8, 9].map((type) => `&paperTypes%5B${type - 1}%5D=${type}`).join('')
+    + '&showTraded=false&withBestLimits=false&hEven=0&RefID=0';
+
+// Instrument type codes (yVal) of the market watch.
+const SHARE_TYPES = new Set([300, 303, 309, 313]); // Bourse, Fara Bourse, base market, ...
+const RIGHTS_TYPES = new Set([400, 403, 404]); // rights issues (حق تقدم)
+const ETF_TYPES = new Set([305, 315]); // exchange-traded funds (equity, fixed income, project...)
+const COMMODITY_FUND_TYPES = new Set([380]); // gold, silver and other commodity funds
+
+const FLOW_TITLES = { 1: 'بورس', 2: 'فرابورس', 4: 'پایه فرابورس', 6: 'بورس انرژی', 7: 'بورس کالا' };
+
+/** The market a Tehran instrument trades in, e.g. "فرابورس". */
+export const flowTitle = (flow) => FLOW_TITLES[flow] || null;
+
+/**
+ * Category of a market watch row, or null when it is not something to hold (options, futures, bonds,
+ * sukuk, salaf, warehouse receipts, energy certificates, the second "3" tickers of block trades).
+ */
+export function classifyRow(row) {
+    const type = Number(row && row.yVal);
+    const isin = String((row && row.insID) || '');
+    if (SHARE_TYPES.has(type)) return /000[234]$/.test(isin) ? null : 'stock';
+    if (RIGHTS_TYPES.has(type)) return 'stock';
+    if (ETF_TYPES.has(type)) return 'etf';
+    if (COMMODITY_FUND_TYPES.has(type)) return 'fund';
+    return null;
+}
+
+/** Market watch answer to quotes in toman, one per holdable instrument. */
+export function normalizeMarketWatch(payload) {
+    const list = payload && Array.isArray(payload.marketwatch) ? payload.marketwatch : null;
+    if (!list) throw new Error('Unexpected TSETMC market watch format');
+    const out = [];
+    for (const row of list) {
+        const category = classifyRow(row);
+        const insCode = String(row && row.insCode);
+        if (!category || !isInsCode(insCode)) continue;
+        const ticker = persianText(row.lva);
+        const name = persianText(row.lvc);
+        if (!ticker || !name) continue;
+
+        const last = num(row.pdv);
+        const closing = num(row.pcl);
+        const yesterday = num(row.py);
+        // A last price of 1 rial is how the exchange parks the second ticker of a fund: not a real price.
+        if (last > 0 && last < 10) continue;
+        const rial = last > 0 ? last : (closing >= 10 ? closing : yesterday);
+        if (!(rial >= 10)) continue;
+
+        out.push({
+            insCode,
+            ticker,
+            name,
+            category,
+            market: flowTitle(Number(row.flow)),
+            rights: RIGHTS_TYPES.has(Number(row.yVal)),
+            isin: row.insID || null,
+            price: toToman(rial),
+            closing: toToman(closing),
+            prevClose: toToman(yesterday),
+            high: toToman(num(row.pmx)),
+            low: toToman(num(row.pmn)),
+            open: toToman(num(row.pf)),
+        });
+    }
+    return out;
+}
+
+// One answer is shared by every profile for a minute; keyed by the fetch function so tests stay apart.
+const SHARED = new WeakMap();
+const SHARED_MS = 60 * 1000;
+
 export class TsetmcClient {
     /** @param {{ fetchJson: Function, logger?: object, base?: string }} options */
     constructor({ fetchJson, logger = console, base = TSETMC_BASE }) {
@@ -166,9 +246,29 @@ export class TsetmcClient {
         return normalizeHistory(await this.get(`/ClosingPrice/GetClosingPriceDailyList/${insCode}/0`));
     }
 
+    /** Every holdable instrument with its latest price (shared for a minute unless `fresh`). */
+    async marketWatch({ fresh = false } = {}) {
+        if (!SHARED.has(this.fetchJson)) SHARED.set(this.fetchJson, new Map());
+        const cache = SHARED.get(this.fetchJson);
+        const key = this.base;
+        const hit = cache.get(key);
+        if (!fresh && hit && Date.now() - hit.at < SHARED_MS) return hit.promise;
+        const promise = this.get(MARKET_WATCH_PATH).then(normalizeMarketWatch);
+        cache.set(key, { at: Date.now(), promise });
+        promise.catch(() => {
+            if (cache.get(key) && cache.get(key).promise === promise) cache.delete(key);
+        });
+        return promise;
+    }
+
+    /** Date and time of the latest trading session, read from a liquid instrument. */
+    async sessionInfo() {
+        return this.info(REFERENCE_INSTRUMENT);
+    }
+
     async test() {
         // A well-known, always-listed instrument.
-        const info = await this.info('46348559193224090');
+        const info = await this.sessionInfo();
         return { publishedAt: info.time ? info.time.toISOString() : null, date: info.date || tehranDate() };
     }
 }

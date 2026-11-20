@@ -2313,15 +2313,12 @@ dialog.dialog[open] {
     max-width: none;
 }
 
+/* Every category stays visible: they wrap onto a second line instead of hiding behind a horizontal scroll. */
 .picker-search .chips {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
+    flex-wrap: wrap;
+    max-height: 76px;
+    overflow-y: auto;
     padding-bottom: 2px;
-}
-
-.picker-search .chips::-webkit-scrollbar {
-    display: none;
 }
 
 .picker-search .chip {

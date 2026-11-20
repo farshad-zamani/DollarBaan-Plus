@@ -1,6 +1,6 @@
 {
   "name": "dollarbaan-plus-mobile",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "DollarBaan Plus Android app (Capacitor): the web app in ../public running fully on the device",
   "author": "DollarBaan Plus contributors (fork of DollarBaan by MahdiGraph)",
   "license": "MIT",

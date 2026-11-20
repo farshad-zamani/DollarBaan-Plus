@@ -43,17 +43,45 @@ function placesText(row) {
     return named.length === 1 ? named[0].location : `${number(named.length)} محل`;
 }
 
-function summary(totals) {
+const sumOf = (rows, key) => rows.reduce((total, row) => total + (Number(row[key]) || 0), 0);
+
+/** Totals of exactly the rows on screen (the category and search filters apply to them too). */
+function totalsOf(rows, closedRows) {
+    const value = sumOf(rows, 'value');
+    const cost = sumOf(rows, 'cost');
+    const dayChange = sumOf(rows, 'dayChange');
+    const unrealized = value - cost;
+    return {
+        value,
+        cost,
+        unrealized,
+        unrealizedPct: cost > 0 ? (unrealized / cost) * 100 : null,
+        realized: sumOf(rows, 'realized') + sumOf(closedRows, 'realized'),
+        dayChange,
+        dayChangePct: value - dayChange > 0 ? (dayChange / (value - dayChange)) * 100 : null,
+        count: rows.length,
+    };
+}
+
+function summary(totals, scope) {
     return html`
-        <div class="summary-strip">
+        ${scope ? html`<p class="summary-scope">${icon('filter', 'icon-sm')}<span>خلاصهٔ ${scope} (${number(totals.count)} دارایی)</span></p>` : ''}
+        <div class="summary-strip summary-five">
             <div><span class="label">ارزش روز</span><span class="value">${money(totals.value)}</span></div>
             <div><span class="label">بهای تمام‌شده</span><span class="value">${money(totals.cost)}</span></div>
-            <div><span class="label">سود و زیان باز</span>
-                <span class="value ${trend(totals.unrealized)}">${compactMoney(totals.unrealized, { sign: true, unit: true })}</span></div>
+            <div><span class="label">سود و زیان باز (از زمان خرید)</span>
+                <span class="value ${trend(totals.unrealized)}">${compactMoney(totals.unrealized, { sign: true, unit: true })}</span>
+                <span class="small">${deltaText(totals.unrealizedPct)}</span></div>
             <div><span class="label">سود محقق‌شده</span>
                 <span class="value ${trend(totals.realized)}">${compactMoney(totals.realized, { sign: true, unit: true })}</span></div>
+            <div><span class="label">تغییر امروز</span>
+                <span class="value ${trend(totals.dayChange)}">${compactMoney(totals.dayChange, { sign: true, unit: true })}</span>
+                <span class="small">${deltaText(totals.dayChangePct)}</span></div>
         </div>`;
 }
+
+/** "قدیمی" next to a price that is older than it should be. */
+const staleBadge = (row) => (row.stale && !isCash(row) ? html` <span class="badge warn" title="قیمت این دارایی به‌روز نیست؛ به‌روزرسانی قیمت‌ها را بزنید">قدیمی</span>` : '');
 
 function table(rows, expanded) {
     return html`
@@ -82,11 +110,11 @@ function table(rows, expanded) {
                                 </td>
                                 <td class="end">${quantityCell(row)}</td>
                                 <td class="end">${isCash(row) ? '—' : money(row.avgCost, { unit: false })}</td>
-                                <td class="end">${isCash(row) ? '—' : html`${money(row.price, { unit: false })}<span class="cell-sub">${deltaText(row.dayChangePct)}</span>`}</td>
+                                <td class="end">${isCash(row) ? '—' : html`${money(row.price, { unit: false })}${staleBadge(row)}<span class="cell-sub"><span class="muted">امروز</span> ${deltaText(row.dayChangePct)}</span>`}</td>
                                 <td class="end strong">${money(row.value, { unit: false })}</td>
                                 <td class="end">
                                     ${isCash(row) ? '—' : html`<span class="${trend(row.unrealized)}">${money(row.unrealized, { unit: false, sign: true })}</span>
-                                    <span class="cell-sub">${deltaText(row.unrealizedPct)}</span>`}
+                                    <span class="cell-sub"><span class="muted">از خرید</span> ${deltaText(row.unrealizedPct)}</span>`}
                                 </td>
                                 <td>
                                     <div class="weight-cell">
@@ -118,7 +146,7 @@ function cards(rows, expanded) {
                             </div>
                             <div class="end">
                                 <span class="value">${compactMoney(row.value)}</span>
-                                <span class="sub">${isCash(row) ? '' : deltaText(row.unrealizedPct)}</span>
+                                <span class="sub">${isCash(row) ? '' : html`${staleBadge(row)} ${deltaText(row.unrealizedPct)}`}</span>
                             </div>
                             <span class="expander">${icon('chevron-down', 'icon-sm')}</span>
                         </button>
@@ -159,14 +187,27 @@ export function mount({ view, setTitle }) {
 
     setHtml(view, html`<div class="card card-pad"><span class="skeleton" style="height:240px"></span></div>`);
 
-    function filtered() {
+    /** Rows that pass the category and search filters. */
+    function pass(list) {
         const tokens = searchKey(filters.query).split(' ').filter(Boolean);
-        return sortRows(portfolio.holdings.filter((row) => {
+        return list.filter((row) => {
             if (filters.category !== 'all' && row.category !== filters.category) return false;
             if (!tokens.length) return true;
             const key = searchKey(`${row.name} ${row.symbol.replace(/_/g, ' ')}`);
             return tokens.every((token) => key.includes(token));
-        }), filters.sort);
+        });
+    }
+
+    function filtered() {
+        return sortRows(pass(portfolio.holdings), filters.sort);
+    }
+
+    /** What the summary strip describes: the open filter, or nothing for the whole portfolio. */
+    function scopeLabel() {
+        const parts = [];
+        if (filters.category !== 'all') parts.push(CATEGORY_LABELS[filters.category] || filters.category);
+        if (filters.query.trim()) parts.push(`جستجوی «${filters.query.trim()}»`);
+        return parts.join(' · ');
     }
 
     /** Fills the expanded panel of a holding (both the table and the phone layout) with its lots. */
@@ -214,9 +255,12 @@ export function mount({ view, setTitle }) {
         const target = view.querySelector('[data-results]');
         if (!target) return;
         const rows = filtered();
+        const closedRows = pass(portfolio.closed);
+        const head = view.querySelector('[data-summary]');
+        if (head) setHtml(head, summary(totalsOf(rows, closedRows), scopeLabel()));
         setHtml(target, html`
             ${rows.length ? html`${table(rows, expanded)}${cards(rows, expanded)}` : html`<div class="card"><div class="empty"><p>دارایی‌ای با این فیلترها پیدا نشد.</p></div></div>`}
-            ${filters.closed ? html`<div class="section-title"><h2>دارایی‌های فروخته‌شده</h2></div>${closedTable(portfolio.closed)}` : ''}`);
+            ${filters.closed ? html`<div class="section-title"><h2>دارایی‌های فروخته‌شده</h2></div>${closedTable(closedRows)}` : ''}`);
         for (const symbol of expanded) showLots(symbol);
     }
 
@@ -239,7 +283,7 @@ export function mount({ view, setTitle }) {
         const present = new Set(portfolio.holdings.map((row) => row.category));
         const categories = store.categories.filter((key) => present.has(key));
         setHtml(view, html`
-            ${summary(portfolio.totals)}
+            <div data-summary></div>
             <div class="toolbar">
                 <label class="search-input">${icon('search')}
                     <input class="input" type="search" placeholder="جستجو در دارایی‌ها…" aria-label="جستجو در دارایی‌ها" value="${filters.query}" data-query>

@@ -24,9 +24,10 @@ export const CATEGORY_LABELS = {
     coin: 'سکه',
     metal: 'نقره و فلزات',
     gold: 'طلا',
-    fund: 'صندوق طلا',
     crypto: 'رمزارز',
     stock: 'سهام بورس',
+    etf: 'صندوق سرمایه‌گذاری',
+    fund: 'صندوق طلا و کالا',
     cash: 'پول نقد',
     custom: 'دارایی دستی',
 };
@@ -231,4 +232,20 @@ export function searchKey(text) {
         .replace(/‌/g, '')
         .replace(/[^\p{L}\p{N}]+/gu, ' ')
         .trim();
+}
+
+/**
+ * How well an asset's name matches a search (0 is best): the name itself, then names that start with it,
+ * then names with a word that starts with it, then any other match. Sorting by this puts "عیار" before "معیار".
+ */
+export function searchRank(name, tokens) {
+    if (!tokens.length) return 0;
+    const key = searchKey(name);
+    const query = tokens.join(' ');
+    if (key === query) return 0;
+    if (key.startsWith(query)) return 1;
+    const words = key.split(' ');
+    if (tokens.every((token) => words.some((word) => word.startsWith(token)))) return 2;
+    if (tokens.every((token) => key.includes(token))) return 3;
+    return 4;
 }

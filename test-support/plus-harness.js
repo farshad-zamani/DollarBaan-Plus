@@ -58,6 +58,8 @@ class FakeProvider {
 
 // Canned answers of the Tehran Stock Exchange API.
 const TSE = {
+    // A real market watch trimmed to a few shares, funds, gold funds and instruments that must be left out.
+    marketWatch: require('../test/fixtures/market-watch.json'),
     search: { instrumentSearch: [
         { insCode: '46348559193224090', lVal30: 'فولاد مباركه اصفهان', lVal18AFC: 'فولاد', flowTitle: 'بازار بورس', cgrValCotTitle: 'بازار اول' },
         { insCode: '999999999', lVal30: 'آتي فولاد-1405/09/18', lVal18AFC: 'فولاد9', flowTitle: 'بازار آتی', cgrValCotTitle: '' },
@@ -81,6 +83,7 @@ async function fetchJson(url) {
         const answer = await extraFetch(url);
         if (answer !== undefined) return { data: answer };
     }
+    if (url.includes('GetMarketWatch')) return { data: TSE.marketWatch };
     if (url.includes('GetInstrumentSearch')) return { data: TSE.search };
     if (url.includes('GetInstrumentIdentity')) return { data: TSE.identity };
     if (url.includes('GetClosingPriceInfo')) return { data: TSE.info };

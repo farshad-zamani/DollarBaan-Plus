@@ -110,11 +110,15 @@ async function navigate() {
 
 /* ---------- status ---------- */
 
+/** The exchange could not be reached on its last attempt (the other prices may be fine). */
+const stocksFailing = (status) => Boolean(status && status.stocks && status.stocks.ok === false && status.stocks.lastAttemptAt);
+
 function statusInfo(status) {
     if (!status) return { state: 'stale', text: 'در حال بارگذاری…' };
     if (status.running) return { state: 'running', text: 'در حال دریافت قیمت‌ها…' };
     if (status.ok === false) return { state: 'error', text: 'خطا در دریافت قیمت‌ها' };
     if (!status.lastSuccessAt) return { state: 'stale', text: 'در انتظار قیمت‌ها' };
+    if (stocksFailing(status)) return { state: 'error', text: 'خطا در دریافت قیمت سهام' };
     const minutes = (Date.now() - Date.parse(status.lastSuccessAt)) / 60000;
     const interval = (store.preferences && store.preferences.refreshMinutes) || 30;
     return { state: minutes > interval * 3 ? 'stale' : 'ok', text: `به‌روزرسانی ${relativeTime(status.lastSuccessAt)}` };
@@ -127,7 +131,9 @@ function renderStatus(status) {
     const source = status && status.provider ? `منبع: ${providerLabel(status.provider)}` : '';
     pill.title = status && status.ok === false && status.error
         ? `${status.error} — برای تلاش دوباره کلیک کنید`
-        : `${source} — برای به‌روزرسانی کلیک کنید`;
+        : stocksFailing(status) && status.stocks.error
+            ? `${status.stocks.error} — برای تلاش دوباره کلیک کنید`
+            : `${source} — برای به‌روزرسانی کلیک کنید`;
     pill.setAttribute('aria-label', `${text}. ${pill.title}`);
     setHtml(pill, html`<span class="status-dot"></span><span class="status-text">${text}</span>`);
 
@@ -161,6 +167,7 @@ async function syncNow() {
         const status = await api.post('/api/sync');
         store.setStatus(status);
         if (status.ok === false) notify.error(status.error || 'دریافت قیمت‌ها ناموفق بود');
+        else if (stocksFailing(status)) notify.error(status.stocks.error || 'دریافت قیمت سهام ناموفق بود');
         else notify.success('قیمت‌ها به‌روز شد');
     } catch (error) {
         notify.error(error.message);

@@ -44,14 +44,15 @@ function segmented(name, options, value) {
 /** Stock prices come from the Tehran Stock Exchange, separately from the main price source. */
 function stockStatus(status) {
     const stocks = status && status.stocks;
-    if (!stocks || !stocks.count) return '';
+    if (!stocks || (!stocks.count && stocks.ok !== false)) return '';
     const failed = stocks.ok === false;
     return html`
         <div class="alert ${failed ? 'error' : 'info'}" style="margin:0">
             ${icon(failed ? 'circle-alert' : 'chart-column')}
             <div class="grow">
-                <strong>سهام بورس تهران:</strong> ${number(stocks.count)} نماد ·
+                <strong>سهام و صندوق‌های بورس تهران:</strong> ${stocks.count ? html`${number(stocks.count)} نماد · ` : ''}
                 ${failed ? stocks.error : `آخرین به‌روزرسانی ${stocks.lastSuccessAt ? relativeTime(stocks.lastSuccessAt) : 'هنوز انجام نشده'}`}
+                ${!failed && stocks.catalogError ? html`<br><span class="small">فهرست کامل بورس دریافت نشد، فقط نمادهای شما به‌روز شد: ${stocks.catalogError}</span>` : ''}
             </div>
         </div>`;
 }

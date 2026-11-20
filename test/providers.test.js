@@ -73,8 +73,10 @@ test('Iran Market catalog keeps holdable assets only', () => {
     const symbols = [...bySymbol.keys()].sort();
     assert.deepEqual(symbols, [
         'BTC_IRR', 'COIN_EMAMI_IRR', 'CRYPTO_ZCASH', 'ETH_IRR', 'GOLD_18K_IRR', 'GOLD_FUTURES',
-        'IME_FUND_ZAR', 'PRICE_ZMW', 'USD_IRR_FREE', 'XAU_USD',
+        'PRICE_ZMW', 'USD_IRR_FREE', 'XAU_USD',
     ]);
+    // The feed's IME_FUND_* gold fund rows are not unit prices: gold funds come from the exchange.
+    assert.equal(bySymbol.has('IME_FUND_ZAR'), false);
 
     const usd = bySymbol.get('USD_IRR_FREE');
     assert.equal(usd.nameFa, 'دلار آمریکا');
@@ -83,8 +85,6 @@ test('Iran Market catalog keeps holdable assets only', () => {
     assert.equal(usd.rateSymbol, null);
 
     assert.equal(bySymbol.get('GOLD_FUTURES').unit, 'mesghal');
-    assert.equal(bySymbol.get('IME_FUND_ZAR').category, 'fund');
-    assert.equal(bySymbol.get('IME_FUND_ZAR').unit, 'unit');
 
     const eth = bySymbol.get('ETH_IRR');
     assert.equal(eth.category, 'crypto');

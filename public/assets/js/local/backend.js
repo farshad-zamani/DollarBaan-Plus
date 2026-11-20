@@ -125,7 +125,7 @@ async function startProfile(entry) {
             plus.stop();
         },
         syncIfStale() {
-            if (market.isStale() && !market.syncing) market.sync({ reason: 'resume' });
+            plus.syncIfStale();
         },
     };
     runtime.routes = compile([

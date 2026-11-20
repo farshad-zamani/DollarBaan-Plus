@@ -26,7 +26,7 @@ npm test
 | فایل‌های تازه (بدون تعارض) | کاربرد |
 |---|---|
 | `public/assets/js/shared/plus/` | پول نقد، برداشت سود، سود و زیان، سهام، محل نگهداری، پشتیبان، تاریخچهٔ قیمت |
-| `public/assets/js/shared/providers/tsetmc.js` | قیمت سهام بورس تهران |
+| `public/assets/js/shared/providers/tsetmc.js` | فهرست و قیمت همهٔ بورس تهران (دیدبان بازار)، تاریخچه و جستجو |
 | `public/assets/js/plus/`، `pages/cash.js`، `pages/pnl.js` | رابط پروفایل‌ها، قفل، پول نقد و سود و زیان |
 | `public/assets/js/local/profiles.js`، `server/services/runtimes.js`، `server/services/plus.js` | پروفایل‌ها |
 | `public/assets/css/plus.css` | استایل بخش‌های تازه |
@@ -36,7 +36,7 @@ npm test
 | فایل | تغییر پلاس |
 |---|---|
 | `shared/ledger.js` | برداشت سود (بدون کاستن از بهای تمام‌شده) و کنار گذاشتن پول نقد از سرمایه |
-| `shared/core/market.js` | چند قلاب کوچک برای افزونه‌ها (`extensions`) و فهرست‌کردن دارایی‌های غیربازاری |
+| `shared/core/market.js` | چند قلاب کوچک برای افزونه‌ها (`extensions`)، فهرست‌کردن دارایی‌های غیربازاری (سهام بورس با پرچم `listed` خودشان) و `priceAt`: قیمت فقط همان روز یا روز قبل از آن (هرگز روز بعد) و گزینهٔ `refresh` |
 | `shared/catalog.js` | دسته‌های «سهام» و «پول نقد» |
 | `local/idb-store.js`، `server/db.js`، `server/store.js` | فیلدهای تازهٔ تراکنش، جدول `docs`، نوشتن دسته‌ای (atomic)، پایگاه‌داده جدا برای هر پروفایل |
 | `local/backend.js`، `server/routes/api.js`، `server/index.js` | چندپروفایلی و مسیرهای تازهٔ API |

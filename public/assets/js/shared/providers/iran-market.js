@@ -60,7 +60,9 @@ function mapCategory(item, pair, bySymbol) {
             return currency === 'IRT' && (/_IRR_FREE$/.test(symbol) || /^PRICE_[A-Z]{3}$/.test(symbol)) ? 'currency' : null;
         case 'gold':
             if (currency !== 'IRT') return null;
-            return symbol.startsWith('IME_FUND_') ? 'fund' : (/^GOLD_/.test(symbol) ? 'gold' : null);
+            // The feed's IME_FUND_* gold fund rows are not unit prices (and are often days old): gold funds
+            // come from the Tehran exchange instead (see providers/tsetmc.js).
+            return /^GOLD_/.test(symbol) ? 'gold' : null;
         case 'coin':
             return currency === 'IRT' && (/^COIN_/.test(symbol) || /_DOWN$/.test(symbol)) ? 'coin' : null;
         case 'precious_metal':
@@ -113,7 +115,6 @@ export function normalizeLatest(payload, historySymbols = new Set(), now = Date.
         const isUsd = item.currency === 'USD';
         let unit = item.unit || 'unit';
         if (MESGHAL_SYMBOLS.has(symbol)) unit = 'mesghal';
-        if (category === 'fund') unit = 'unit';
 
         let proxy = null;
         if (!isUsd && pair && pair[2] === 'IRR' && category === 'crypto'

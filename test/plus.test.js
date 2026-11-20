@@ -5,7 +5,7 @@
 const crypto = require('crypto');
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { TODAY, day, TSE, profile, buy, deposit, holding, CASH_SYMBOL } = require('../test-support/plus-harness.js');
+const { TODAY, day, TSE, profile, buy, deposit, holding, setExtraFetch, CASH_SYMBOL } = require('../test-support/plus-harness.js');
 const tsetmc = require('../public/assets/js/shared/providers/tsetmc.js');
 
 test('the built-in cash asset is priced at one toman and listed', async () => {
@@ -248,7 +248,7 @@ test('cash never dilutes the profit percentage', async () => {
     assert.equal(timeline.performance.pct.toFixed(4), (1000000 / 9000000 * 100).toFixed(4));
 });
 
-test('Tehran stocks: search, track, price in toman and history', async () => {
+test('Tehran stocks: parsing, price in toman and history', async () => {
     const results = tsetmc.normalizeSearch(TSE.search);
     assert.equal(results.length, 1);                       // futures are not holdable shares
     assert.equal(results[0].name, 'فولاد مبارکه اصفهان');  // Arabic letters become Persian
@@ -260,10 +260,7 @@ test('Tehran stocks: search, track, price in toman and history', async () => {
     assert.throws(() => tsetmc.normalizeInfo({ closingPriceInfo: { pDrCotVal: 0, pClosing: 0, priceYesterday: 0 } }), /no price/);
 
     const p = await profile();
-    const found = await p.plus.stocks.search('فولاد');
-    assert.equal(found[0].symbol, 'STK_46348559193224090');
-    assert.equal(found[0].tracked, false);
-    const view = await p.plus.stocks.track('46348559193224090');
+    const view = p.market.view(p.market.getAsset('STK_46348559193224090'));
     assert.equal(view.category, 'stock');
     assert.equal(view.price, 500);
     assert.equal(view.name, 'فولاد');
@@ -284,11 +281,161 @@ test('Tehran stocks: search, track, price in toman and history', async () => {
     p.plus.stocks.stop();
 });
 
+test('the whole exchange is a market: shares, funds and gold funds, without derivatives and bonds', async () => {
+    const watch = tsetmc.normalizeMarketWatch(TSE.marketWatch);
+    const byTicker = new Map(watch.map((item) => [item.ticker, item]));
+    assert.equal(byTicker.get('فولاد').category, 'stock');
+    assert.equal(byTicker.get('فولاد').market, 'بورس');
+    assert.equal(byTicker.get('عیار').category, 'fund');            // gold fund
+    assert.equal(byTicker.get('عیار').price, 65560.2);               // 655,602 rials per unit
+    assert.equal(byTicker.get('کاریس').category, 'etf');
+    assert.equal(byTicker.get('تکیمیاح').rights, true);
+    assert.equal(byTicker.has('ناب2'), false);                       // the parked second ticker trades at 1 rial
+    assert.equal(byTicker.has('فولاد3'), false);                     // block-trade ticker of the same share
+    assert.ok(![...byTicker.keys()].some((ticker) => /ضهرم|کارون|صمپنا|جذوب/.test(ticker))); // options, bonds, sukuk, futures
+    assert.throws(() => tsetmc.normalizeMarketWatch({}), /format/);
+
+    const p = await profile();
+    const catalog = p.market.catalog();
+    for (const ticker of ['فولاد', 'وبملت', 'عیار', 'کهربا', 'کاریس']) {
+        assert.ok(catalog.some((asset) => asset.name === ticker), `${ticker} is listed by default`);
+    }
+    assert.equal(catalog.filter((asset) => asset.category === 'fund').length, 3);
+    assert.ok(p.plus.stocks.publicStatus().count >= 8);
+    // Only what a profile holds or watches gets daily price rows.
+    assert.equal(await p.store.getPrice('STK_34144395039913458', TODAY), null);
+    await p.portfolio.createTransaction(buy('STK_34144395039913458', 3, 65000, day(-1)));
+    await p.plus.stocks.sync({ reason: 'manual' });
+    assert.equal((await p.store.getPrice('STK_34144395039913458', TODAY)).close, 65560.2);
+    assert.equal((await holding(p, 'STK_34144395039913458')).value.toFixed(1), (3 * 65560.2).toFixed(1));
+
+    // An instrument that left the exchange list is no longer offered, but stays for those who hold it.
+    const gone = JSON.parse(JSON.stringify(TSE.marketWatch));
+    gone.marketwatch = gone.marketwatch.filter((row) => row.lva.trim() !== 'خودرو' && row.lva.trim() !== 'عيار');
+    await p.plus.stocks.storeCatalog(tsetmc.normalizeMarketWatch(gone), null);
+    assert.equal(p.market.catalog().some((asset) => asset.name === 'خودرو'), false);
+    assert.equal(p.market.catalog(['STK_34144395039913458']).some((asset) => asset.name === 'عیار'), true);
+    p.plus.stocks.stop();
+});
+
+test('other exchange instruments (bonds...) can still be added by hand and stay listed', async () => {
+    const p = await profile();
+    const found = await p.plus.stocks.search('فولاد');
+    assert.equal(found[0].symbol, 'STK_46348559193224090');
+    assert.equal(found[0].tracked, true);
+    const bond = await p.plus.stocks.track('55766899336164690');
+    assert.equal(bond.category, 'stock');
+    await p.plus.stocks.sync({ reason: 'manual' });
+    assert.ok(p.market.catalog().some((asset) => asset.symbol === bond.symbol), 'a hand-added instrument survives the next sync');
+    p.plus.stocks.stop();
+});
+
+test('an unreachable exchange is reported, and prices of held stocks still update one by one', async () => {
+    const p = await profile();
+    await p.portfolio.createTransaction(buy('STK_46348559193224090', 10, 480, day(-3)));
+    const blocked = (patterns) => (url) => {
+        if (patterns.some((pattern) => url.includes(pattern))) {
+            const error = new Error('Request to cdn.tsetmc.com failed with HTTP 403');
+            error.status = 403;
+            throw error;
+        }
+        return undefined;
+    };
+    try {
+        setExtraFetch(blocked(['GetMarketWatch']));
+        const status = await p.plus.stocks.sync({ reason: 'manual' });
+        assert.equal(status.ok, true);                        // the held stock was refreshed on its own
+        assert.match(status.catalogError, /403/);
+        setExtraFetch(blocked(['GetMarketWatch', 'GetClosingPriceInfo']));
+        const failed = await p.plus.stocks.sync({ reason: 'manual' });
+        assert.equal(failed.ok, false);
+        assert.match(failed.error, /403/);
+    } finally {
+        setExtraFetch(null);
+        p.plus.stocks.stop();
+    }
+});
+
+test('the price of a past date is never taken from a later day', async () => {
+    const p = await profile();
+    const symbol = 'STK_46348559193224090';
+    // The exchange history is unreachable: only today's snapshot exists.
+    setExtraFetch((url) => {
+        if (url.includes('GetClosingPriceDailyList')) {
+            const error = new Error('Request to cdn.tsetmc.com failed with HTTP 403');
+            error.status = 403;
+            throw error;
+        }
+        return undefined;
+    });
+    try {
+        await p.portfolio.createTransaction(buy(symbol, 10, 480, day(-1)));
+        await p.plus.stocks.sync({ reason: 'manual' });
+        const missing = await p.market.priceAt(symbol, day(-4));
+        assert.equal(missing.price, null);                    // not today's price dressed up as an old one
+        assert.match(missing.error, /تاریخچه/);
+    } finally {
+        setExtraFetch(null);
+    }
+    // "Get the price of this date" downloads the history again even though it was tried moments ago.
+    const found = await p.market.priceAt(symbol, day(-2), { refresh: true });
+    assert.equal(found.price, 527);
+    assert.equal(found.exact, true);
+    // A day without a price falls back to the last earlier price only.
+    const gap = await p.market.priceAt(symbol, day(-1));
+    assert.equal(gap.price, 515);
+    p.plus.stocks.stop();
+});
+
+test('gold funds of the first release move to their exchange symbols', async () => {
+    const p = await profile();
+    const now = new Date();
+    const legacy = (symbol, name) => ({
+        symbol, source: 'market', provider: 'iran-market', nameFa: name, nameEn: null, category: 'fund',
+        currency: 'IRT', unit: 'unit', price: 51421.5, prevClose: null, high: null, low: null, quoteTime: now, stale: false, listed: false,
+        rateSymbol: null, meta: {}, createdAt: now, updatedAt: now,
+    });
+    await p.store.insertAsset(legacy('IME_FUND_AYAR', 'صندوق طلای عیار'));
+    await p.store.insertAsset(legacy('IME_FUND_UNUSED', 'صندوق طلای ناشناخته'));
+    await p.market.reloadAssets();
+    await p.portfolio.createTransaction(buy('IME_FUND_AYAR', 2, 50000, day(-5)));
+    await p.settings.updatePreferences({ watchlist: ['IME_FUND_AYAR', 'USD_IRR_FREE'] });
+
+    assert.equal(await p.plus.stocks.migrateLegacyFunds(), 1);
+    assert.equal(p.market.getAsset('IME_FUND_AYAR'), null);
+    assert.equal(p.market.getAsset('IME_FUND_UNUSED'), null, 'unused leftovers are cleaned up');
+    const moved = (await p.portfolio.allTransactions())[0];
+    assert.equal(moved.symbol, 'STK_34144395039913458');
+    assert.equal(p.settings.preferences().watchlist.join(), 'STK_34144395039913458,USD_IRR_FREE');
+    assert.equal((await holding(p, 'STK_34144395039913458')).price, 65560.2);
+
+    // A backup written by the first release is understood too.
+    const target = await profile();
+    const file = {
+        app: 'DollarBaan', format: 1, version: '2.1.0', preferences: { watchlist: ['IME_FUND_KAHROBA'] }, customAssets: [],
+        transactions: [{ id: crypto.randomUUID(), symbol: 'IME_FUND_KAHROBA', side: 'buy', quantity: 1, unitPrice: 20000, fee: 0, date: day(-4), note: '' }],
+    };
+    await target.portfolio.importData(file, { mode: 'replace' });
+    assert.equal((await target.portfolio.allTransactions())[0].symbol, 'STK_25559236668122210');
+    p.plus.stocks.stop();
+    target.plus.stocks.stop();
+});
+
+test('a backup carries only the stocks a profile uses', async () => {
+    const p = await profile();
+    await p.portfolio.createTransaction(buy('STK_46348559193224090', 10, 480, day(-3)));
+    await p.settings.updatePreferences({ watchlist: ['STK_34144395039913458'] });
+    const file = JSON.parse(JSON.stringify(await p.portfolio.exportData({ name: 'آزمون' })));
+    assert.deepEqual(file.stocks.map((item) => item.insCode).sort(), ['34144395039913458', '46348559193224090']);
+    assert.ok(p.plus.stocks.publicStatus().count > file.stocks.length);
+    assert.equal(file.stocks.find((item) => item.insCode === '34144395039913458').category, 'fund');
+    p.plus.stocks.stop();
+});
+
 test('backups restore everything of a profile, and files from the original DollarBaan', async () => {
     const source = await profile();
     await source.portfolio.createTransaction(deposit(20000000, day(-30), (await source.plus.cash.createSource({ name: 'منبع من' })).id));
     await source.portfolio.createTransaction(buy('USD_IRR_FREE', 100, 90000, day(-20), { location: 'صرافی', cash: { link: true } }));
-    await source.plus.stocks.track('46348559193224090');
     await source.portfolio.createTransaction(buy('STK_46348559193224090', 10, 480, day(-3)));
     const custom = await source.market.createCustomAsset({ name: 'آپارتمان', kind: 'realestate', unit: 'واحد', price: 5e9 });
     await source.portfolio.createTransaction(buy(custom.symbol, 1, 4.5e9, day(-10)));

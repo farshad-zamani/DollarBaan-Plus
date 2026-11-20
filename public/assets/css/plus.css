@@ -49,23 +49,27 @@
 
 :root {
     --cat-stock: #0f9d8a;
+    --cat-etf: #6d5bd0;
     --cat-cash: #64748b;
     --profilebar-height: calc(46px + var(--safe-top));
 }
 
 :root[data-theme="dark"] {
     --cat-stock: #2dc4ae;
+    --cat-etf: #9b8cff;
     --cat-cash: #94a3b8;
 }
 
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
         --cat-stock: #2dc4ae;
+        --cat-etf: #9b8cff;
         --cat-cash: #94a3b8;
     }
 }
 
 .cat-stock { --cat: var(--cat-stock); }
+.cat-etf { --cat: var(--cat-etf); }
 .cat-cash { --cat: var(--cat-cash); }
 
 /* ---------- profile tabs ---------- */
@@ -883,4 +887,76 @@ body.is-locked {
     background:
         radial-gradient(60% 50% at 85% 0%, color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 70%),
         var(--bg);
+}
+
+/* ---------- exchange search under the market list ---------- */
+
+.exchange-search {
+    margin-top: 16px;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+}
+
+.exchange-search > summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-2);
+}
+
+.exchange-search[open] > summary {
+    margin-bottom: 10px;
+}
+
+/* ---------- price field of the transaction form ---------- */
+
+.label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.label-row .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12.5px;
+    white-space: nowrap;
+}
+
+.price-gap {
+    display: block;
+    margin-top: 2px;
+    color: var(--warn, #b54708);
+}
+
+/* ---------- summary of the open filter on "my assets" ---------- */
+
+.summary-scope {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+}
+
+.summary-strip.summary-five {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+    .summary-strip.summary-five {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .summary-strip.summary-five > div:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
 }

@@ -10,6 +10,8 @@ const RETRY_AFTER_FAILURE_MS = 10 * 60 * 1000;
 const MAX_LISTED_AGE_MS = 45 * 24 * 60 * 60 * 1000;
 const HISTORY_CACHE_LIMIT = 80;
 const MAX_TIMER_MS = 2 ** 31 - 1;
+const MAX_PRICE_GAP_DAYS = 14;
+const REFRESH_COOLDOWN_MS = 5 * 60 * 1000;
 
 function parseMeta(value) {
     if (!value) return {};
@@ -278,9 +280,12 @@ export class MarketCore extends Emitter {
         const include = new Set(referenced);
         const list = [];
         for (const asset of this.assets.values()) {
-            const listed = asset.source !== 'market'
-                || (asset.provider === activeId && asset.listed
-                    && !(asset.quoteTime && now - asset.quoteTime.getTime() > MAX_LISTED_AGE_MS));
+            // Tehran stocks are listed by their own source (the whole exchange); custom assets always.
+            const listed = asset.source === 'stock'
+                ? asset.listed
+                : asset.source !== 'market'
+                    || (asset.provider === activeId && asset.listed
+                        && !(asset.quoteTime && now - asset.quoteTime.getTime() > MAX_LISTED_AGE_MS));
             if (listed || include.has(asset.symbol)) list.push(asset);
         }
         return list.sort((a, b) => compareAssets(a, b)).map((asset) => this.view(asset));
@@ -436,30 +441,35 @@ export class MarketCore extends Emitter {
         this.history.delete(symbol);
     }
 
-    /** Fetches the history of a symbol (and its rate/proxy symbols) if it is missing or old. */
-    async ensureHistory(symbol) {
+    /**
+     * Fetches the history of a symbol (and its rate/proxy symbols) if it is missing or old (`force` fetches
+     * it again regardless). Resolves { ok, error? }; it never rejects.
+     */
+    async ensureHistory(symbol, { force = false } = {}) {
         const provider = this.provider;
         const asset = this.assets.get(symbol);
         if (asset && asset.source === 'stock') {
-            if (this.extensions.stocks) await this.extensions.stocks.ensureHistory(symbol);
-            return;
+            return this.extensions.stocks ? this.extensions.stocks.ensureHistory(symbol, { force }) : { ok: true };
         }
-        if (!provider || !asset || asset.source !== 'market') return;
+        if (!provider || !asset || asset.source !== 'market') return { ok: true };
         try {
             if (typeof provider.prepare === 'function') await provider.prepare();
         } catch (error) {
             this.logger.warn(`Cannot prepare ${provider.id}: ${error.message}`);
-            return;
+            return { ok: false, error: describeError(error, provider) };
         }
+        let failure = null;
         for (const dependency of this.withDependencies([symbol])) {
             if (!provider.hasHistory(dependency)) continue;
-            if (!this.historyDue(provider, (this.settings.get('historySync') || {})[dependency])) continue;
+            if (!force && !this.historyDue(provider, (this.settings.get('historySync') || {})[dependency])) continue;
             try {
                 await this.fetchHistory(provider, dependency);
             } catch (error) {
                 this.logger.warn(`History for ${dependency} failed: ${error.message}`);
+                failure = failure || describeError(error, provider);
             }
         }
+        return failure ? { ok: false, error: failure } : { ok: true };
     }
 
     /** Native-currency daily closes of a symbol, oldest first (cached; never mutate the result). */
@@ -486,22 +496,30 @@ export class MarketCore extends Emitter {
         return series;
     }
 
-    /** Market price of an asset on a given day (for pre-filling the transaction form). */
-    async priceAt(symbol, date) {
+    /**
+     * Market price of an asset on a given day (for filling in the transaction form). Only the price of that
+     * day, or the last one before it (weekends, holidays), is ever returned: never a later price, which
+     * would silently turn an old purchase into one made at today's prices. With `refresh`, history and
+     * today's quote are fetched again first.
+     */
+    async priceAt(symbol, date, { refresh = false } = {}) {
         const asset = this.assets.get(symbol);
         if (!asset) throw notFound('این دارایی پیدا نشد');
         const today = tehranDate();
-        const current = this.toman(asset).price;
+        if (refresh && asset.source === 'stock' && this.extensions.stocks) {
+            await this.extensions.stocks.refreshOne(asset).catch((error) => this.logger.warn(`Refreshing ${symbol} failed: ${error.message}`));
+        } else if (refresh && asset.source === 'market' && date >= today && !(Date.now() - Date.parse(this.status.lastSuccessAt) < REFRESH_COOLDOWN_MS)) {
+            await this.sync({ reason: 'manual' });
+        }
+        const current = this.toman(this.assets.get(symbol)).price;
         if (date >= today) return { price: current, date: today, exact: true };
-        await this.ensureHistory(symbol);
+        const loaded = await this.ensureHistory(symbol, { force: refresh });
         const series = await this.seriesFor(symbol);
         const point = closeAsOf(series, date);
-        if (point && diffDays(point.date, date) <= 14) return { price: point.close, date: point.date, exact: point.date === date };
-        if (!point && series.length && diffDays(date, series[0].date) <= 14) {
-            return { price: series[0].close, date: series[0].date, exact: false };
-        }
+        if (point && diffDays(point.date, date) <= MAX_PRICE_GAP_DAYS) return { price: point.close, date: point.date, exact: point.date === date };
         if (asset.source === 'custom' || asset.source === 'system') return { price: current, date: null, exact: false };
-        return { price: null, date: null, exact: false };
+        const error = loaded && loaded.error ? loaded.error : null;
+        return { price: null, date: null, exact: false, ...(error ? { error } : {}) };
     }
 
     /* ---------- custom assets ---------- */

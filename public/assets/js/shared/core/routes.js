@@ -79,7 +79,7 @@ export function createRoutes({ market, portfolio, settings, providers, createPro
             handler: ({ params, query }) => {
                 const date = String(query.date || tehranDate());
                 if (!isIsoDate(date)) throw badRequest('تاریخ معتبر نیست');
-                return market.priceAt(params.symbol, date);
+                return market.priceAt(params.symbol, date, { refresh: query.refresh === '1' || query.refresh === 'true' });
             },
         },
         { method: 'GET', path: '/watchlist', handler: () => portfolio.getWatchlist() },

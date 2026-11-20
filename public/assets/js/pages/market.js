@@ -1,6 +1,6 @@
 import { store } from '../state.js';
 import { html, icon, setHtml } from '../lib/dom.js';
-import { money, compactMoney, relativeTime, searchKey, CATEGORY_LABELS, number, currencyLabel, providerLabel } from '../format.js';
+import { money, compactMoney, relativeTime, searchKey, searchRank, CATEGORY_LABELS, number, currencyLabel, providerLabel } from '../format.js';
 import { assetCell, assetSub, deltaText } from '../ui/asset-visuals.js';
 import { notify } from '../ui/toast.js';
 import { mountStockSearch } from '../plus/stock-search.js';
@@ -29,13 +29,14 @@ export function mount({ view, setTitle }) {
     const marketAssets = () => store.assets.filter((asset) => asset.source === 'market' || asset.source === 'stock');
     let stockOff = null;
 
-    /** The stock-exchange search sits above the list while the "stocks" category is open. */
+    /** Instruments outside the default list (bonds and the like) can still be searched on the exchange. */
     function syncStockPanel() {
+        const details = view.querySelector('[data-stock-details]');
         const host = view.querySelector('[data-stock-panel]');
-        if (!host) return;
+        if (!details || !host) return;
         if (stockOff) stockOff();
         stockOff = null;
-        if (filters.category === 'stock') {
+        if (details.open) {
             stockOff = mountStockSearch(host, { onTracked: () => store.loadAssets({ force: true }).then(() => alive && renderResults()) });
         } else {
             setHtml(host, '');
@@ -44,13 +45,14 @@ export function mount({ view, setTitle }) {
 
     function filtered() {
         const tokens = searchKey(filters.query).split(' ').filter(Boolean);
-        return marketAssets().filter((asset) => {
+        const found = marketAssets().filter((asset) => {
             if (filters.category !== 'all' && asset.category !== filters.category) return false;
             if (filters.watched && !store.isWatched(asset.symbol)) return false;
             if (!tokens.length) return true;
             const key = searchKey(`${asset.name} ${asset.nameEn || ''} ${asset.symbol.replace(/_/g, ' ')}`);
             return tokens.every((token) => key.includes(token));
         });
+        return tokens.length ? found.map((asset) => [searchRank(asset.name, tokens), asset]).sort((a, b) => a[0] - b[0]).map(([, asset]) => asset) : found;
     }
 
     function renderResults() {
@@ -59,7 +61,8 @@ export function mount({ view, setTitle }) {
         const all = filtered();
         const rows = all.slice(0, filters.limit);
         if (!rows.length) {
-            setHtml(target, html`<div class="card"><div class="empty"><p>${filters.watched ? 'هنوز چیزی به دیده‌بان اضافه نکرده‌اید.' : 'نتیجه‌ای پیدا نشد.'}</p></div></div>`);
+            setHtml(target, html`<div class="card"><div class="empty"><p>${filters.watched ? 'هنوز چیزی به دیده‌بان اضافه نکرده‌اید.' : 'نتیجه‌ای پیدا نشد.'}</p>
+            ${!filters.watched && filters.query.trim().length >= 2 ? html`<p class="field-hint">اوراق مشارکت، صکوک و نمادهای دیگر بورس را با «نماد دیگری از سایت بورس تهران می‌خواهید؟» در پایین صفحه جستجو کنید.</p>` : ''}</div></div>`);
             return;
         }
         setHtml(target, html`
@@ -132,18 +135,21 @@ export function mount({ view, setTitle }) {
         setHtml(view, html`
             <div class="toolbar">
                 <label class="search-input">${icon('search')}
-                    <input class="input" type="search" placeholder="جستجوی دلار، طلا، سکه، بیت‌کوین…" aria-label="جستجو در بازار" value="${filters.query}" data-query>
+                    <input class="input" type="search" placeholder="جستجوی دلار، طلا، سکه، بیت‌کوین، سهام و صندوق…" aria-label="جستجو در بازار" value="${filters.query}" data-query>
                 </label>
                 <div class="chips" role="group" aria-label="دسته‌بندی">
                     <button type="button" class="chip" data-category="all" aria-pressed="${filters.category === 'all'}">همه <span class="count">${number(assets.length)}</span></button>
-                    ${store.categories.filter((key) => counts.has(key) || key === 'stock').map((key) => html`
+                    ${store.categories.filter((key) => counts.has(key)).map((key) => html`
                         <button type="button" class="chip" data-category="${key}" aria-pressed="${filters.category === key}">${CATEGORY_LABELS[key]} <span class="count">${number(counts.get(key) || 0)}</span></button>`)}
                 </div>
                 <span class="spacer"></span>
                 <button type="button" class="chip" data-watched aria-pressed="${filters.watched}">${icon('star', 'icon-sm')}دیده‌بان</button>
             </div>
-            <div data-stock-panel></div>
-            <div data-results></div>`);
+            <div data-results></div>
+            <details class="exchange-search" data-stock-details>
+                <summary>${icon('search', 'icon-sm')}<span>نماد دیگری از سایت بورس تهران می‌خواهید؟ (اوراق مشارکت، صکوک و …)</span></summary>
+                <div data-stock-panel></div>
+            </details>`);
         syncStockPanel();
         renderResults();
     }
@@ -190,7 +196,6 @@ export function mount({ view, setTitle }) {
             for (const element of view.querySelectorAll('[data-category]')) {
                 element.setAttribute('aria-pressed', String(element.dataset.category === filters.category));
             }
-            syncStockPanel();
             renderResults();
             return;
         }
@@ -226,6 +231,10 @@ export function mount({ view, setTitle }) {
     view.addEventListener('click', onClick);
     view.addEventListener('input', onInput);
     view.addEventListener('keydown', onKey);
+    const onToggle = (event) => {
+        if (event.target.matches('[data-stock-details]')) syncStockPanel();
+    };
+    view.addEventListener('toggle', onToggle, true);
 
     const unsubscribe = [
         store.on('synced', () => load({ force: true })),
@@ -243,6 +252,7 @@ export function mount({ view, setTitle }) {
             view.removeEventListener('click', onClick);
             view.removeEventListener('input', onInput);
             view.removeEventListener('keydown', onKey);
+            view.removeEventListener('toggle', onToggle, true);
             unsubscribe.forEach((off) => off());
         },
     };

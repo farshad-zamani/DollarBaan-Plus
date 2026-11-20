@@ -2,7 +2,7 @@ import { html, icon, setHtml } from '../lib/dom.js';
 import { api } from '../api.js';
 import { store } from '../state.js';
 import {
-    money, quantity as formatQuantity, unitLabel, currencyLabel, toDisplay, fromDisplay, jalaliDate, todayIso,
+    money, quantity as formatQuantity, unitLabel, currencyLabel, toDisplay, fromDisplay, jalaliDate, todayIso, percent,
 } from '../format.js';
 import { openDialog, confirmDialog, withBusy } from './dialog.js';
 import { createAssetPicker } from './asset-picker.js';
@@ -106,7 +106,10 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
                         </div>
                     </div>
                     <div class="field">
-                        <label for="tx-price">قیمت هر واحد</label>
+                        <div class="label-row">
+                            <label for="tx-price">قیمت هر واحد</label>
+                            <button type="button" class="link-btn" data-fetch-price title="قیمت بازار را برای تاریخ انتخاب‌شده دوباره دریافت می‌کند و در همین فیلد می‌گذارد">${icon('refresh-cw', 'icon-sm')}<span>دریافت قیمت این تاریخ</span></button>
+                        </div>
                         <div class="input-group">
                             <input id="tx-price" class="input" placeholder="۰">
                             <span class="addon">${currencyLabel()}</span>
@@ -161,6 +164,15 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
             },
         });
         const fee = bindNumberInput($('#tx-fee'), { onChange: update });
+        const fetchButton = $('[data-fetch-price]');
+        fetchButton.addEventListener('click', () => {
+            if (!state.symbol) {
+                errorBox.textContent = 'ابتدا دارایی را انتخاب کنید';
+                return;
+            }
+            errorBox.textContent = '';
+            loadMarketPrice({ apply: true, refresh: true });
+        });
         const note = $('#tx-note');
         const location = createLocationInput($('[data-location]'), { value: editing ? transaction.location || '' : '', id: 'tx-location' });
         const cashLocation = createLocationInput($('[data-cash-location]'), { value: linkedCash ? linkedCash.location || '' : '', id: 'tx-cash-location' });
@@ -263,31 +275,46 @@ export async function openTransactionForm({ transaction = null, symbol = null, s
                 return;
             }
             if (!market || !(market.price > 0)) {
-                setHtml(priceHint, html`<span>قیمت بازار برای این تاریخ پیدا نشد؛ قیمت را خودتان وارد کنید.</span>`);
+                const reason = market && market.error ? market.error : 'قیمت بازار برای این تاریخ پیدا نشد؛ قیمت را خودتان وارد کنید.';
+                setHtml(priceHint, html`<span class="neg">${reason}</span>`);
                 return;
             }
             const when = market.date === todayIso() ? 'امروز' : market.exact ? 'در این روز' : `در ${jalaliDate(market.date)}`;
             const estimate = market.estimated ? html` <span class="badge warn" title="این قیمت از قیمت جهانی یا نرخ ارز محاسبه شده و ممکن است با قیمت بازار ایران اندکی فرق داشته باشد">تخمینی</span>` : '';
-            const differs = Math.abs((unitPrice() || 0) - market.price) > market.price * 1e-6;
+            const entered = unitPrice() || 0;
+            const differs = Math.abs(entered - market.price) > market.price * 1e-6;
+            const gap = entered > 0 ? ((entered - market.price) / market.price) * 100 : null;
+            const far = differs && gap !== null && Math.abs(gap) >= 5;
             setHtml(priceHint, html`
                 <span>قیمت بازار ${when}: <strong>${money(market.price)}</strong>${estimate}</span>
-                ${differs ? html`<button type="button" data-apply-price>استفاده از این قیمت</button>` : ''}`);
+                ${differs ? html`<button type="button" data-apply-price>استفاده از این قیمت</button>` : ''}
+                ${far ? html`<span class="price-gap">قیمت واردشده ${percent(Math.abs(gap), { sign: false, digits: 1 })} ${gap > 0 ? 'بیشتر' : 'کمتر'} از قیمت بازار آن روز است.</span>` : ''}`);
         }
 
-        async function loadMarketPrice() {
+        /**
+         * Asks for the market price on the chosen date. `apply` also puts it in the price field (the button),
+         * otherwise it only fills a field the user has not touched. `refresh` re-downloads history and quotes.
+         */
+        async function loadMarketPrice({ apply = false, refresh = false } = {}) {
             if (!state.symbol || !date.value) return;
             const request = state.request + 1;
             state.request = request;
             state.market = 'loading';
+            fetchButton.disabled = true;
             renderPriceHint();
             try {
-                const result = await api.get(`/api/assets/${encodeURIComponent(state.symbol)}/price?date=${date.value}`);
+                const result = await api.get(`/api/assets/${encodeURIComponent(state.symbol)}/price?date=${date.value}${refresh ? '&refresh=1' : ''}`);
                 if (request !== state.request) return;
                 state.market = result;
-                if (!state.priceTouched && result.price > 0) price.value = toDisplay(result.price);
-            } catch {
+                if ((apply || !state.priceTouched) && result.price > 0) {
+                    price.value = toDisplay(result.price);
+                    state.priceTouched = false;
+                }
+            } catch (error) {
                 if (request !== state.request) return;
-                state.market = null;
+                state.market = { price: null, error: error.message };
+            } finally {
+                if (request === state.request) fetchButton.disabled = false;
             }
             renderPriceHint();
             update();

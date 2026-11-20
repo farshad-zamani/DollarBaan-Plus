@@ -224,25 +224,25 @@ export class HistoryEngine {
      * Makes sure prices exist back to `date` (a week of slack included). Safe to call often: an asset
      * is only looked at again after a day, and nothing is fetched when it is already covered.
      */
-    async ensureCoverage(symbol, date) {
+    async ensureCoverage(symbol, date, { force = false } = {}) {
         const asset = this.market.getAsset(symbol);
         const plan = classify(asset);
         if (!plan || !date || date >= tehranDate()) return;
         const key = `history:${symbol}`;
         if (!this.inflight.has(key)) {
-            this.inflight.set(key, this.fill(symbol, plan, date)
+            this.inflight.set(key, this.fill(symbol, plan, date, { force })
                 .catch((error) => this.logger.warn(`Deep history of ${symbol} failed: ${error.message}`))
                 .finally(() => this.inflight.delete(key)));
         }
         return this.inflight.get(key);
     }
 
-    async fill(symbol, plan, date) {
+    async fill(symbol, plan, date, { force = false } = {}) {
         const want = addDays(date, -SLACK_DAYS);
         const entry = this.state()[symbol] || null;
-        if (entry && entry.tried <= want && Date.now() - Date.parse(entry.at) < RETRY_AFTER_MS) return;
+        if (!force && entry && entry.tried <= want && Date.now() - Date.parse(entry.at) < RETRY_AFTER_MS) return;
 
-        await this.market.ensureHistory(symbol);
+        await this.market.ensureHistory(symbol, { force });
         const existing = await this.market.seriesFor(symbol);
         let cursor = existing.length ? existing[0].date : tehranDate();
         if (cursor <= date) return;
